@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="secure_template">
+<head>
+    <meta charset="UTF-8">
+    <title>游戏王DIY作品</title>
+
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <style>
+        #chat-hall {
+            position: absolute;
+            height: 80%;
+            width: 40%;
+            background-color: #dddddd;
+            display: none;
+            border: #888 solid 1px;
+        }
+    </style>
+</head>
+<body>
+<div th:fragment="header" >
+    <input type="hidden" id="contextPath" th:value="${#httpServletRequest.getContextPath()}" />
+    <div id="header">
+        <div class="btn-group" style="float: right;">
+            <button type="button" class="btn btn-default" onclick="window.location.href = '/index';">首页</button>
+            <button type="button" class="btn btn-default" id="chat-hall-btn">聊天大厅</button>
+            <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-user"></span>
+                <span id="user-name-label" th:text="${session.sessionPlayer.username}">[...]</span>
+            </button>
+            <button type="button" class="btn btn-default" onclick="window.location.href = '/logout';">注销</button>
+        </div>
+    </div>
+</div>
+<div id="chat-hall">
+    <p>聊天大厅</p>
+</div>
+</body>
+<script>
+$(function() {
+    initChatHall();
+    // 打开与关闭聊天大厅
+    $("#chat-hall-btn").click(function() {
+        $("#chat-hall").toggle();
+    });
+    var username = $("#user-name-label").html().trim();
+    var ws;
+    var contextPath = $("#contextPath").val();
+    $.get(contextPath + "/getWsUrlPrefix", function (wsUrlPrefix) {
+        ws = new WebSocket(wsUrlPrefix + username);
+        ws.onopen = function () {
+            console.log("建立 websocket 连接...");
+        };
+        ws.onmessage = function(event){
+            //服务端发送的消息
+            console.log("服务端发过来的信息：" + event.data);
+        };
+        ws.onclose = function(){
+            $('#message_content').append('用户['+username+'] 已经离开' + '\n');
+            console.log("关闭 websocket 连接...");
+        }
+    });
+
+
+})
+    function initChatHall() {
+        var element = $("#chat-hall");
+        // 计算聊天大厅div的横坐标
+        var x = $(window).width() - element.width() - 10;
+        var y = $("#chat-hall-btn").height() + 15;
+        element.offset({ top: y, left: x })
+    }
+</script>
+</html>

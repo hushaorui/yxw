@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0,
+                                     user-scalable=no">
+    <title>游戏王DIY作品</title>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div th:replace="header :: html"></div>
+    <div id="container">
+        <table class="table">
+            <caption>待开发功能</caption>
+            <tbody>
+            <tr class="active">
+                <td><a href="card/list">卡牌一览</a></td>
+                <td>待开发</td>
+            </tr>
+            <tr class="success">
+                <td>角色一览</td>
+                <td>待开发</td>
+            </tr>
+            <tr  class="warning">
+                <td>技能一览</td>
+                <td>待开发</td>
+            </tr>
+            <tr  class="danger">
+                <td>人机对战</td>
+                <td>待开发</td>
+            </tr>
+            <tr  class="active">
+                <td>自由对战</td>
+                <td>待开发</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>游戏王DIY作品</title>
+
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+    <style>
+        .img_div {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="header :: html"></div>
+<h2>卡牌一览</h2>
+<div th:each="entry,stat:${cards}" class="img_div">
+    <img th:src="${entry['imageUrl']}" th:title="${entry['name']}" />
+</div>
+</body>
+</html>

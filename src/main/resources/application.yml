@@ -1,0 +1,13 @@
+server:
+  # 端口号设置
+  port: 44944
+  # 访问路径设置
+  servlet:
+    context-path: /
+
+spring:
+  #  freemarker:
+  #    request-context-attribute: request
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
