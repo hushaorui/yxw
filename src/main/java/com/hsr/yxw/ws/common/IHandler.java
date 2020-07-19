@@ -1,5 +1,5 @@
 package com.hsr.yxw.ws.common;
 
 public interface IHandler {
-    BaseProtocol handle(String message);
+    BaseProtocol handle(String username, String message);
 }

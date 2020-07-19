@@ -15,10 +15,13 @@
     </style>
 </head>
 <body>
-<div th:replace="header :: html"></div>
+    <div th:replace="header :: html"></div>
 <h2>卡牌一览</h2>
-<div th:each="entry,stat:${cards}" class="img_div">
-    <img th:src="${entry['imageUrl']}" th:title="${entry['name']}" />
+<div id="container">
+    <div th:each="entry,stat:${cards}" class="img_div">
+        <img th:src="${entry['imageUrl']}" th:title="${entry['name']}" />
+    </div>
 </div>
+
 </body>
 </html>

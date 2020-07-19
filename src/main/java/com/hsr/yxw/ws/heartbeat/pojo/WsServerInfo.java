@@ -1,6 +1,7 @@
-package com.hsr.yxw.ws.common;
+package com.hsr.yxw.ws.heartbeat.pojo;
 
 import com.alibaba.fastjson.JSONArray;
+import com.hsr.yxw.ws.common.PlayerWebSocketPool;
 
 /**
  * 提供给每个玩家的服务器信息类

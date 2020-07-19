@@ -2,9 +2,7 @@ package com.hsr.yxw.ws.common;
 
 import com.hsr.yxw.pojo.Player;
 import com.hsr.yxw.service.PlayerService;
-import com.hsr.yxw.ws.chat.ChatHallHandler;
-import com.hsr.yxw.ws.chat.ChatHallRequestProtocol;
-import com.hsr.yxw.ws.connect.ConnectResponseProtocol;
+import com.hsr.yxw.ws.heartbeat.HeartBeatResponseProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.util.StringUtils;
@@ -35,18 +33,18 @@ public class BaseEndPoint {
     public void onOpen(@PathParam("username") String username, Session session){
         System.out.println("新的连接，用户名：" + username);
         Player player = playerService.getPlayerByUsername(username);
-        BaseProtocol baseProtocol = new BaseProtocol(WsProtoConstants.connect_protocol);
-        ConnectResponseProtocol connectResponseProtocol;
+        // 创建心跳协议类型的基础协议
+        BaseProtocol baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
         if (player == null) {
-            connectResponseProtocol = new ConnectResponseProtocol(ConnectResponseProtocol.CONNECT_FAILED, "用户名 " + username + " 不存在，连接失败");
-            baseProtocol.setMessage(connectResponseProtocol.toJsonString());
+            // 心跳协议的响应协议
+            HeartBeatResponseProtocol heartBeatResponseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.CONNECT_FAILED, "用户名 " + username + " 不存在，连接失败");
+            baseProtocol.setMessage(heartBeatResponseProtocol.toJsonString());
             // 给连接的用户发送连接失败信息
             wsBaseHandler.sendMessage(session, baseProtocol);
             return;
         }
         PlayerWebSocketPool.addToOnline(player, session);
-        connectResponseProtocol = new ConnectResponseProtocol(ConnectResponseProtocol.CONNECT_SUCCESS, "连接成功");
-        baseProtocol.setMessage(connectResponseProtocol.toJsonString());
+        baseProtocol.setMessage(HeartBeatResponseProtocol.connectSuccess());
         // 给连接的用户发送信息
         wsBaseHandler.sendMessage(session, baseProtocol);
 
@@ -64,19 +62,17 @@ public class BaseEndPoint {
                 baseProtocol = BaseProtocol.parseStringToProtoCol(message);
                 // 能够正确解析 {"":type, "message": "{"type":type, "message":msg....}"}
                 if (! wsBaseHandler.containProtocolName(baseProtocol.getType())) {
-                    baseProtocol = new BaseProtocol(WsProtoConstants.connect_protocol);
-                    ConnectResponseProtocol connectResponseProtocol = new ConnectResponseProtocol(ConnectResponseProtocol.UNKNOWN_PROTO,
-                            "不符合格式的协议内容：" + baseProtocol.getType());
-                    baseProtocol.setMessage(connectResponseProtocol);
+                    baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
+                    HeartBeatResponseProtocol heartBeatResponseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.UNKNOWN_PROTO,
+                            "未知的基础协议名称：" + baseProtocol.getType());
+                    baseProtocol.setMessage(heartBeatResponseProtocol);
                     return;
                 }
                 // 交给对应的处理类进行处理
-                baseProtocol = wsBaseHandler.handle(baseProtocol.getType(), baseProtocol.getMessage());
+                baseProtocol = wsBaseHandler.handle(username, baseProtocol.getType(), baseProtocol.getMessage());
             } catch (Exception e) {
-                baseProtocol = new BaseProtocol(WsProtoConstants.connect_protocol);
-                ConnectResponseProtocol connectResponseProtocol = new ConnectResponseProtocol(ConnectResponseProtocol.NOT_FORMAT,
-                        "不符合格式的协议内容：" + message);
-                baseProtocol.setMessage(connectResponseProtocol);
+                baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
+                baseProtocol.setMessage(HeartBeatResponseProtocol.notFormat(message));
             }
             // 发送响应信息
             wsBaseHandler.sendMessage(username, baseProtocol);

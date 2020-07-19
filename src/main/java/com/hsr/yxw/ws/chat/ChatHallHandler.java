@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class ChatHallHandler implements IHandler {
 
     @Override
-    public BaseProtocol handle(String message) {
+    public BaseProtocol handle(String username, String message) {
         return null;
     }
 }

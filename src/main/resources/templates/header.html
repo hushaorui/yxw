@@ -43,11 +43,12 @@
 </body>
 <script>
 $(function() {
-    initChatHall();
+    initChatHallOffset();
     // 打开与关闭聊天大厅
     $("#chat-hall-btn").click(function() {
         $("#chat-hall").toggle();
     });
+
     var username = $("#user-name-label").html().trim();
     var ws;
     var contextPath = $("#contextPath").val();
@@ -58,22 +59,67 @@ $(function() {
         };
         ws.onmessage = function(event){
             //服务端发送的消息
-            console.log("服务端发过来的信息：" + event.data);
+            //console.log("服务端发过来的信息：" + event.data);
+            handleResponse(ws, event);
         };
         ws.onclose = function(){
             $('#message_content').append('用户['+username+'] 已经离开' + '\n');
             console.log("关闭 websocket 连接...");
         }
+        sendHeartBeatRequest(ws);
+
+        // 创建定时器，每隔一定时间，发送心跳协议
+        setInterval(function () {
+            sendHeartBeatRequest(ws);
+        },2000);
     });
-
-
 })
-    function initChatHall() {
-        var element = $("#chat-hall");
-        // 计算聊天大厅div的横坐标
-        var x = $(window).width() - element.width() - 10;
-        var y = $("#chat-hall-btn").height() + 15;
-        element.offset({ top: y, left: x })
+function sendHeartBeatRequest(ws) {
+
+}
+// 处理服务端返回的响应
+function handleResponse(ws, event) {
+    // 字符串转json
+    var baseProtoData = JSON.parse(event.data);
+    // 基础协议的类型，参考 WsProtoConstants
+    var baseProtoType = baseProtoData["type"];
+    if (baseProtoType === "heart_beat") {
+        // 子协议内容
+        var subProtoData = JSON.parse(event.data["message"]);
+        // 子协议类型
+        var subProtoType = subProtoData["type"];
+        if (subProtoType === "SERVER_INFO") {
+            
+        }
+    } else if (baseProtoType === "chatHall") {
+
+    } else {
+        alert("未知的基础协议类型：" + event.data["type"]);
     }
+}
+// 初始化聊天框的位置
+function initChatHallOffset() {
+    var element = $("#chat-hall");
+    // 计算聊天大厅div的横坐标
+    var x = $(window).width() - element.width() - 10;
+    var y = $("#chat-hall-btn").height() + 15;
+    element.offset({ top: y, left: x })
+}
+
+// 将时间戳转换为可读字符串 （公共方法）
+function timestampToDate(timestamp) {
+    if ((typeof timestamp)  == "string") {
+        timestamp = parseInt(timestamp.trim());
+    }
+    function add0(m){return m<10?'0'+m:m }
+    var time = new Date(timestamp);
+    var y = time.getFullYear();
+    var m = time.getMonth()+1;
+    var d = time.getDate();
+    var h = time.getHours();
+    var mm = time.getMinutes();
+    var s = time.getSeconds();
+    return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+}
 </script>
 </html>

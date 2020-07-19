@@ -48,10 +48,13 @@ public class PlayerWebSocketPool {
     }
 
     /**
-     * 获取在线session池
+     * 获取在线session池 (此方法不安全)
      * @return
      */
     public static Map<String, WsPlayer> getAllPlayerMap(){
         return ONLINE_PLAYERS;
+    }
+    public static WsPlayer getWsPlayer(String username) {
+        return ONLINE_PLAYERS.get(username);
     }
 }
