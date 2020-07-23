@@ -1,5 +1,6 @@
 package com.hsr.yxw.ws.common;
 
+import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.pojo.Player;
 import com.hsr.yxw.service.PlayerService;
 import com.hsr.yxw.ws.heartbeat.HeartBeatResponseProtocol;
@@ -30,7 +31,7 @@ public class BaseEndPoint {
     }
 
     @OnOpen
-    public void onOpen(@PathParam("username") String username, Session session){
+    public void onOpen(@PathParam("username") String username, Session session) throws ServiceException {
         System.out.println("新的连接，用户名：" + username);
         Player player = playerService.getPlayerByUsername(username);
         // 创建心跳协议类型的基础协议

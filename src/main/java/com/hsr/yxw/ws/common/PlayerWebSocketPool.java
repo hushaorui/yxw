@@ -21,7 +21,6 @@ public class PlayerWebSocketPool {
     public static void addToOnline(Player player, Session session){
         if (player != null && session != null){
             // 在线状态是无法登陆的，防止挤号
-            player.setOnline(true);
             WsPlayer wsPlayer = new WsPlayer();
             wsPlayer.setPlayer(player);
             wsPlayer.setWsSession(session);

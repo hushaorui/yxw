@@ -6,7 +6,6 @@ public class Player implements Serializable {
     private static final long serialVersionUID = 0L;
     private String username;
     private String password;
-    private Boolean online;
     private long createTime;
     private long lastLoginTime;
 
@@ -24,14 +23,6 @@ public class Player implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Boolean getOnline() {
-        return online;
-    }
-
-    public void setOnline(Boolean online) {
-        this.online = online;
     }
 
     public long getCreateTime() {
