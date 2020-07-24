@@ -27,10 +27,10 @@ spring:
       timeBetweenEvictionRunsMillis: 60000
       # 配置有一个连接在连接池中的最小生存时间，单位是毫秒
       minEvictableIdleTimeMillis: 300000
-      validationQuery: select 1
       testWhileIdle: true
       testOnBorrow: false
       testOnReturn: false
+      validationQuery: select 1
       # 打开PSCache，指定每个连接上PSCache的大小
       poolPreparedStatements: true
       maxPoolPreparedStatementPerConnectionSize: 20

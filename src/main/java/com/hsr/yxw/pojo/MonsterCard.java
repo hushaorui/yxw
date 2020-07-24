@@ -1,9 +1,9 @@
 package com.hsr.yxw.pojo;
 
-import com.hsr.yxw.em.DLRareLevel;
-import com.hsr.yxw.em.MonsterElement;
-import com.hsr.yxw.em.MonsterRace;
-import com.hsr.yxw.em.MonsterType;
+import com.hsr.yxw.em.card.DLRareLevel;
+import com.hsr.yxw.em.card.MonsterElement;
+import com.hsr.yxw.em.card.MonsterRace;
+import com.hsr.yxw.em.card.MonsterType;
 
 public class MonsterCard extends Card {
     private static final long serialVersionUID = 0L;

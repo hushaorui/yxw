@@ -1,6 +1,6 @@
 package com.hsr.yxw.pojo;
 
-import com.hsr.yxw.em.GameSkill;
+import com.hsr.yxw.em.skill.GameSkill;
 
 import java.io.Serializable;
 import java.util.List;

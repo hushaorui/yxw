@@ -19,6 +19,6 @@ public class CardController {
     public String cardList(Model model) throws ServiceException {
         Collection<Card> cards = cardService.listAll();
         model.addAttribute("cards", cards);
-        return "card/list";
+        return "card/card-list";
     }
 }

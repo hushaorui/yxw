@@ -1,4 +1,4 @@
-package com.hsr.yxw.em;
+package com.hsr.yxw.em.card;
 
 /**
  * 在决斗链接的稀有度

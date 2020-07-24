@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>游戏王DIY作品</title>
+
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+<div style="margin:10px;">
+    <ol class="breadcrumb">
+        <li><a href="#">主页</a></li>
+        <li><a href="#">用户管理</a></li>
+        <li class="active">用户列表</li>
+    </ol>
+
+    <table class="table">
+        <caption>用户列表</caption>
+        <thead>
+            <th>ID</th>
+            <th>用户名</th>
+            <th>密码</th>
+            <th>管理员</th>
+            <th>创建时间</th>
+            <th>最后登录时间</th>
+            <th>操作</th>
+        </thead>
+        <tbody th:each="player,stat:${players}">
+        <tr class="success">
+            <td th:text="${player.id}"></td>
+            <td th:text="${player.username}"></td>
+            <td th:text="${player.password}"></td>
+            <td th:text="${player.admin}"></td>
+            <td th:text="${player.createTime}"></td>
+            <td th:text="${player.lastLoginTime}"></td>
+            <td><a href="#" th:onclick="'deletePlayer(' + ${player.id} + ')'">删除</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script>
+    function deletePlayer(id) {
+        alert(id);
+    }
+</script>
+</html>

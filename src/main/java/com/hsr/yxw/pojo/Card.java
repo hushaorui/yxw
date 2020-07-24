@@ -1,6 +1,6 @@
 package com.hsr.yxw.pojo;
 
-import com.hsr.yxw.em.CardType;
+import com.hsr.yxw.em.card.CardType;
 
 import java.io.Serializable;
 

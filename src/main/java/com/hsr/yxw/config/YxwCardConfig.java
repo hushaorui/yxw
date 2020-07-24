@@ -1,10 +1,10 @@
 package com.hsr.yxw.config;
 
 import com.hsr.yxw.common.YxwConfig;
-import com.hsr.yxw.em.DLRareLevel;
-import com.hsr.yxw.em.MonsterElement;
-import com.hsr.yxw.em.MonsterRace;
-import com.hsr.yxw.em.MonsterType;
+import com.hsr.yxw.em.card.DLRareLevel;
+import com.hsr.yxw.em.card.MonsterElement;
+import com.hsr.yxw.em.card.MonsterRace;
+import com.hsr.yxw.em.card.MonsterType;
 import com.hsr.yxw.pojo.Card;
 import com.hsr.yxw.pojo.MonsterCard;
 

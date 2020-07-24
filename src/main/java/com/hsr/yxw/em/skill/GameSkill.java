@@ -1,4 +1,4 @@
-package com.hsr.yxw.em;
+package com.hsr.yxw.em.skill;
 
 /**
  * 游戏内的技能

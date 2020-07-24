@@ -11,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.thymeleaf.spring5.context.SpringContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -37,7 +35,7 @@ public class IndexController {
             return CommonResult.danger();
         }
         session.setAttribute("sessionPlayer", player);
-        return CommonResult.success();
+        return CommonResult.success(player.getAdmin() ? "admin/admin-index" : "index");
     }
 
     @RequestMapping(value = "logout")

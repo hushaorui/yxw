@@ -7,6 +7,8 @@ import com.hsr.yxw.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PlayerServiceImpl implements PlayerService {
     @Autowired
@@ -24,10 +26,13 @@ public class PlayerServiceImpl implements PlayerService {
                 // 验证密码，就用明文密码了，不费劲加密了
                 if (password.equals(player.getPassword())) {
                     // 密码正确
-                    long lastLoginTime = player.getLastLoginTime();
+                    // 更新最后一次登录时间
+                    Long lastLoginTime = player.getLastLoginTime();
                     player.setLastLoginTime(now);
                     // 更新下最后登录时间
                     playerMapper.update(player);
+                    // 回显上一次登录时间使用
+                    player.setLastLoginTime(lastLoginTime);
                 } else {
                     // 密码错误
                     return null;
@@ -54,6 +59,16 @@ public class PlayerServiceImpl implements PlayerService {
     public long count() throws ServiceException {
         try {
             return playerMapper.count();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<Player> getAllPlayers() throws ServiceException {
+        try {
+            return playerMapper.selectAll();
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException(e);

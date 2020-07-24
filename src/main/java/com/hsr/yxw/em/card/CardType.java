@@ -1,4 +1,4 @@
-package com.hsr.yxw.em;
+package com.hsr.yxw.em.card;
 
 /**
  * 卡片类型
