@@ -37,7 +37,6 @@ public class PlayerWebSocketPool {
             ONLINE_PLAYERS.remove(key);
         }
     }
-
     /**
      * 获取在线人数
      * @return

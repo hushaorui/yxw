@@ -85,7 +85,7 @@ function handleResponse(ws, event) {
     var baseProtoType = baseProtoData["type"];
     if (baseProtoType === "heart_beat") {
         // 子协议内容
-        var subProtoData = JSON.parse(event.data["message"]);
+        var subProtoData = JSON.parse(baseProtoData["message"]);
         // 子协议类型
         var subProtoType = subProtoData["type"];
         if (subProtoType === "SERVER_INFO") {
@@ -106,20 +106,6 @@ function initChatHallOffset() {
     element.offset({ top: y, left: x })
 }
 
-// 将时间戳转换为可读字符串 （公共方法）
-function timestampToDate(timestamp) {
-    if ((typeof timestamp)  == "string") {
-        timestamp = parseInt(timestamp.trim());
-    }
-    function add0(m){return m<10?'0'+m:m }
-    var time = new Date(timestamp);
-    var y = time.getFullYear();
-    var m = time.getMonth()+1;
-    var d = time.getDate();
-    var h = time.getHours();
-    var mm = time.getMinutes();
-    var s = time.getSeconds();
-    return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
-}
+
 </script>
 </html>

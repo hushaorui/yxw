@@ -1,11 +1,11 @@
 package com.hsr.yxw.ws.heartbeat;
 
-import com.hsr.yxw.ws.common.BaseProtocol;
+import com.hsr.yxw.ws.common.ProtocolIF;
 
 /**
  * 心跳响应协议，其他协议不满足条件时，都可以返回心跳响应协议
  */
-public class HeartBeatResponseProtocol extends BaseProtocol {
+public class HeartBeatResponseProtocol extends ProtocolIF {
     /** 连接成功 */
     public static final String CONNECT_SUCCESS = "CONNECT_SUCCESS";
     /** 连接失败 */
@@ -21,8 +21,9 @@ public class HeartBeatResponseProtocol extends BaseProtocol {
 
     public HeartBeatResponseProtocol() {}
 
-    public HeartBeatResponseProtocol(String result, String message) {
-        super(result, message);
+    public HeartBeatResponseProtocol(String type, String message) {
+        setType(type);
+        setMessage(message);
     }
 
     /** 未知的协议类型 */

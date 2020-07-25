@@ -1,27 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0,
+                                     user-scalable=no">
     <title>游戏王DIY作品</title>
-
-    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
-    <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
-    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
 
     <style>
-        .img_div {
+        .img-div {
             display: inline-block;
+        }
+        #card-search-div {
+            margin-top: 10px;
+        }
+        #card-list-div {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <div th:replace="header :: html"></div>
-<h2>卡牌一览</h2>
-<div id="container">
-    <div th:each="entry,stat:${cards}" class="img_div">
-        <img th:src="${entry['imageUrl']}" th:title="${entry['name']}" />
+    <div id="container">
+        <div id="card-search-div">
+            <span>根据条件查询：</span><br/>
+            <button class="btn btn-primary">按钮1</button> <input class="input"/>
+            <button class="btn btn-primary">按钮2</button>
+            <button class="btn btn-primary">按钮3</button>
+        </div>
+        <div id="card-list-div">
+            <div th:each="entry,stat:${cards}" class="img-div">
+                <img th:src="${entry['imageUrl']}" th:title="${entry['name']}" />
+            </div>
+        </div>
     </div>
-</div>
 
 </body>
 </html>

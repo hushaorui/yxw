@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <title>游戏王DIY作品</title>
 
-    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
-    <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
-    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
-
+    <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../../static/bootstrap/js/common.js" th:src="@{/bootstrap/js/common.js}"></script>
+    <style>
+        .player-tr:hover {
+            background-color: #5bc0de;
+        }
+    </style>
 </head>
 <body>
 <div style="margin:10px;">
@@ -18,7 +23,17 @@
     </ol>
 
     <table class="table">
-        <caption>用户列表</caption>
+        <caption>
+            用户列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：<span id="player-total-count" th:text="${totalCount}"></span>
+            每页显示数量：
+            <select id="player-page-select" class="form-select-button">
+                <option value="10" selected>10</option>
+                <option value="15">20</option>
+                <option value="30">30</option>
+                <option value="100">100</option>
+                <option value="">最大</option>
+            </select>
+        </caption>
         <thead>
             <th>ID</th>
             <th>用户名</th>
@@ -29,13 +44,13 @@
             <th>操作</th>
         </thead>
         <tbody th:each="player,stat:${players}">
-        <tr class="success">
+        <tr class="player-tr">
             <td th:text="${player.id}"></td>
             <td th:text="${player.username}"></td>
             <td th:text="${player.password}"></td>
             <td th:text="${player.admin}"></td>
-            <td th:text="${player.createTime}"></td>
-            <td th:text="${player.lastLoginTime}"></td>
+            <td th:text="${#dates.format(player.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${#dates.format(player.lastLoginTime,'yyyy-MM-dd HH:mm:ss')}"></td>
             <td><a href="#" th:onclick="'deletePlayer(' + ${player.id} + ')'">删除</a></td>
         </tr>
         </tbody>

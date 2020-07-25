@@ -4,6 +4,7 @@ import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.pojo.Player;
 import com.hsr.yxw.service.PlayerService;
 import com.hsr.yxw.ws.heartbeat.HeartBeatResponseProtocol;
+import com.hsr.yxw.ws.service.WsCommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.util.StringUtils;
@@ -29,6 +30,11 @@ public class BaseEndPoint {
     public void setUserService(WsBaseHandler wsBaseHandler){
         BaseEndPoint.wsBaseHandler = wsBaseHandler;
     }
+    private static WsCommonService wsCommonService;
+    @Autowired
+    public void setUserService(WsCommonService wsCommonService){
+        BaseEndPoint.wsCommonService = wsCommonService;
+    }
 
     @OnOpen
     public void onOpen(@PathParam("username") String username, Session session) throws ServiceException {
@@ -41,13 +47,13 @@ public class BaseEndPoint {
             HeartBeatResponseProtocol heartBeatResponseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.CONNECT_FAILED, "用户名 " + username + " 不存在，连接失败");
             baseProtocol.setMessage(heartBeatResponseProtocol.toJsonString());
             // 给连接的用户发送连接失败信息
-            wsBaseHandler.sendMessage(session, baseProtocol);
+            wsCommonService.sendMessage(session, baseProtocol);
             return;
         }
         PlayerWebSocketPool.addToOnline(player, session);
         baseProtocol.setMessage(HeartBeatResponseProtocol.connectSuccess());
         // 给连接的用户发送信息
-        wsBaseHandler.sendMessage(session, baseProtocol);
+        wsCommonService.sendMessage(session, baseProtocol);
 
         System.out.println("在线人数" + PlayerWebSocketPool.count());
         PlayerWebSocketPool.getAllPlayerMap().keySet().forEach(item -> System.out.println("当前所有在线用户：" + item));
@@ -76,7 +82,7 @@ public class BaseEndPoint {
                 baseProtocol.setMessage(HeartBeatResponseProtocol.notFormat(message));
             }
             // 发送响应信息
-            wsBaseHandler.sendMessage(username, baseProtocol);
+            wsCommonService.sendMessage(username, baseProtocol);
         }
     }
 

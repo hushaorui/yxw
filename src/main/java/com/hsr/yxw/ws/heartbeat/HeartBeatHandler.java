@@ -2,6 +2,7 @@ package com.hsr.yxw.ws.heartbeat;
 
 import com.hsr.yxw.ws.common.*;
 import com.hsr.yxw.ws.heartbeat.pojo.WsServerInfo;
+import com.hsr.yxw.ws.service.WsCommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.util.StringUtils;
@@ -9,7 +10,7 @@ import org.thymeleaf.util.StringUtils;
 @Component
 public class HeartBeatHandler implements IHandler {
     @Autowired
-    private WsBaseHandler wsBaseHandler;
+    private WsCommonService wsCommonService;
     @Override
     public BaseProtocol handle(String username, String message) {
         BaseProtocol baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
@@ -41,6 +42,6 @@ public class HeartBeatHandler implements IHandler {
         baseProtocol.setMessage(heartBeatResponseProtocol.toJsonString());
         String message = baseProtocol.toJsonString();
         WsPlayer wsPlayer = PlayerWebSocketPool.getWsPlayer(username);
-        wsBaseHandler.sendMessage(wsPlayer.getWsSession(), message);
+        wsCommonService.sendMessage(wsPlayer.getWsSession(), message);
     }
 }

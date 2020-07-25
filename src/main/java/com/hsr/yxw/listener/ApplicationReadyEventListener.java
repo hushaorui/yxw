@@ -1,5 +1,7 @@
 package com.hsr.yxw.listener;
 
+import com.hsr.yxw.admin.service.AdminService;
+import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.mapper.PlayerMapper;
 import com.hsr.yxw.pojo.Player;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,35 +18,16 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
 	private static boolean resetDB = true;
 
 	@Autowired
-	private PlayerMapper playerMapper;
+	private AdminService adminService;
  
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		if (resetDB) {
-			resetDB();
-		}
-	}
-
-	/**
-	 * 每次启动，清空数据，初始化
-	 */
-	public void resetDB() {
-		try {
-			playerMapper.dropTable();
-			playerMapper.create();
-			Player admin = new Player("admin", "admin", true, System.currentTimeMillis());
-			playerMapper.insert(admin);
-			Player player1 = new Player("player1", "player1", false, System.currentTimeMillis());
-			Player player2 = new Player("player2", "player2", false, System.currentTimeMillis());
-			playerMapper.insert(player1);
-			playerMapper.insert(player2);
-
-			for (int i = 1; i < 50; i++) {
-				Player player = new Player("test"+i, "test"+i, false, System.currentTimeMillis());
-				playerMapper.insert(player);
+			try {
+				adminService.resetDB();
+			} catch (ServiceException e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 }
