@@ -18,7 +18,10 @@ public class AdminServiceImpl implements AdminService {
             try {
                 playerMapper.dropTable();
             } catch (Exception ignore) {}
-            playerMapper.create();
+            try {
+                playerMapper.createTable();
+            } catch (Exception ignore) {}
+
             Player admin = new Player("admin", "admin", true, System.currentTimeMillis());
             playerMapper.insert(admin);
             Player player1 = new Player("player1", "player1", false, System.currentTimeMillis());

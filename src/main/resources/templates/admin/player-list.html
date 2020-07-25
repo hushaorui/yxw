@@ -5,6 +5,7 @@
     <title>游戏王DIY作品</title>
 
     <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
     <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
     <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
     <script src="../../static/bootstrap/js/common.js" th:src="@{/bootstrap/js/common.js}"></script>
@@ -24,14 +25,10 @@
 
     <table class="table">
         <caption>
-            用户列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：<span id="player-total-count" th:text="${totalCount}"></span>
+            用户列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：<span id="player-total-count" class="font-blue" th:text="${totalCount}"></span>
             每页显示数量：
             <select id="player-page-select" class="form-select-button">
-                <option value="10" selected>10</option>
-                <option value="15">20</option>
-                <option value="30">30</option>
-                <option value="100">100</option>
-                <option value="">最大</option>
+                <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}"></option>
             </select>
         </caption>
         <thead>
@@ -55,6 +52,15 @@
         </tr>
         </tbody>
     </table>
+    <ul class="pagination float-right">
+        <li><a href="#">&laquo;</a></li>
+        <li><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#">&raquo;</a></li>
+    </ul>
 </div>
 </body>
 <script>

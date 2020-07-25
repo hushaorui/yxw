@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Sat Jul 25 18:05:46 CST 2020:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0173-856f-8a18-00000cdecfc8 
-on database directory C:\Users\Win10\Desktop\yxwdb with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
-Loaded from file:/C:/Users/Win10/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
+Sun Jul 26 02:05:09 CST 2020:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0173-8726-6ceb-00000c39ee40 
+on database directory C:\Users\Administrator\Desktop\yxwdb with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
+Loaded from file:/C:/Users/Administrator/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_251-b08
-user.dir=D:\ideaCode\yxw
+java.runtime.version=1.8.0_131-b11
+user.dir=C:\Users\Administrator\IdeaProjects\yxw
 os.name=Windows 10
 os.arch=amd64
 os.version=10.0
