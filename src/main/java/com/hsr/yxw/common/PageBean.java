@@ -1,5 +1,7 @@
 package com.hsr.yxw.common;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -51,6 +53,47 @@ public class PageBean<T> {
      */
     private Integer totalPage;
 
+    private List<TwinsValue<Integer, String>> otherPages;
+    public List<TwinsValue<Integer, String>> getOtherPages() {
+        return otherPages;
+    }
+
+    public void setOtherPage() {
+        otherPages = new ArrayList<>();
+        // totalPage = 6  currentPage = 1  pageSize = 10
+        otherPages.add(new TwinsValue<Integer, String>(1, "首页"));
+        // 上一页
+        if (currentPage > 1) {
+            otherPages.add(new TwinsValue<Integer, String>(currentPage - 1, "上一页"));
+        }
+        //当前页为1时
+        if (currentPage == 1) {
+            otherPages.add(new TwinsValue<Integer, String>(1, "1"));
+        }
+        // 从1到 currentPage前一页
+        for (int i = 1; i < currentPage; i++) {
+            otherPages.add(new TwinsValue<Integer, String>(i, String.valueOf(i)));
+        }
+        // 当前页
+        if (currentPage != 1 && ! totalPage.equals(currentPage)) {
+            otherPages.add(new TwinsValue<Integer, String>(currentPage, String.valueOf(currentPage)));
+        }
+        // 从当前页 + 1到尾页
+        for (int i = currentPage + 1; i <= totalPage; i++) {
+            otherPages.add(new TwinsValue<Integer, String>(i, String.valueOf(i)));
+        }
+        // 当前页为尾页 且 不为 1时
+        if (totalPage.equals(currentPage) && currentPage != 1) {
+            otherPages.add(new TwinsValue<Integer, String>(totalPage, String.valueOf(totalPage)));
+        }
+        // 下一页
+        if (totalPage > currentPage) {
+            otherPages.add(new TwinsValue<Integer, String>(currentPage + 1, "下一页"));
+        }
+        //尾页
+        otherPages.add(new TwinsValue<Integer, String>(totalPage, "尾页"));
+    }
+
     public PageBean(Integer totalCount, Integer pageSize, Integer currentPage) {
         this.totalCount = totalCount;//从数据库中查询的总记录数
         this.pageSize = pageSize;//每页的记录数
@@ -63,6 +106,10 @@ public class PageBean<T> {
 
         //计算总页数
         this.totalPage = (this.totalCount + this.pageSize - 1) /this.pageSize;
+        if (this.totalPage == 0) {
+            // 防止pageSize巨大时显示错误
+            this.totalPage = 1;
+        }
 
         //当前页码
         if (this.currentPage == null) {
@@ -103,25 +150,13 @@ public class PageBean<T> {
     public Integer getTotalCount() {
         return totalCount;
     }
-    public void setTotalCount(Integer totalCount) {
-        this.totalCount = totalCount;
-    }
     public Integer getPageSize() {
         return pageSize;
-    }
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
     }
     public Integer getCurrentPage() {
         return currentPage;
     }
-    public void setCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
-    }
     public Integer getTotalPage() {
         return totalPage;
-    }
-    public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
     }
 }

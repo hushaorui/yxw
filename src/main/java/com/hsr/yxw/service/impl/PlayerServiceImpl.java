@@ -1,8 +1,10 @@
 package com.hsr.yxw.service.impl;
 
+import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.mapper.PlayerMapper;
 import com.hsr.yxw.pojo.Player;
+import com.hsr.yxw.pojo.vo.PlayerQueryVo;
 import com.hsr.yxw.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,6 +73,40 @@ public class PlayerServiceImpl implements PlayerService {
             return playerMapper.selectAll();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public PageBean<Player> getPlayerPageBean(Integer pageNum, Integer pageSize, PlayerQueryVo vo) throws ServiceException {
+        try {
+            Integer count = playerMapper.count();
+            if (count == 0) {
+                return null;
+            }
+            PageBean<Player> pageBean = new PageBean<Player>(count, pageSize, pageNum);
+            if (vo == null) {
+                vo = new PlayerQueryVo();
+            }
+            vo.setFirstResult(pageBean.getFirstResult());
+            vo.setMaxResult(pageBean.getPageSize());
+            List<Player> players = playerMapper.selectByVo(vo);
+            pageBean.setOtherPage();
+            pageBean.setPageList(players);
+            return pageBean;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
+    @Override
+    public void deletePlayerById(Long id) throws ServiceException {
+        try {
+            if (id == 1) {
+                throw new ServiceException("ID为1的用户禁止删除！");
+            }
+            playerMapper.deleteById(id);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }

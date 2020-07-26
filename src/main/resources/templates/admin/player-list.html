@@ -22,16 +22,20 @@
         <li><a href="#">用户管理</a></li>
         <li class="active">用户列表</li>
     </ol>
-
+    <form id="player-list-form" action="/admin/player-list" method="post">
     <table class="table">
         <caption>
-            用户列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：<span id="player-total-count" class="font-blue" th:text="${totalCount}"></span>
+            用户列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="player-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
             每页显示数量：
-            <select id="player-page-select" class="form-select-button">
-                <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}"></option>
+            <select id="player-page-select" class="form-select-button" name="pageSize">
+                <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
             </select>
+            共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
+            <input type="hidden" name="pageNum" id="pageNum" />
         </caption>
         <thead>
+            <th><input type="checkbox" id="check-all" /></th>
+            <th>序号</th>
             <th>ID</th>
             <th>用户名</th>
             <th>密码</th>
@@ -40,32 +44,91 @@
             <th>最后登录时间</th>
             <th>操作</th>
         </thead>
-        <tbody th:each="player,stat:${players}">
+        <tbody th:each="player,stat:${pageBean.pageList}">
         <tr class="player-tr">
+            <td><input type="checkbox" class="player-checkbox" /></td>
+            <td th:text="${stat.count}"></td>
             <td th:text="${player.id}"></td>
             <td th:text="${player.username}"></td>
             <td th:text="${player.password}"></td>
             <td th:text="${player.admin}"></td>
             <td th:text="${#dates.format(player.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
             <td th:text="${#dates.format(player.lastLoginTime,'yyyy-MM-dd HH:mm:ss')}"></td>
-            <td><a href="#" th:onclick="'deletePlayer(' + ${player.id} + ')'">删除</a></td>
+            <td><a href="#" th:onclick="'showDeletePlayerModal(' + ${player.id} + ')'">删除</a></td>
         </tr>
         </tbody>
     </table>
-    <ul class="pagination float-right">
-        <li><a href="#">&laquo;</a></li>
-        <li><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#">&raquo;</a></li>
+    <ul class="pagination">
+        <li>
+            <div class="input-group">
+                <input type="text" class="form-control" id="go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="go-btn">GO!</button>
+                </span>
+            </div>
+        </li>
+        <li th:each="otherPage,stat:${pageBean.otherPages}"
+            th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
+
+            <a href="#" th:text="${otherPage.value2}"
+               th:onclick="'requestPage(' + ${otherPage.value1} + ')'"></a>
+        </li>
     </ul>
+    </form>
+
+    <!-- 删除玩家模态框（Modal） -->
+    <div class="modal fade" id="deletePlayerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">请确认</h4>
+                </div>
+                <div class="modal-body">是否删除ID为 <span id="delete-id-span"></span> 的用户？</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePlayer()" >确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 </div>
 </body>
 <script>
-    function deletePlayer(id) {
-        alert(id);
+    // 删除玩家
+    function deletePlayer() {
+        var id = $("#delete-id-span").html();
+        if ("" === id) {
+            return;
+        }
+        $.get("/admin/player-delete", {"id": id}, function (result) {
+            console.log(result);
+        }, "json");
     }
+    // 显示删除玩家的确认框
+    function showDeletePlayerModal(id) {
+        $("#delete-id-span").html(id);
+        $("#deletePlayerModal").modal("show");
+    }
+    // 请求其他页的数据
+    function requestPage(pageNum) {
+        $("#pageNum").val(pageNum);
+        var jsonData = $("#player-list-form").serialize();
+        getContentHtml('/admin/player-list', true, jsonData);
+    }
+    $(function() {
+        // 全选与全不选
+        $("#check-all").click(function() {
+            $(".player-checkbox").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
+        });
+        // GO 直接请求某一页的数据
+        $("#go-btn").click(function() {
+            var pageNum = $("#go-input").val();
+            if ("" === pageNum) {
+                return;
+            }
+            requestPage(pageNum);
+        });
+    })
 </script>
 </html>

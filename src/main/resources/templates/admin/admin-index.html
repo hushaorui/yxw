@@ -109,7 +109,7 @@
                 <!-- 隐藏的详细菜单 -->
                 <ul id="list" class="collapse in">
                     <li class="active">
-                        <a href="#" onclick="getHtml('/admin/player-list')">
+                        <a href="#" onclick="getContentHtml('/admin/player-list')">
                             用户列表
                         </a>
                     </li>
@@ -135,13 +135,19 @@
 </div>
 </body>
 <script>
-    function getHtml(url) {
-        $.get(url, function (html) {
-            $("#right-content").html(html);
-        }, "html");
+    function getContentHtml(url, isPost, jsonData) {
+        if (isPost) {
+            $.post(url, jsonData, function (html) {
+                $("#right-content").html(html);
+            }, "html");
+        } else {
+            $.get(url, jsonData, function (html) {
+                $("#right-content").html(html);
+            }, "html");
+        }
     }
     $(function () {
-        getHtml("/admin/admin-content");
+        getContentHtml("/admin/admin-content");
     })
 </script>
 </html>

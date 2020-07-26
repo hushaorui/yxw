@@ -2,6 +2,9 @@
 .font-blue {
     color: blue;
 }
+.bg-blue {
+    background-color: #5bc0de;
+}
 
 .float-right {
     float: right;
