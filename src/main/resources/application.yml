@@ -13,7 +13,8 @@ spring:
     time-zone: GMT+8
   datasource:
     name: yxwdb
-    url: jdbc:derby:C:/Users/Administrator/Desktop/yxwdb;create=true
+    #url: jdbc:derby:C:/Users/Administrator/Desktop/yxwdb;create=true
+    url: jdbc:derby:C:/Users/Win10/Desktop/yxwdb;create=true
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: org.apache.derby.jdbc.EmbeddedDriver
     druid:

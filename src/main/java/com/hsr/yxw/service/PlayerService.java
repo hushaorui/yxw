@@ -19,4 +19,6 @@ public interface PlayerService {
     PageBean<Player> getPlayerPageBean(Integer pageNum, Integer pageSize, PlayerQueryVo vo) throws ServiceException;
 
     void deletePlayerById(Long id) throws ServiceException;
+
+    void deletePlayers(String ids) throws ServiceException;
 }

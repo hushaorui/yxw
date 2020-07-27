@@ -32,9 +32,17 @@ public class ProtocolIF {
     }
 
     public static  <T> T parseStringToProtoCol(String jsonString, Class<? extends ProtocolIF> clazz) {
-        return JSONArray.parseObject(jsonString, (Type) clazz);
+        try {
+            return JSONArray.parseObject(jsonString, (Type) clazz);
+        } catch (Exception ignore) {
+            return null;
+        }
     }
     public static  <T> T parseStringToProtoCol(String jsonString) {
-        return JSONArray.parseObject(jsonString, (Type) ProtocolIF.class);
+        try {
+            return JSONArray.parseObject(jsonString, (Type) ProtocolIF.class);
+        } catch (Exception ignore) {
+            return null;
+        }
     }
 }

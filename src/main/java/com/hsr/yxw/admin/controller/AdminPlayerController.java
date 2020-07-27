@@ -1,5 +1,6 @@
 package com.hsr.yxw.admin.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.hsr.yxw.common.CommonResult;
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.exception.ServiceException;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 @Controller
@@ -36,12 +38,12 @@ public class AdminPlayerController {
     }
     @RequestMapping(value = "admin/player-delete")
     @ResponseBody
-    public CommonResult deletePlayer(Long id) throws Exception {
-        if (id == null) {
+    public CommonResult deletePlayer(String ids) throws Exception {
+        if (StringUtils.isEmpty(ids)) {
             return CommonResult.danger("ID不可为空！");
         }
         try {
-            playerService.deletePlayerById(id);
+            playerService.deletePlayers(ids);
             return CommonResult.success("删除成功！");
         } catch (ServiceException e) {
             return CommonResult.danger(e.getMessage());

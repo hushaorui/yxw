@@ -24,11 +24,11 @@ public class HeartBeatHandler implements IHandler {
         switch (requestProtocol.getType()) {
             case HeartBeatRequestProtocol.HEART_BEAT:
                 sendServerInfo(baseProtocol, username);
-            break;
+                break;
             default:
                 baseProtocol.setMessage(HeartBeatResponseProtocol.unknownProto(requestProtocol.getType()));
         }
-        return null;
+        return baseProtocol;
     }
 
     /**

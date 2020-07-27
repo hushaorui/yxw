@@ -9,6 +9,7 @@ import com.hsr.yxw.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -107,6 +108,26 @@ public class PlayerServiceImpl implements PlayerService {
             }
             playerMapper.deleteById(id);
         } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void deletePlayers(String ids) throws ServiceException {
+        try {
+            String[] idArray = ids.split("\\s*,\\s*");
+            ArrayList<Long> idList = new ArrayList<>(idArray.length);
+            for (String idString : idArray) {
+                try {
+                    if ("1".equals(idString)) {
+                        throw new ServiceException("ID为1的用户禁止删除！");
+                    }
+                    idList.add(Long.parseLong(idString));
+                } catch (NumberFormatException ignore) {}
+            }
+            playerMapper.delete(idList);
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new ServiceException(e);
         }
     }

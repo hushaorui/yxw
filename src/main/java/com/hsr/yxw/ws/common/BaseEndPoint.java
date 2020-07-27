@@ -66,7 +66,10 @@ public class BaseEndPoint {
         if (! StringUtils.isEmpty(message)) {
             BaseProtocol baseProtocol;
             try {
-                baseProtocol = BaseProtocol.parseStringToProtoCol(message);
+                baseProtocol = BaseProtocol.parseStringToProtoCol(message, BaseProtocol.class);
+                if (baseProtocol == null) {
+                    return;
+                }
                 // 能够正确解析 {"":type, "message": "{"type":type, "message":msg....}"}
                 if (! wsBaseHandler.containProtocolName(baseProtocol.getType())) {
                     baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);

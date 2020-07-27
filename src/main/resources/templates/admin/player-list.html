@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>游戏王DIY作品</title>
+    <title>DIY作品</title>
 
     <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
@@ -22,6 +22,7 @@
         <li><a href="#">用户管理</a></li>
         <li class="active">用户列表</li>
     </ol>
+    <button class="btn btn-danger" onclick="showBatchDeletePlayerModal()">批量删除</button>
     <form id="player-list-form" action="/admin/player-list" method="post">
     <table class="table">
         <caption>
@@ -46,7 +47,7 @@
         </thead>
         <tbody th:each="player,stat:${pageBean.pageList}">
         <tr class="player-tr">
-            <td><input type="checkbox" class="player-checkbox" /></td>
+            <td><input type="checkbox" class="player-checkbox" th:idData="${player.id}" /></td>
             <td th:text="${stat.count}"></td>
             <td th:text="${player.id}"></td>
             <td th:text="${player.username}"></td>
@@ -97,17 +98,32 @@
 <script>
     // 删除玩家
     function deletePlayer() {
-        var id = $("#delete-id-span").html();
-        if ("" === id) {
+        var ids = $("#delete-id-span").html();
+        if ("" === ids) {
             return;
         }
-        $.get("/admin/player-delete", {"id": id}, function (result) {
+        $.get("/admin/player-delete", {"ids": ids}, function (result) {
             console.log(result);
+            // 引入弹出提示框
         }, "json");
     }
     // 显示删除玩家的确认框
     function showDeletePlayerModal(id) {
         $("#delete-id-span").html(id);
+        $("#deletePlayerModal").modal("show");
+    }
+    // 显示批量删除玩家的确认框
+    function showBatchDeletePlayerModal() {
+        var ids = "";
+        // 遍历所有被选中的行
+        $.each($(".player-checkbox[type=checkbox]:checked"), function (index, item) {
+            ids += "," + $(this).attr("idData");
+        });
+        if (ids === "") {
+            alert("您还未勾选任何玩家");
+            return;
+        }
+        $("#delete-id-span").html(ids);
         $("#deletePlayerModal").modal("show");
     }
     // 请求其他页的数据
