@@ -1,9 +1,9 @@
-package com.hsr.yxw.service;
+package com.hsr.yxw.player.service;
 
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.exception.ServiceException;
-import com.hsr.yxw.pojo.Player;
-import com.hsr.yxw.pojo.vo.PlayerQueryVo;
+import com.hsr.yxw.player.pojo.Player;
+import com.hsr.yxw.player.vo.PlayerQueryVo;
 
 import java.util.List;
 
@@ -21,4 +21,8 @@ public interface PlayerService {
     void deletePlayerById(Long id) throws ServiceException;
 
     void deletePlayers(String ids) throws ServiceException;
+
+    Player getPlayerById(Long id) throws ServiceException;
+
+    void register(Player player) throws ServiceException;
 }

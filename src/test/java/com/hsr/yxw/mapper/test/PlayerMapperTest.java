@@ -2,8 +2,8 @@ package com.hsr.yxw.mapper.test;
 
 import com.alibaba.fastjson.JSONArray;
 import com.hsr.yxw.mapper.PlayerMapper;
-import com.hsr.yxw.pojo.Player;
-import com.hsr.yxw.pojo.vo.PlayerQueryVo;
+import com.hsr.yxw.player.pojo.Player;
+import com.hsr.yxw.player.vo.PlayerQueryVo;
 import com.hsr.yxw.run.YxwApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;

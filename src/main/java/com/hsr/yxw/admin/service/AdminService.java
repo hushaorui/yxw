@@ -5,8 +5,8 @@ import com.hsr.yxw.exception.ServiceException;
 public interface AdminService {
 
     /**
-     * 重置整个数据库
+     * 初始化数据库
      * @throws ServiceException
      */
-    void resetDB() throws ServiceException;
+    void initDB(boolean reset) throws ServiceException;
 }

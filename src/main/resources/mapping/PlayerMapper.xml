@@ -25,16 +25,16 @@
     <select id="count" resultType="Integer">
         select count(1) from player
     </select>
-    <select id="selectAll" resultType="com.hsr.yxw.pojo.Player">
+    <select id="selectAll" resultType="com.hsr.yxw.player.pojo.Player">
         select * from player
     </select>
-    <select id="selectById" parameterType="long" resultType="com.hsr.yxw.pojo.Player">
+    <select id="selectById" parameterType="long" resultType="com.hsr.yxw.player.pojo.Player">
         select * from player where id = #{value}
     </select>
-    <select id="selectByUsername" parameterType="String" resultType="com.hsr.yxw.pojo.Player">
+    <select id="selectByUsername" parameterType="String" resultType="com.hsr.yxw.player.pojo.Player">
         select * from player where username = #{value}
     </select>
-    <select id="selectByVo" parameterType="com.hsr.yxw.pojo.vo.PlayerQueryVo" resultType="com.hsr.yxw.pojo.Player">
+    <select id="selectByVo" parameterType="com.hsr.yxw.player.vo.PlayerQueryVo" resultType="com.hsr.yxw.player.pojo.Player">
         select * from player
         <where>
             <include refid="playerSql" />
@@ -44,7 +44,7 @@
             OFFSET #{firstResult} ROWS FETCH NEXT #{maxResult} ROWS ONLY
         </if>
     </select>
-    <insert id="insert" parameterType="com.hsr.yxw.pojo.Player" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.hsr.yxw.player.pojo.Player" useGeneratedKeys="true" keyProperty="id">
         insert into player(username,password,admin,createTime)
         values(#{username}, #{password}, #{admin}, #{createTime})
     </insert>
@@ -57,7 +57,7 @@
             #{item}
         </foreach>
     </delete>
-    <update id="update" parameterType="com.hsr.yxw.pojo.Player">
+    <update id="update" parameterType="com.hsr.yxw.player.pojo.Player">
         update player
         set username = #{username}, password = #{password}, lastLoginTime = #{lastLoginTime,jdbcType=BIGINT}, admin = #{admin}
         where id = #{id}

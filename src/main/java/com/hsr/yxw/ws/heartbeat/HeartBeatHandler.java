@@ -2,46 +2,42 @@ package com.hsr.yxw.ws.heartbeat;
 
 import com.hsr.yxw.ws.common.*;
 import com.hsr.yxw.ws.heartbeat.pojo.WsServerInfo;
-import com.hsr.yxw.ws.service.WsCommonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.util.StringUtils;
 
 @Component
 public class HeartBeatHandler implements IHandler {
-    @Autowired
-    private WsCommonService wsCommonService;
+
+    private WsCommonService wsCommonService = WsCommonService.getInstance();
     @Override
-    public BaseProtocol handle(String username, String message) {
-        BaseProtocol baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
-        if (StringUtils.isEmpty(message)) {
-            // 空白的协议
-            baseProtocol.setMessage(HeartBeatResponseProtocol.emptyProto());
-            return baseProtocol;
-        }
+    public BaseProtocol handle(Long id, String message) {
+
         // 将json字符串解析为心跳的请求协议
         HeartBeatRequestProtocol requestProtocol = HeartBeatRequestProtocol.parseStringToProtoCol(message);
+        if (requestProtocol == null) {
+            return null;
+        }
+        BaseProtocol responseBaseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
         switch (requestProtocol.getType()) {
             case HeartBeatRequestProtocol.HEART_BEAT:
-                sendServerInfo(baseProtocol, username);
+                sendServerInfo(responseBaseProtocol, id);
                 break;
             default:
-                baseProtocol.setMessage(HeartBeatResponseProtocol.unknownProto(requestProtocol.getType()));
+                responseBaseProtocol.setMessage(HeartBeatResponseProtocol.unknownProto(requestProtocol.getType()));
         }
-        return baseProtocol;
+        return responseBaseProtocol;
     }
 
     /**
      * 给该用户发送服务器信息
      */
-    private void sendServerInfo(BaseProtocol baseProtocol, String username) {
+    private void sendServerInfo(BaseProtocol baseProtocol, Long id) {
         HeartBeatResponseProtocol heartBeatResponseProtocol = new HeartBeatResponseProtocol();
         heartBeatResponseProtocol.setType(HeartBeatResponseProtocol.SERVER_INFO);
         WsServerInfo wsServerInfo = new WsServerInfo();
         heartBeatResponseProtocol.setMessage(wsServerInfo.toJsonString());
         baseProtocol.setMessage(heartBeatResponseProtocol.toJsonString());
         String message = baseProtocol.toJsonString();
-        WsPlayer wsPlayer = PlayerWebSocketPool.getWsPlayer(username);
+        WsPlayer wsPlayer = PlayerWebSocketPool.getWsPlayer(id);
         wsCommonService.sendMessage(wsPlayer.getWsSession(), message);
     }
 }

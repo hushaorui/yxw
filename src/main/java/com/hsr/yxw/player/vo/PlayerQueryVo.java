@@ -1,7 +1,7 @@
-package com.hsr.yxw.pojo.vo;
+package com.hsr.yxw.player.vo;
 
 import com.hsr.yxw.common.CommonVo;
-import com.hsr.yxw.pojo.Player;
+import com.hsr.yxw.player.pojo.Player;
 
 public class PlayerQueryVo extends CommonVo {
     private Player player;

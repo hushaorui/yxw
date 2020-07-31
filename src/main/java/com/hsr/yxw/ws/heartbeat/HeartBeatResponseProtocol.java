@@ -18,6 +18,8 @@ public class HeartBeatResponseProtocol extends ProtocolIF {
     public static final String UNKNOWN_PROTO = "UNKNOWN_PROTO";
     /** 服务器信息 */
     public static final String SERVER_INFO = "SERVER_INFO";
+    /** 账号已经被登录了，无法顶号 */
+    private static final String ALREADY_LOGIN = "ALREADY_LOGIN";
 
     public HeartBeatResponseProtocol() {}
 
@@ -42,6 +44,10 @@ public class HeartBeatResponseProtocol extends ProtocolIF {
     /** 不符合格式的协议 */
     public static HeartBeatResponseProtocol notFormat(String message) {
         return new HeartBeatResponseProtocol(HeartBeatResponseProtocol.NOT_FORMAT, "不符合格式的协议内容 " + message);
+    }
+    /** 空白的协议内容 */
+    public static HeartBeatResponseProtocol alreadyLogin() {
+        return new HeartBeatResponseProtocol(HeartBeatResponseProtocol.ALREADY_LOGIN, "此账号已被登录！");
     }
     /** 不符合格式的协议 */
     public static HeartBeatResponseProtocol notFormat() {

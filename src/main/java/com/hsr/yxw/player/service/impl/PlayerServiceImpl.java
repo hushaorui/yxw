@@ -1,11 +1,11 @@
-package com.hsr.yxw.service.impl;
+package com.hsr.yxw.player.service.impl;
 
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.mapper.PlayerMapper;
-import com.hsr.yxw.pojo.Player;
-import com.hsr.yxw.pojo.vo.PlayerQueryVo;
-import com.hsr.yxw.service.PlayerService;
+import com.hsr.yxw.player.pojo.Player;
+import com.hsr.yxw.player.vo.PlayerQueryVo;
+import com.hsr.yxw.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -126,6 +126,36 @@ public class PlayerServiceImpl implements PlayerService {
                 } catch (NumberFormatException ignore) {}
             }
             playerMapper.delete(idList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public Player getPlayerById(Long id) throws ServiceException {
+        try {
+            return playerMapper.selectById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void register(Player player) throws ServiceException {
+        // 调用此方法前必须已经校验了 用户名和密码的格式了
+        try {
+            Player existPlayer = playerMapper.selectByUsername(player.getUsername());
+            if (existPlayer != null) {
+                throw new ServiceException("该用户名已经存在！");
+            }
+            player.setId(null);
+            player.setCreateTime(System.currentTimeMillis());
+            if (player.getAdmin() == null) {
+                player.setAdmin(false);
+            }
+            playerMapper.insert(player);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException(e);

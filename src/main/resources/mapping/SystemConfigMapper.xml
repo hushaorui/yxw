@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hsr.yxw.mapper.SystemConfigMapper">
+
+    <update id="createTable">
+        create table system_config (
+            id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)primary key,
+            configKey varchar(255) unique not null,
+            classify varchar(255) not null,
+            configValue varchar(255) not null,
+            valueType varchar(255) not null
+        )
+    </update>
+
+    <delete id="dropTable">
+        drop table system_config
+    </delete>
+
+    <sql id="systemConfigSql">
+        <if test="systemConfig!=null">
+            <if test="systemConfig.classify!=null"> and classify = #{systemConfig.classify} </if>
+            <if test="systemConfig.configValue!=null"> and configValue = #{systemConfig.configValue} </if>
+            <if test="systemConfig.valueType!=null"> and valueType = #{systemConfig.valueType} </if>
+        </if>
+    </sql>
+
+    <select id="count" resultType="Integer">
+        select count(1) from system_config
+    </select>
+
+    <select id="selectById" parameterType="long" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+        select * from system_config where id = #{value}
+    </select>
+
+    <select id="selectByConfigKey" parameterType="String" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+        select * from system_config where configKey = #{value}
+    </select>
+
+    <select id="selectByClassify" parameterType="String" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+        select * from system_config where classify = #{value}
+    </select>
+
+    <select id="selectByVo" parameterType="com.hsr.yxw.sysconfig.vo.SystemConfigQueryVo" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+        select * from system_config
+        <where>
+            <include refid="systemConfigSql" />
+        </where>
+        order by id asc
+        <if test="firstResult!=null and maxResult!=null">
+            OFFSET #{firstResult} ROWS FETCH NEXT #{maxResult} ROWS ONLY
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.hsr.yxw.sysconfig.pojo.SystemConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into system_config(configKey, classify, configValue, valueType)
+        values(#{configKey},#{classify},#{configValue},#{valueType})
+    </insert>
+
+</mapper>

@@ -1,7 +1,7 @@
 package com.hsr.yxw.mapper;
 
-import com.hsr.yxw.pojo.Player;
-import com.hsr.yxw.pojo.vo.PlayerQueryVo;
+import com.hsr.yxw.player.pojo.Player;
+import com.hsr.yxw.player.vo.PlayerQueryVo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 

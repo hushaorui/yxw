@@ -1,6 +1,6 @@
 package com.hsr.yxw.ws.common;
 
-import com.hsr.yxw.pojo.Player;
+import com.hsr.yxw.player.pojo.Player;
 
 import javax.websocket.Session;
 

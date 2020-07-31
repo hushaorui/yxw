@@ -1,32 +1,32 @@
-package com.hsr.yxw.ws.service;
-
-import com.hsr.yxw.ws.common.BaseProtocol;
-import com.hsr.yxw.ws.common.PlayerWebSocketPool;
-import com.hsr.yxw.ws.common.WsPlayer;
-import com.hsr.yxw.ws.common.WsPlayerFilter;
-import org.springframework.stereotype.Service;
+package com.hsr.yxw.ws.common;
 
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 import java.io.IOException;
 
-@Service
 public class WsCommonService {
+    private static final WsCommonService instance = new WsCommonService();
+
+    public static WsCommonService getInstance() {
+        return instance;
+    }
+    private WsCommonService() {}
+
     /**
      * 给指定用户发送信息
-     * @param username 唯一用户名
+     * @param id 唯一用户id
      * @param protocol 协议
      */
-    public boolean sendMessage(String username, BaseProtocol protocol){
-        return sendMessage(username, protocol.toJsonString());
+    public boolean sendMessage(Long id, BaseProtocol protocol){
+        return sendMessage(id, protocol.toJsonString());
     }
     /**
      * 给指定用户发送信息
-     * @param username 唯一用户名
+     * @param id 唯一用户id
      * @param message json字符串
      */
-    public boolean sendMessage(String username, String message){
-        WsPlayer wsPlayer = PlayerWebSocketPool.getAllPlayerMap().get(username);
+    public boolean sendMessage(Long id, String message){
+        WsPlayer wsPlayer = PlayerWebSocketPool.getAllPlayerMap().get(id);
         if (wsPlayer != null) {
             sendMessage(wsPlayer.getWsSession(), message);
             return true;
@@ -46,16 +46,16 @@ public class WsCommonService {
     /**
      * 给指定用户发送信息
      * @param session 会话
-     * @param msg 信息
+     * @param protoString 信息
      */
-    public void sendMessage(Session session, String msg){
+    public void sendMessage(Session session, String protoString){
         if (session == null)
             return;
         final RemoteEndpoint.Basic basic = session.getBasicRemote();
         if (basic == null)
             return;
         try {
-            basic.sendText(msg);
+            basic.sendText(protoString);
         } catch (IOException e) {
             e.printStackTrace();
         }

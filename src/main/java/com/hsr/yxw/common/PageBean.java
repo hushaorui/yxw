@@ -10,6 +10,15 @@ import java.util.List;
  * @param <T>
  */
 public class PageBean<T> {
+
+    public static final LinkedHashMap<Integer, String> pageSizes = new LinkedHashMap<>();
+    static {
+        for (int i = 10; i <= 50; i += 5) {
+            pageSizes.put(i, String.valueOf(i));
+        }
+        pageSizes.put(Integer.MAX_VALUE, "最大");
+    }
+
     /**
      * 从数据库中查询的数据
      */

@@ -39,8 +39,8 @@ public class WsBaseHandler {
         return handlers.get(protocolName);
     }
 
-    public BaseProtocol handle(String username, String protocolName, String message) {
-        return getHandler(protocolName).handle(username, message);
+    public BaseProtocol handle(Long id, String protocolName, String message) {
+        return getHandler(protocolName).handle(id, message);
     }
     public boolean containProtocolName(String protocolName) {
         return handlers.containsKey(protocolName);

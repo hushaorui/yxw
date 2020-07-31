@@ -1,4 +1,4 @@
-package com.hsr.yxw.pojo;
+package com.hsr.yxw.player.pojo;
 
 import java.io.Serializable;
 
