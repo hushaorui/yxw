@@ -5,6 +5,7 @@ import com.hsr.yxw.common.CommonResult;
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.player.pojo.Player;
+import com.hsr.yxw.player.util.PlayerUtil;
 import com.hsr.yxw.player.vo.PlayerQueryVo;
 import com.hsr.yxw.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +33,30 @@ public class AdminPlayerController {
     @ResponseBody
     public CommonResult deletePlayer(String ids) throws Exception {
         if (StringUtils.isEmpty(ids)) {
-            return CommonResult.danger("ID不可为空！");
+            return CommonResult.error("ID不可为空！");
         }
         try {
             playerService.deletePlayers(ids);
             return CommonResult.success("删除成功！");
         } catch (ServiceException e) {
-            return CommonResult.danger(e.getMessage());
+            return CommonResult.error(e.getMessage());
+        }
+    }
+    @RequestMapping(value = "admin/player-update")
+    @ResponseBody
+    public CommonResult updatePlayer(Player player) throws Exception {
+        try {
+            if (player == null || player.getId() == null) {
+                return CommonResult.error("用户id不可为空！");
+            }
+            CommonResult commonResult = PlayerUtil.checkUsernameAndPassword(player.getUsername(), player.getPassword());
+            if (commonResult != null) {
+                return commonResult;
+            }
+            playerService.updatePlayer(player);
+            return CommonResult.success("修改成功！");
+        } catch (ServiceException e) {
+            return CommonResult.error(e.getMessage());
         }
     }
 }

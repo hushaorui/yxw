@@ -15,11 +15,8 @@ public class CommonResult {
     public static CommonResult success() {
         return success(null);
     }
-    public static CommonResult danger(String message) {
-        return new CommonResult(WebConstants.DANGER, message);
-    }
-    public static CommonResult danger() {
-        return danger(null);
+    public static CommonResult error(String message) {
+        return new CommonResult(WebConstants.ERROR, message);
     }
 
     public String getResult() {

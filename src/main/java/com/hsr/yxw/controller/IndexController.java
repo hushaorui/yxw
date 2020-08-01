@@ -1,12 +1,11 @@
 package com.hsr.yxw.controller;
 
-import com.alibaba.druid.util.StringUtils;
 import com.hsr.yxw.common.CommonResult;
-import com.hsr.yxw.common.WebConstants;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.player.pojo.Player;
-import com.hsr.yxw.run.SpringBootUtil;
 import com.hsr.yxw.player.service.PlayerService;
+import com.hsr.yxw.player.util.PlayerUtil;
+import com.hsr.yxw.run.SpringBootUtil;
 import com.hsr.yxw.util.IpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,7 +43,7 @@ public class IndexController {
     public CommonResult toLogin(String username, String password, Boolean remember, HttpSession session) throws ServiceException {
         Player player = playerService.login(username, password);
         if (player == null) {
-            return CommonResult.danger();
+            return CommonResult.error("");
         }
         session.setAttribute("sessionPlayer", player);
         return CommonResult.success(player.getAdmin() ? "admin/admin-index" : "index");
@@ -54,17 +53,9 @@ public class IndexController {
     @ResponseBody
     public CommonResult register(String username, String password) throws Exception {
         try {
-            if (StringUtils.isEmpty(username)) {
-                return CommonResult.danger("用户名不可为空！");
-            }
-            if (StringUtils.isEmpty(password)) {
-                return CommonResult.danger("密码不可为空！");
-            }
-            if (password.contains(" ")) {
-                return CommonResult.danger("密码不可含有空格！");
-            }
-            if (! username.matches(WebConstants.CHINESE_ENGLISH_NUMBER_REGEX)) {
-                return CommonResult.danger("用户名只能含有中文、数字、大小写字母！");
+            CommonResult commonResult = PlayerUtil.checkUsernameAndPassword(username, password);
+            if (commonResult != null) {
+                return commonResult;
             }
             Player player = new Player();
             player.setUsername(username);
@@ -72,7 +63,7 @@ public class IndexController {
             playerService.register(player);
             return CommonResult.success();
         } catch (ServiceException e) {
-            return CommonResult.danger(e.getMessage());
+            return CommonResult.error(e.getMessage());
         }
     }
     /**

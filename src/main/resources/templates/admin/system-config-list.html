@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>DIY作品</title>
+
+    <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
+    <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../../static/bootstrap/js/common.js" th:src="@{/bootstrap/js/common.js}"></script>
+    <style>
+        .system-config-tr:hover {
+            background-color: #5bc0de;
+        }
+    </style>
+</head>
+<body>
+<div style="margin:10px;">
+    <ol class="breadcrumb">
+        <li><a href="#">主页</a></li>
+        <li><a href="#">配置管理</a></li>
+        <li class="active">配置列表</li>
+    </ol>
+    <button class="btn btn-danger" onclick="showBatchDeleteSystemConfigModal()">批量删除</button>
+    <form id="system-config-list-form" action="/admin/system-config-list" method="post">
+        <table class="table">
+            <caption>
+                配置列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="system-config-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
+                每页显示数量：
+                <select id="system-config-page-select" class="form-select-button" name="pageSize">
+                    <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
+                </select>
+                共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
+                <input type="hidden" name="pageNum" id="pageNum" />
+            </caption>
+            <thead>
+            <th><input type="checkbox" id="check-all" /></th>
+            <th>序号</th>
+            <th>ID</th>
+            <th>键</th>
+            <th>分类</th>
+            <th>值</th>
+            <th>值类型</th>
+            <th>最后修改时间</th>
+            <th>操作</th>
+            </thead>
+            <tbody th:each="systemConfig,stat:${pageBean.pageList}">
+            <tr class="system-config-tr">
+                <td><input type="checkbox" class="system-config-checkbox" th:idData="${systemConfig.id}" /></td>
+                <td th:text="${stat.count}"></td>
+                <td th:text="${systemConfig.id}"></td>
+                <td th:text="${systemConfig.configKey}"></td>
+                <td th:text="${systemConfig.classify}"></td>
+                <td th:text="${systemConfig.configValue}"></td>
+                <td th:text="${systemConfig.valueType}"></td>
+                <td th:text="${#dates.format(systemConfig.lastUpdateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td><a class="btn btn-success btn-xs" onclick="showEditSystemConfigModal(this)">编辑</a></td>
+                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteSystemConfigModal(' + ${systemConfig.id} + ')'">删除</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <ul class="pagination">
+            <li>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                    <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="go-btn">GO!</button>
+                </span>
+                </div>
+            </li>
+            <li th:each="otherPage,stat:${pageBean.otherPages}"
+                th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
+
+                <a href="#" th:text="${otherPage.value2}"
+                   th:onclick="'requestPage(' + ${otherPage.value1} + ')'"></a>
+            </li>
+        </ul>
+    </form>
+
+    <!-- 删除配置模态框（Modal） -->
+    <div class="modal fade" id="delete-system-configModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="deleteModalLabel">请确认</h4>
+                </div>
+                <div class="modal-body">是否删除ID为 <span id="delete-id-span"></span> 的配置？</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteSystemConfig()" >确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 编辑配置模态框（Modal） -->
+    <div class="modal fade" id="edit-system-configModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="editModalLabel">编辑</h4>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteSystemConfig()" >确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+</body>
+<script>
+    // 删除配置
+    function deleteSystemConfig() {
+        var ids = $("#delete-id-span").html();
+        if ("" === ids) {
+            return;
+        }
+        $.get("/admin/system-config-delete", {"ids": ids}, function (result) {
+            console.log(result);
+            // 引入弹出提示框
+        }, "json");
+    }
+    // 显示编辑配置的表单
+    function showEditSystemConfigModal(aElement) {
+        var tdElements = $(aElement).parent().siblings("td");
+        // var id =
+    }
+    // 显示删除配置的确认框
+    function showDeleteSystemConfigModal(id) {
+        $("#delete-id-span").html(id);
+        $("#delete-system-configModal").modal("show");
+    }
+    // 显示批量删除配置的确认框
+    function showBatchDeleteSystemConfigModal() {
+        var ids = "";
+        // 遍历所有被选中的行
+        $.each($(".system-config-checkbox[type=checkbox]:checked"), function (index, item) {
+            ids += "," + $(this).attr("idData");
+        });
+        if (ids === "") {
+            alert("您还未勾选任何配置");
+            return;
+        }
+        $("#delete-id-span").html(ids);
+        $("#delete-system-configModal").modal("show");
+    }
+    // 请求其他页的数据
+    function requestPage(pageNum) {
+        $("#pageNum").val(pageNum);
+        var jsonData = $("#system-config-list-form").serialize();
+        getContentHtml('/admin/system-config-list', true, jsonData);
+    }
+    $(function() {
+        // 全选与全不选
+        $("#check-all").click(function() {
+            $(".system-config-checkbox").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
+        });
+        // GO 直接请求某一页的数据
+        $("#go-btn").click(function() {
+            var pageNum = $("#go-input").val();
+            if ("" === pageNum) {
+                return;
+            }
+            requestPage(pageNum);
+        });
+    })
+</script>
+</html>

@@ -31,4 +31,6 @@ public interface PlayerMapper {
     void delete(@Param("ids")List<Long> ids) throws Exception;
 
     void update(Player player) throws Exception;
+
+    void updateForNotNull(Player player) throws Exception;
 }

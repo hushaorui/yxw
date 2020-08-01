@@ -161,4 +161,33 @@ public class PlayerServiceImpl implements PlayerService {
             throw new ServiceException(e);
         }
     }
+
+    @Override
+    public void updatePlayer(Player player) throws ServiceException {
+        try {
+            Player existIdPlayer = playerMapper.selectById(player.getId());
+            if (existIdPlayer == null) {
+                throw new ServiceException("该用户不存在，id：" + player.getId());
+            }
+            if (! existIdPlayer.getUsername().equals(player.getUsername())) {
+                // 用户名有做修改
+                Player existNamePlayer = playerMapper.selectByUsername(player.getUsername());
+                if (existNamePlayer != null) {
+                    // 用户名已经被使用了
+                    throw new ServiceException("该用户名已存在：" + player.getUsername());
+                }
+            }
+            existIdPlayer.setUsername(player.getUsername());
+            existIdPlayer.setPassword(player.getPassword());
+            if (player.getAdmin() == null) {
+                existIdPlayer.setAdmin(false);
+            } else {
+                existIdPlayer.setAdmin(player.getAdmin());
+            }
+            playerMapper.update(existIdPlayer);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
 }

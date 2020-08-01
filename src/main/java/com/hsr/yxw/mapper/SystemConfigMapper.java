@@ -3,6 +3,7 @@ package com.hsr.yxw.mapper;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 import com.hsr.yxw.sysconfig.vo.SystemConfigQueryVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,4 +26,12 @@ public interface SystemConfigMapper {
     List<SystemConfig> selectByVo(SystemConfigQueryVo vo) throws Exception;
 
     void insert(SystemConfig systemConfig) throws Exception;
+
+    void delete(@Param("ids")List<Long> ids) throws Exception;
+
+    void deleteById(Long id) throws Exception;
+
+    void update(SystemConfig systemConfig) throws Exception;
+
+    void updateForNotNull(SystemConfig systemConfig) throws Exception;
 }

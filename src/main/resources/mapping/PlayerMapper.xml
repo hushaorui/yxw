@@ -62,4 +62,13 @@
         set username = #{username}, password = #{password}, lastLoginTime = #{lastLoginTime,jdbcType=BIGINT}, admin = #{admin}
         where id = #{id}
     </update>
+    <update id="updateForNotNull" parameterType="com.hsr.yxw.player.pojo.Player">
+        update player
+        <set>
+            <if test="username!=null"> username = #{username}, </if>
+            <if test="password!=null"> password = #{password}, </if>
+            <if test="lastLoginTime!=null"> lastLoginTime = #{lastLoginTime}, </if>
+            <if test="admin!=null"> admin = #{admin}, </if>
+        </set>
+    </update>
 </mapper>

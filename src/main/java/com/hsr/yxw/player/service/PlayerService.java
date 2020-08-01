@@ -25,4 +25,6 @@ public interface PlayerService {
     Player getPlayerById(Long id) throws ServiceException;
 
     void register(Player player) throws ServiceException;
+
+    void updatePlayer(Player player) throws ServiceException;
 }

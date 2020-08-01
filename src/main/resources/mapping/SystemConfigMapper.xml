@@ -9,7 +9,8 @@
             configKey varchar(255) unique not null,
             classify varchar(255) not null,
             configValue varchar(255) not null,
-            valueType varchar(255) not null
+            valueType varchar(255) not null,
+            lastUpdateTime bigint
         )
     </update>
 
@@ -56,5 +57,33 @@
         insert into system_config(configKey, classify, configValue, valueType)
         values(#{configKey},#{classify},#{configValue},#{valueType})
     </insert>
+
+    <delete id="delete">
+        delete from system_config where id in
+        <foreach item='item' index='index' collection='ids' open='(' separator=',' close=')'>
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteById">
+        delete from system_config where id = #{value}
+    </delete>
+
+    <update id="update" parameterType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+        update system_config
+        set configKey = #{configKey}, classify = #{classify}, configValue = #{configValue}, valueType = #{valueType}, lastUpdateTime = #{lastUpdateTime}
+        where id = #{id}
+    </update>
+
+    <update id="updateForNotNull" parameterType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+        update system_config
+        <set>
+            <if test="configKey!=null"> configKey = #{configKey}, </if>
+            <if test="classify!=null"> classify = #{classify}, </if>
+            <if test="configValue!=null"> configValue = #{configValue}, </if>
+            <if test="valueType!=null"> valueType = #{valueType}, </if>
+            <if test="lastUpdateTime!=null"> lastUpdateTime = #{lastUpdateTime}, </if>
+        </set>
+        where id = #{id}
+    </update>
 
 </mapper>

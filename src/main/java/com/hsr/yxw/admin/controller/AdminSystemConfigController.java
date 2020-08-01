@@ -21,23 +21,22 @@ public class AdminSystemConfigController {
 
     @RequestMapping(value="admin/system-config-list")
     public String systemConfigList(Integer pageNum, Integer pageSize, SystemConfigQueryVo vo, Model model) throws Exception {
-        /*PageBean<SystemConfig> pageBean = systemConfigService.getsystemConfigPageBean(pageNum, pageSize, vo);
+        PageBean<SystemConfig> pageBean = systemConfigService.getSystemConfigPageBean(pageNum, pageSize, vo);
         model.addAttribute("pageBean", pageBean);
-        model.addAttribute("pageSizes", PageBean.pageSizes);*/
+        model.addAttribute("pageSizes", PageBean.pageSizes);
         return "admin/system-config-list";
     }
     @RequestMapping(value = "admin/system-config-delete")
     @ResponseBody
     public CommonResult deleteSystemConfig(String ids) throws Exception {
-        /*if (StringUtils.isEmpty(ids)) {
-            return CommonResult.danger("ID不可为空！");
+        if (StringUtils.isEmpty(ids)) {
+            return CommonResult.error("ID不可为空！");
         }
         try {
             systemConfigService.deleteSystemConfigs(ids);
             return CommonResult.success("删除成功！");
         } catch (ServiceException e) {
-            return CommonResult.danger(e.getMessage());
-        }*/
-        return null;
+            return CommonResult.error(e.getMessage());
+        }
     }
 }

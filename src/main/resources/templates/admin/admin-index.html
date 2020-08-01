@@ -86,6 +86,10 @@
         list-style:none;
     }
 
+    .menu-ul {
+        display: none;
+    }
+
 </style>
 <body>
 <div id="main">
@@ -105,9 +109,9 @@
 
             <li role="presentation" class="active">
                 <!-- 选项控制data-target对应的显隐 -->
-                <a href="#" data-toggle="collapse" data-target="#list">用户管理</a>
+                <a href="#" class="menu-a">用户管理</a>
                 <!-- 隐藏的详细菜单 -->
-                <ul id="list" class="collapse in">
+                <ul id="list" class="menu-ul">
                     <li class="active">
                         <a href="#" onclick="getContentHtml('/admin/player-list')">
                             用户列表
@@ -117,8 +121,8 @@
                 </ul>
             </li>
             <li role="presentation">
-                <a href="#" data-toggle="collapse" data-target="#list1">配置管理</a>
-                <ul id="list1" class="collapse in">
+                <a href="#" class="menu-a">配置管理</a>
+                <ul id="list1" class="menu-ul">
                     <li class="active">
                         <a href="#" onclick="getContentHtml('/admin/system-config-list')">
                             配置列表
@@ -148,6 +152,9 @@
         }
     }
     $(function () {
+        $(".menu-a").click(function () {
+            $(this).siblings(".menu-ul").toggle(200);
+        });
         getContentHtml("/admin/admin-content");
     })
 </script>

@@ -11,6 +11,8 @@ public class SystemConfig {
     private String configValue;
     /** 实际值的类型 */
     private String valueType;
+    /** 最后一次修改时间 */
+    private Long lastUpdateTime;
 
     public SystemConfig() {}
 
@@ -59,5 +61,13 @@ public class SystemConfig {
 
     public void setValueType(String valueType) {
         this.valueType = valueType;
+    }
+
+    public Long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(Long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
     }
 }
