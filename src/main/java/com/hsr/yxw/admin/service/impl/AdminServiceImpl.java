@@ -1,13 +1,18 @@
 package com.hsr.yxw.admin.service.impl;
 
 import com.hsr.yxw.admin.service.AdminService;
+import com.hsr.yxw.common.WebConstants;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.mapper.PlayerMapper;
 import com.hsr.yxw.mapper.SystemConfigMapper;
 import com.hsr.yxw.player.pojo.Player;
+import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -43,9 +48,24 @@ public class AdminServiceImpl implements AdminService {
             throw new ServiceException(e);
         }
     }
+
+    @Override
+    public List<SystemConfig> getDefaultSystemConfigList() {
+        List<SystemConfig> list = new ArrayList<>();
+        SystemConfig openRegisterSwitchConfig = new SystemConfig(SystemSwitch.OPEN_REGISTER_SWITCH, WebConstants.SYSTEM, true, Boolean.class);
+        list.add(openRegisterSwitchConfig);
+        return list;
+    }
+
     private void initSystemConfigTable() throws Exception {
-        int count = systemConfigMapper.count();
+        int count = systemConfigMapper.count(null);
         if (count == 0) {
+            // 放入初始默认系统配置
+            for (SystemConfig config : getDefaultSystemConfigList()) {
+                systemConfigMapper.insert(config);
+            }
+
+            // 测试数据
             SystemConfig systemConfig;
             for (int i = 1; i < 30; i++) {
                 systemConfig = new SystemConfig("testKey" + i, "test", "testValue" + i, String.class);
@@ -54,7 +74,7 @@ public class AdminServiceImpl implements AdminService {
         }
     }
     private void initPlayerTable() throws Exception {
-        int playerCount = playerMapper.count();
+        int playerCount = playerMapper.count(null);
         if (playerCount == 0) {
             Player admin = new Player("admin", "admin", true, System.currentTimeMillis());
             playerMapper.insert(admin);
@@ -63,6 +83,7 @@ public class AdminServiceImpl implements AdminService {
             playerMapper.insert(player1);
             playerMapper.insert(player2);
 
+            // 测试数据
             for (int i = 1; i < 50; i++) {
                 Player player = new Player("test"+i, "test"+i, false, System.currentTimeMillis());
                 playerMapper.insert(player);

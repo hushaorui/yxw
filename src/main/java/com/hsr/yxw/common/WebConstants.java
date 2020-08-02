@@ -1,6 +1,8 @@
 package com.hsr.yxw.common;
 
 public interface WebConstants {
+    String SYSTEM = "system";
+
     String WARNING = "warning";
     String INFO = "info";
     String ERROR = "error";

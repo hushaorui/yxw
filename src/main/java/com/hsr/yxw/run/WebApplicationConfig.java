@@ -1,5 +1,6 @@
 package com.hsr.yxw.run;
 
+import com.hsr.yxw.converter.StringToLongConverter;
 import com.hsr.yxw.converter.StringToTimestampConverter;
 import com.hsr.yxw.interceptor.LoginHandlerInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,9 @@ public class WebApplicationConfig implements WebMvcConfigurer {
         // addPathPatterns("/**") 表示拦截所有的请求，
         // excludePathPatterns("/login", "/register") 表示除了登陆与注册之外，因为登陆注册不需要登陆也可以访问
         registry.addInterceptor(loginHandlerInterceptor).addPathPatterns("/**")
-                .excludePathPatterns("/login", "/toLogin",     //登录页面，以及请求登录地址
+                .excludePathPatterns("/login", "/toLogin",     //登录页面，以及请求登录
+                        "/register",             //注册界面
+                        "/toRegister",           //请求注册
                         "/error/**",                //错误页面
                         "/html/**",               //html静态资源
                         "/js/**",                 //js静态资源
@@ -44,6 +47,7 @@ public class WebApplicationConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToTimestampConverter());
+        registry.addConverter(new StringToLongConverter());
     }
 
 

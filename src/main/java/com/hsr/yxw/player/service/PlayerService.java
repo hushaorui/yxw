@@ -12,7 +12,7 @@ public interface PlayerService {
 
     Player getPlayerByUsername(String username) throws ServiceException;
 
-    long count() throws ServiceException;
+    long count(PlayerQueryVo vo) throws ServiceException;
 
     List<Player> getAllPlayers() throws ServiceException;
 

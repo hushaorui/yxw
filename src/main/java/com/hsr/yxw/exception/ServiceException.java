@@ -1,5 +1,7 @@
 package com.hsr.yxw.exception;
 
+import com.alibaba.druid.util.StringUtils;
+
 public class ServiceException extends Exception {
     public ServiceException() {
     }
@@ -18,5 +20,14 @@ public class ServiceException extends Exception {
 
     public ServiceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+    }
+
+    @Override
+    public String getMessage() {
+        String message = super.getMessage();
+        if (StringUtils.isEmpty(message)) {
+            message = super.getLocalizedMessage();
+        }
+        return message;
     }
 }

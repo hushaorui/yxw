@@ -2,7 +2,8 @@ package com.hsr.yxw.mapper;
 
 import com.hsr.yxw.player.pojo.Player;
 import com.hsr.yxw.player.vo.PlayerQueryVo;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,27 +11,27 @@ import java.util.List;
 @Component
 @Mapper
 public interface PlayerMapper {
-    void createTable() throws Exception;
+    void createTable();
 
-    void dropTable() throws Exception;
+    void dropTable();
 
-    Integer count() throws Exception;
+    Integer count(PlayerQueryVo vo);
 
-    List<Player> selectAll() throws Exception;
+    List<Player> selectAll();
 
-    Player selectById(long id) throws Exception;
+    Player selectById(long id);
 
-    Player selectByUsername(String username) throws Exception;
+    Player selectByUsername(String username);
 
-    List<Player> selectByVo(PlayerQueryVo vo) throws Exception;
+    List<Player> selectByVo(PlayerQueryVo vo);
 
-    void insert(Player player) throws Exception;
+    void insert(Player player);
 
-    void deleteById(long id) throws Exception;
+    void deleteById(long id);
 
-    void delete(@Param("ids")List<Long> ids) throws Exception;
+    void delete(@Param("ids")List<Long> ids);
 
-    void update(Player player) throws Exception;
+    void update(Player player);
 
-    void updateForNotNull(Player player) throws Exception;
+    void updateForNotNull(Player player);
 }

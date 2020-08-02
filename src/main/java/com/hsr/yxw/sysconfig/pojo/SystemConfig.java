@@ -16,10 +16,12 @@ public class SystemConfig {
 
     public SystemConfig() {}
 
-    public SystemConfig(String configKey, String classify, String configValue, Class<?> valueType) {
+    public SystemConfig(String configKey, String classify, Object configValue, Class<?> valueType) {
         this.configKey = configKey;
         this.classify = classify;
-        this.configValue = configValue;
+        if (configValue != null) {
+            this.configValue = String.valueOf(configValue);
+        }
         this.valueType = valueType.getSimpleName();
     }
 

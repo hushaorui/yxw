@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Component
-@ServerEndpoint("/ws/{}")
+@ServerEndpoint("/ws/{id}")
 public class BaseEndPoint {
 
 

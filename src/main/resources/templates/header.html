@@ -31,7 +31,7 @@
             <button type="button" class="btn btn-default" id="chat-hall-btn">聊天大厅</button>
             <button type="button" class="btn btn-default">
                 <span class="glyphicon glyphicon-user"></span>
-                <span id="user-name-label" th:text="${session.sessionPlayer.username}">[...]</span>
+                <span id="user-id-label" th:text="${session.sessionPlayer.id}">[...]</span>
             </button>
             <button type="button" class="btn btn-default" onclick="window.location.href = '/logout';">注销</button>
         </div>
@@ -49,11 +49,11 @@ $(function() {
         $("#chat-hall").toggle();
     });
 
-    var username = $("#user-name-label").html().trim();
+    var userId = $("#user-id-label").html().trim();
     var ws;
     var contextPath = $("#contextPath").val();
     $.get(contextPath + "/getWsUrlPrefix", function (wsUrlPrefix) {
-        ws = new WebSocket(wsUrlPrefix + username);
+        ws = new WebSocket(wsUrlPrefix + userId);
         ws.onopen = function () {
             console.log("建立 websocket 连接...");
         };
@@ -63,7 +63,7 @@ $(function() {
             handleResponse(ws, event);
         };
         ws.onclose = function(){
-            $('#message_content').append('用户['+username+'] 已经离开' + '\n');
+            $('#message_content').append('用户['+userId+'] 已经离开' + '\n');
             console.log("关闭 websocket 连接...");
         }
         sendHeartBeatRequest(ws);

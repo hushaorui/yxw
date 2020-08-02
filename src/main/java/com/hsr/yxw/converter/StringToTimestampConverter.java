@@ -8,8 +8,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class StringToTimestampConverter implements Converter<String, Timestamp> {
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static final DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+    public static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public Timestamp convert(String source) {
@@ -17,7 +17,7 @@ public class StringToTimestampConverter implements Converter<String, Timestamp> 
             if (source != null) {
                 return new Timestamp(dateFormat.parse(source).getTime());
             }
-            throw new Exception();
+            return null;
         } catch (Exception e) {
             try {
                 return new Timestamp(dateFormat2.parse(source).getTime());

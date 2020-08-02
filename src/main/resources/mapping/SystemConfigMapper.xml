@@ -24,10 +24,31 @@
             <if test="systemConfig.configValue!=null"> and configValue = #{systemConfig.configValue} </if>
             <if test="systemConfig.valueType!=null"> and valueType = #{systemConfig.valueType} </if>
         </if>
+        <if test="configKeyLike!=null">
+            and configKey like '%' || #{configKeyLike} || '%'
+        </if>
+        <if test="configKeyLike!=null">
+            and classify like '%' || #{classifyLike} || '%'
+        </if>
+        <if test="configKeyLike!=null">
+            and configValue like '%' || #{configValueLike} || '%'
+        </if>
+        <if test="configKeyLike!=null">
+            and valueType like '%' || #{valueTypeLike} || '%'
+        </if>
+        <if test="lastUpdateTimeStart!=null">
+            and lastUpdateTime <![CDATA[ >= ]]> #{lastUpdateTimeStart}
+        </if>
+        <if test="lastUpdateTimeEnd!=null">
+            and lastUpdateTime <![CDATA[ <= ]]> #{lastUpdateTimeEnd}
+        </if>
     </sql>
 
-    <select id="count" resultType="Integer">
+    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.sysconfig.vo.SystemConfigQueryVo">
         select count(1) from system_config
+        <where>
+            <include refid="systemConfigSql" />
+        </where>
     </select>
 
     <select id="selectById" parameterType="long" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
@@ -85,5 +106,12 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="selectAllClassify" resultType="String">
+        select distinct classify from system_config
+    </select>
+    <select id="selectAllValueType" resultType="String">
+        select distinct valueType from system_config
+    </select>
 
 </mapper>

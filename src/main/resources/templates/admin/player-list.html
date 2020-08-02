@@ -20,64 +20,104 @@
 <body>
 <div style="margin:10px;">
     <ol class="breadcrumb">
-        <li><a href="#">主页</a></li>
+        <li><a href="#" onclick="getContentHtml('/admin/admin-content')">主页</a></li>
         <li><a href="#">用户管理</a></li>
         <li class="active">用户列表</li>
     </ol>
     <button class="btn btn-danger" onclick="showBatchDeletePlayerModal()">批量删除</button>
     <form id="player-list-form" action="/admin/player-list" method="post">
-    <table class="table">
-        <caption>
-            用户列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="player-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
-            每页显示数量：
-            <select id="player-page-select" class="form-select-button" name="pageSize">
-                <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
-            </select>
-            共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
-            <input type="hidden" name="pageNum" id="pageNum" />
-        </caption>
-        <thead>
-            <th><input type="checkbox" id="check-all" /></th>
-            <th>序号</th>
-            <th>ID</th>
-            <th>用户名</th>
-            <th>密码</th>
-            <th>管理员</th>
-            <th>创建时间</th>
-            <th>最后登录时间</th>
-            <th>操作</th>
-        </thead>
-        <tbody th:each="player,stat:${pageBean.pageList}">
-        <tr class="player-tr">
-            <td><input type="checkbox" class="player-checkbox" th:idData="${player.id}" /></td>
-            <td th:text="${stat.count}"></td>
-            <td class="player-id-td" th:text="${player.id}"></td>
-            <td class="player-username-td" th:text="${player.username}"></td>
-            <td class="player-password-td" th:text="${player.password}"></td>
-            <td class="player-admin-td" th:text="${player.admin}"></td>
-            <td th:text="${#dates.format(player.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
-            <td th:text="${#dates.format(player.lastLoginTime,'yyyy-MM-dd HH:mm:ss')}"></td>
-            <td><a class="btn btn-success btn-xs" onclick="showEditPlayerModal(this)" >添加</a></td>
-            <td><a class="btn btn-danger btn-xs" th:onclick="'showDeletePlayerModal(' + ${player.id} + ')'">删除</a></td>
-        </tr>
-        </tbody>
-    </table>
-    <ul class="pagination">
-        <li>
-            <div class="input-group">
-                <input type="text" class="form-control" id="go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" id="go-btn">GO!</button>
-                </span>
-            </div>
-        </li>
-        <li th:each="otherPage,stat:${pageBean.otherPages}"
-            th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
+        <!-- 该table内都是查询的条件 -->
+        <table class="table" style="width: 80%;">
+            <tr>
+                <td><span>筛选：</span></td>
+                <td>
+                    <label for="player-username-input">用户名：</label>
+                    <input id="player-username-input" name="player.username" th:value="${playerQueryVo.getPlayer() == null ? '':playerQueryVo.getPlayer().getUsername()}" />
+                </td>
+                <td>
+                    <label for="player-password-input">密码：</label>
+                    <input id="player-password-input" name="player.password" th:value="${playerQueryVo.getPlayer() == null ? '':playerQueryVo.getPlayer().getPassword()}" />
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-xs" onclick="clearCondition()">清空条件</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="player-admin-select">是否管理员：</label>
+                    <select id="player-admin-select" name="player.admin">
+                        <option value="">请选择...</option>
+                        <option th:selected="${playerQueryVo.getPlayer() != null and true eq playerQueryVo.getPlayer().getAdmin()}" value="true">是</option>
+                        <option th:selected="${playerQueryVo.getPlayer() != null and false eq playerQueryVo.getPlayer().getAdmin()}" value="false">不是</option>
+                    </select>
+                </td>
+                <td>
+                    <label for="player-create-start-input">创建时间范围：</label>
+                    <input id="player-create-start-input" name="createTimeStart" th:value="${#dates.format(playerQueryVo.createTimeStart,'yyyy-MM-dd HH:mm:ss')}" />
+                    -<input id="player-create-end-input" name="createTimeEnd" th:value="${#dates.format(playerQueryVo.createTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
+                </td>
+                <td>
+                    <label for="player-login-start-input">最后登录时间范围：</label>
+                    <input id="player-login-start-input" name="lastLoginTimeStart" th:value="${#dates.format(playerQueryVo.lastLoginTimeStart,'yyyy-MM-dd HH:mm:ss')}" />
+                    -<input id="player-login-end-input" name="lastLoginTimeEnd" th:value="${#dates.format(playerQueryVo.lastLoginTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-xs" onclick="checkAndRequestPage()">搜索</a>
+                </td>
+            </tr>
+        </table>
+        <table class="table">
+            <caption>
+                用户列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="player-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
+                每页显示数量：
+                <select id="player-page-select" class="form-select-button" name="pageSize">
+                    <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
+                </select>
+                共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
+                <input type="hidden" name="pageNum" id="pageNum" />
+            </caption>
+            <thead>
+                <th><input type="checkbox" id="check-all" /></th>
+                <th>序号</th>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>密码</th>
+                <th>管理员</th>
+                <th>创建时间</th>
+                <th>最后登录时间</th>
+                <th>操作</th>
+            </thead>
+            <tbody th:each="player,stat:${pageBean.pageList}">
+            <tr class="player-tr">
+                <td><input type="checkbox" class="player-checkbox" th:idData="${player.id}" /></td>
+                <td th:text="${stat.count}"></td>
+                <td class="player-id-td" th:text="${player.id}"></td>
+                <td class="player-username-td" th:text="${player.username}"></td>
+                <td class="player-password-td" th:text="${player.password}"></td>
+                <td class="player-admin-td" th:text="${player.admin}"></td>
+                <td th:text="${#dates.format(player.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${#dates.format(player.lastLoginTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td><a class="btn btn-success btn-xs" onclick="showEditPlayerModal(this)" >编辑</a></td>
+                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeletePlayerModal(' + ${player.id} + ')'">删除</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <ul class="pagination">
+            <li>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="go-btn">GO!</button>
+                    </span>
+                </div>
+            </li>
+            <li th:each="otherPage,stat:${pageBean.otherPages}"
+                th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
 
-            <a href="#" th:text="${otherPage.value2}"
-               th:onclick="'requestPage(' + ${otherPage.value1} + ')'"></a>
-        </li>
-    </ul>
+                <a href="#" th:text="${otherPage.value2}"
+                   th:onclick="'requestPage(' + ${otherPage.value1} + ')'"></a>
+            </li>
+        </ul>
     </form>
 
     <!-- 删除玩家模态框（Modal） -->
@@ -138,7 +178,7 @@
                 </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updatePlayer()" >提交</button>
+                    <button type="button" class="btn btn-primary" onclick="updatePlayer()" >提交</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -162,6 +202,7 @@
         var username = $("#newUsername").val();
         if (username === "") {
             toastr.warning("用户名不可为空！");
+            return;
         }
         if (! /[\u4e00-\u9fa5_a-zA-Z0-9]{1,36}/.test(username)) {
             toastr.warning("用户名只能由汉字、字母、数字组成，长度不超过36个字符！");
@@ -170,6 +211,7 @@
         var password = $("#newPassword").val();
         if (password === "") {
             toastr.warning("密码不可为空！");
+            return;
         }
         if (! /[\u4e00-\u9fa5_a-zA-Z0-9]{1,36}/.test(password)) {
             toastr.warning("密码只能由汉字、字母、数字组成，长度不超过36个字符！");
@@ -178,9 +220,11 @@
         var admin = $("#newAdmin").val();
         if (admin === "") {
             toastr.warning("请选择是否为管理员！");
+            return;
         }
         // 提交
         $.post("/admin/player-update", $("#player-update-form").serialize(), function (result) {
+            $("#editPlayerModal").modal("hide");
             toastr[result.result](result.message);
         }, "json");
     }
@@ -213,10 +257,48 @@
         if (ids === "") {
             toastr.warning("您还未勾选任何玩家！");
             return;
+        } else {
+            ids = ids.substring(1, ids.length);
         }
         $("#delete-id-span").html(ids);
         $("#deletePlayerModal").modal("show");
     }
+    // 清空筛选条件
+    function clearCondition() {
+        $("#player-username-input").val("");
+        $("#player-password-input").val("");
+        $("#player-admin-select").val("");
+        $("#player-create-start-input").val("");
+        $("#player-create-end-input").val("");
+        $("#player-login-start-input").val("");
+        $("#player-login-end-input").val("");
+    }
+    //校验时间格式，如果无误则查询
+    function checkAndRequestPage() {
+        var regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+        var time1 = $("#player-create-start-input").val().trim();
+        if (time1 !== "" && ! regex.test(time1)) {
+            toastr.warning("创建时间：" + time1 + "格式错误，请参照当前时间格式：" + $("#current-time-span").html());
+            return;
+        }
+        var time2 = $("#player-create-end-input").val().trim();
+        if (time2 !== "" && ! regex.test(time2)) {
+            toastr.warning("创建时间：" + time2 + "格式错误，请参照当前时间格式：" + $("#current-time-span").html());
+            return;
+        }
+        var time3 = $("#player-login-start-input").val().trim();
+        if (time3 !== "" && ! regex.test(time3)) {
+            toastr.warning("最后登录时间：" + time3 + "格式错误，请参照当前时间格式：" + $("#current-time-span").html());
+            return;
+        }
+        var time4 = $("#player-login-end-input").val().trim();
+        if (time4 !== "" && ! regex.test(time4)) {
+            toastr.warning("最后登录时间：" + time4 + "格式错误，请参照当前时间格式：" + $("#current-time-span").html());
+            return;
+        }
+        requestPage(1);
+    }
+
     // 请求其他页的数据
     function requestPage(pageNum) {
         $("#pageNum").val(pageNum);

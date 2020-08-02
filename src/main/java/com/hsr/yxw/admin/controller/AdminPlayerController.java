@@ -26,12 +26,13 @@ public class AdminPlayerController {
     public String playerList(Integer pageNum, Integer pageSize, PlayerQueryVo vo, Model model) throws Exception {
         PageBean<Player> pageBean = playerService.getPlayerPageBean(pageNum, pageSize, vo);
         model.addAttribute("pageBean", pageBean);
+        model.addAttribute("playerQueryVo", vo);
         model.addAttribute("pageSizes", PageBean.pageSizes);
         return "admin/player-list";
     }
     @RequestMapping(value = "admin/player-delete")
     @ResponseBody
-    public CommonResult deletePlayer(String ids) throws Exception {
+    public CommonResult deletePlayer(String ids) {
         if (StringUtils.isEmpty(ids)) {
             return CommonResult.error("ID不可为空！");
         }

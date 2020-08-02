@@ -37,7 +37,7 @@ public class PlayerMapperTest {
     @Test
     public void test_count() {
         try {
-            Integer count = playerMapper.count();
+            Integer count = playerMapper.count(null);
             print(count);
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +90,7 @@ public class PlayerMapperTest {
             list.add(3L);
             list.add(4L);
             playerMapper.delete(list);
-            System.out.println(playerMapper.count());
+            System.out.println(playerMapper.count(null));
         } catch (Exception e) {
             e.printStackTrace();
         }

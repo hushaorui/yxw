@@ -6,9 +6,11 @@
 
     <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
+    <link rel="stylesheet" href="../../static/bootstrap/css/toastr.css" th:href="@{/bootstrap/css/toastr.css}">
     <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
     <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
     <script src="../../static/bootstrap/js/common.js" th:src="@{/bootstrap/js/common.js}"></script>
+    <script src="../../static/bootstrap/js/toastr.min.js" th:src="@{/bootstrap/js/toastr.min.js}"></script>
     <style>
         .system-config-tr:hover {
             background-color: #5bc0de;
@@ -18,12 +20,46 @@
 <body>
 <div style="margin:10px;">
     <ol class="breadcrumb">
-        <li><a href="#">主页</a></li>
+        <li><a href="#" onclick="getContentHtml('/admin/admin-content')">主页</a></li>
         <li><a href="#">配置管理</a></li>
         <li class="active">配置列表</li>
     </ol>
     <button class="btn btn-danger" onclick="showBatchDeleteSystemConfigModal()">批量删除</button>
+
     <form id="system-config-list-form" action="/admin/system-config-list" method="post">
+        <table class="table" style="width: 60%;">
+            <tr>
+                <td><span>筛选：</span></td>
+                <td>
+                    <label for="classify-like-select">类别：</label>
+                    <select id="classify-like-select" name="classifyLike">
+                        <option value="">请选择...</option>
+                        <option th:each="classify,stat:${classifyList}" th:value="${classify}" th:text="${classify}" th:selected="${classify eq systemConfigQueryVo.classifyLike}"></option>
+                    </select>
+                </td>
+                <td>
+                    <label for="key-like-input">键：</label>
+                    <input id="key-like-input" name="configKeyLike" th:value="${systemConfigQueryVo.configKeyLike}" />
+                </td>
+                <td>
+                    <label for="value-like-input">值：</label>
+                    <input id="value-like-input" name="configValueLike" th:value="${systemConfigQueryVo.configValueLike}" />
+                </td>
+                <td>
+                    <label for="value-type-like-select">类别：</label>
+                    <select id="value-type-like-select" name="valueTypeLike">
+                        <option value="">请选择...</option>
+                        <option th:each="valueType,stat:${valueTypeList}" th:value="${valueType}" th:text="${valueType}" th:selected="${valueType eq systemConfigQueryVo.valueTypeLike}"></option>
+                    </select>
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-xs" onclick="clearCondition()">清空条件</a>
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-xs" onclick="requestPage(1)">搜索</a>
+                </td>
+            </tr>
+        </table>
         <table class="table">
             <caption>
                 配置列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="system-config-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
@@ -39,7 +75,7 @@
             <th>序号</th>
             <th>ID</th>
             <th>键</th>
-            <th>分类</th>
+            <th>类别</th>
             <th>值</th>
             <th>值类型</th>
             <th>最后修改时间</th>
@@ -49,11 +85,11 @@
             <tr class="system-config-tr">
                 <td><input type="checkbox" class="system-config-checkbox" th:idData="${systemConfig.id}" /></td>
                 <td th:text="${stat.count}"></td>
-                <td th:text="${systemConfig.id}"></td>
+                <td class="config-id-td" th:text="${systemConfig.id}"></td>
                 <td th:text="${systemConfig.configKey}"></td>
-                <td th:text="${systemConfig.classify}"></td>
-                <td th:text="${systemConfig.configValue}"></td>
-                <td th:text="${systemConfig.valueType}"></td>
+                <td class="config-classify-td" th:text="${systemConfig.classify}"></td>
+                <td class="config-value-td" th:text="${systemConfig.configValue}"></td>
+                <td class="value-type-td" th:text="${systemConfig.valueType}"></td>
                 <td th:text="${#dates.format(systemConfig.lastUpdateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
                 <td><a class="btn btn-success btn-xs" onclick="showEditSystemConfigModal(this)">编辑</a></td>
                 <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteSystemConfigModal(' + ${systemConfig.id} + ')'">删除</a></td>
@@ -79,7 +115,7 @@
     </form>
 
     <!-- 删除配置模态框（Modal） -->
-    <div class="modal fade" id="delete-system-configModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteSystemConfigModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -96,17 +132,52 @@
     </div>
 
     <!-- 编辑配置模态框（Modal） -->
-    <div class="modal fade" id="edit-system-configModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editSystemConfigModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="editModalLabel">编辑</h4>
+                    <h4 class="modal-title" id="editModalLabel">编辑配置</h4>
                 </div>
-
+                <form id="config-update-form" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">ID</label>
+                        <div class="col-sm-8">
+                            <p id="config-id-p" class="form-control-static"></p>
+                            <input id="config-id-input" type="hidden" name="id" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newClassify" class="col-sm-2 control-label">类别</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="newClassify" name="classify" placeholder="请输入类别">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newConfigValue" class="col-sm-2 control-label">配置值</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="newConfigValue" name="configValue" placeholder="请输入配置的值">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newValueType" class="col-sm-2 control-label"> 值类型</label>
+                        <div class="col-sm-8">
+                            <select id="newValueType" class="form-control" name="valueType">
+                                <option value="String">String</option>
+                                <option value="Byte">Byte</option>
+                                <option value="Short">Short</option>
+                                <option value="Integer">Integer</option>
+                                <option value="Long">Long</option>
+                                <option value="Boolean">Boolean</option>
+                                <option value="Float">Float</option>
+                                <option value="Double">Double</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteSystemConfig()" >确认</button>
+                    <button type="button" class="btn btn-primary" onclick="updateSystemConfig()" >提交</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -121,19 +192,45 @@
             return;
         }
         $.get("/admin/system-config-delete", {"ids": ids}, function (result) {
-            console.log(result);
-            // 引入弹出提示框
+            toastr[result.result](result.message);
+        }, "json");
+    }
+    // 更新配置
+    function updateSystemConfig() {
+        var classify = $("#newClassify").val().trim();
+        if (classify === "") {
+            toastr.warning("类别不可为空！");
+            return;
+        }
+        var configValue = $("#newConfigValue").val();
+        if (configValue === "") {
+            toastr.warning("值不可为空！");
+            return;
+        }
+        // 提交
+        $.post("/admin/system-config-update", $("#config-update-form").serialize(), function (result) {
+            $("#editSystemConfigModal").modal("hide");
+            toastr[result.result](result.message);
         }, "json");
     }
     // 显示编辑配置的表单
     function showEditSystemConfigModal(aElement) {
-        var tdElements = $(aElement).parent().siblings("td");
-        // var id =
+        var id = $(aElement).parent().siblings(".config-id-td").html();
+        var classify = $(aElement).parent().siblings(".config-classify-td").html();
+        var configValue = $(aElement).parent().siblings(".config-value-td").html();
+        var valueType = $(aElement).parent().siblings(".value-type-td").html();
+        //console.log(id + " " + classify + " " + configValue + " " + valueType);
+        $("#config-id-p").html(id);
+        $("#config-id-input").val(id);
+        $("#newClassify").val(classify);
+        $("#newConfigValue").val(configValue);
+        $("#newValueType").val(valueType);
+        $("#editSystemConfigModal").modal("show");
     }
     // 显示删除配置的确认框
     function showDeleteSystemConfigModal(id) {
         $("#delete-id-span").html(id);
-        $("#delete-system-configModal").modal("show");
+        $("#deleteSystemConfigModal").modal("show");
     }
     // 显示批量删除配置的确认框
     function showBatchDeleteSystemConfigModal() {
@@ -143,7 +240,7 @@
             ids += "," + $(this).attr("idData");
         });
         if (ids === "") {
-            alert("您还未勾选任何配置");
+            toastr.warning("您还未勾选任何配置");
             return;
         }
         $("#delete-id-span").html(ids);
@@ -154,6 +251,13 @@
         $("#pageNum").val(pageNum);
         var jsonData = $("#system-config-list-form").serialize();
         getContentHtml('/admin/system-config-list', true, jsonData);
+    }
+    // 清空所有条件
+    function clearCondition() {
+        $("#classify-like-select").val("");
+        $("#key-like-input").val("");
+        $("#value-like-input").val("");
+        $("#value-type-like-select").val("");
     }
     $(function() {
         // 全选与全不选

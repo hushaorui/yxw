@@ -11,27 +11,31 @@ import java.util.List;
 @Mapper
 public interface SystemConfigMapper {
 
-    void createTable() throws Exception;
+    void createTable();
 
-    void dropTable() throws Exception;
+    void dropTable();
 
-    Integer count() throws Exception;
+    Integer count(SystemConfigQueryVo vo);
 
-    SystemConfig selectById(Long id) throws Exception;
+    SystemConfig selectById(Long id);
 
-    SystemConfig selectByConfigKey(String configKey) throws Exception;
+    SystemConfig selectByConfigKey(String configKey);
 
-    List<SystemConfig> selectByClassify(String classify) throws Exception;
+    List<SystemConfig> selectByClassify(String classify);
 
-    List<SystemConfig> selectByVo(SystemConfigQueryVo vo) throws Exception;
+    List<SystemConfig> selectByVo(SystemConfigQueryVo vo);
 
-    void insert(SystemConfig systemConfig) throws Exception;
+    void insert(SystemConfig systemConfig);
 
-    void delete(@Param("ids")List<Long> ids) throws Exception;
+    void delete(@Param("ids")List<Long> ids);
 
-    void deleteById(Long id) throws Exception;
+    void deleteById(Long id);
 
-    void update(SystemConfig systemConfig) throws Exception;
+    void update(SystemConfig systemConfig);
 
-    void updateForNotNull(SystemConfig systemConfig) throws Exception;
+    void updateForNotNull(SystemConfig systemConfig);
+
+    List<String> selectAllClassify();
+
+    List<String> selectAllValueType();
 }

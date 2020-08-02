@@ -7,6 +7,18 @@ import org.junit.jupiter.api.Test;
 public class TestIpUtils {
 
     @Test
+    public void test_Class_name() {
+        System.out.println(String.class.getName());
+        System.out.println(Byte.class.getName());
+        System.out.println(Short.class.getName());
+        System.out.println(Integer.class.getName());
+        System.out.println(Long.class.getName());
+        System.out.println(Boolean.class.getName());
+        System.out.println(Float.class.getName());
+        System.out.println(Double.class.getName());
+    }
+
+    @Test
     public void test_getLocalIp() {
         System.out.println(IpUtils.getLocalIp());
     }

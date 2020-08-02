@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>DIY作品</title>
+
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../static/bootstrap/css/toastr.css" th:href="@{/bootstrap/css/toastr.css}">
+    <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../static/bootstrap/js/toastr.min.js" th:src="@{/bootstrap/js/toastr.min.js}"></script>
+    <style>
+        #container {
+            width: 600px;
+            height: 300px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+        }
+        .alert { display: none; }
+    </style>
+</head>
+<body>
+<div id="container">
+    <form class="form-horizontal" role="form" >
+        <div class="form-group">
+            <label for="username" class="col-sm-2 control-label">用户名</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="rePassword" class="col-sm-2 control-label">确认密码</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="rePassword" placeholder="请再次输入密码">
+            </div>
+        </div>
+        <div class="alert alert-danger">
+            <strong>错误！</strong><span id="error-span"></span>
+        </div>
+        <div class="alert alert-success">
+            <span id="success-span"></span>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-default" onclick="toRegister()">注册</button>
+                <button type="button" class="btn btn-default float-right" onclick="loginPage()">去登录</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+<script>
+    $(function() {
+        $("#username,#password").focusin(function () {
+            $(".alert").hide();
+        });
+    });
+    function toRegister() {
+        // 校验
+        var username = $("#username").val();
+        if (username === "") {
+            toastr.warning("用户名不可为空！");
+            return;
+        }
+        if (! /[\u4e00-\u9fa5_a-zA-Z0-9]{1,36}/.test(username)) {
+            toastr.warning("用户名只能由汉字、字母、数字组成，长度不超过36个字符！");
+            return;
+        }
+        var password = $("#password").val();
+        if (password === "") {
+            toastr.warning("密码不可为空！");
+            return;
+        }
+        if (! /[\u4e00-\u9fa5_a-zA-Z0-9]{1,36}/.test(password)) {
+            toastr.warning("密码只能由汉字、字母、数字组成，长度不超过36个字符！");
+            return;
+        }
+        var rePassword = $("#rePassword").val();
+        if (password !== rePassword) {
+            toastr.warning("两次密码不一致！");
+            return;
+        }
+
+        $.post("toRegister", $("form").serialize(), function (data) {
+            $("#" + data.result + "-span").html(data.message);
+            if ("success" === data.result) {
+                $(".alert-success").show();
+            } else {
+                $(".alert-danger").show();
+            }
+        });
+    }
+    // 去登录页面
+    function loginPage() {
+        window.location.href = "login";
+    }
+</script>
+</html>

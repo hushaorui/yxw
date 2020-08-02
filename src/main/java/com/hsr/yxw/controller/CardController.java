@@ -16,8 +16,13 @@ public class CardController {
     private CardService cardService;
 
     @RequestMapping(value = {"card/list", "card"})
-    public String cardList(Model model) throws ServiceException {
-        Collection<Card> cards = cardService.listAll();
+    public String cardList(Model model) {
+        Collection<Card> cards = null;
+        try {
+            cards = cardService.listAll();
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
         model.addAttribute("cards", cards);
         return "card/card-list";
     }

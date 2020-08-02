@@ -8,6 +8,18 @@
             <if test="player.password!=null">and password like '%' || #{player.password} || '%' </if>
             <if test="player.admin!=null">and admin = #{player.admin} </if>
         </if>
+        <if test="createTimeStart!=null">
+            and createTime <![CDATA[ >= ]]> #{createTimeStart}
+        </if>
+        <if test="createTimeEnd!=null">
+            and createTime <![CDATA[ <= ]]> #{createTimeEnd}
+        </if>
+        <if test="lastLoginTimeStart!=null">
+            and lastLoginTime <![CDATA[ >= ]]> #{lastLoginTimeStart}
+        </if>
+        <if test="lastLoginTimeEnd!=null">
+            and lastLoginTime <![CDATA[ <= ]]> #{lastLoginTimeEnd}
+        </if>
     </sql>
     <update id="createTable">
         create table player(
@@ -22,8 +34,11 @@
     <delete id="dropTable">
         drop table player
     </delete>
-    <select id="count" resultType="Integer">
+    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.player.vo.PlayerQueryVo">
         select count(1) from player
+        <where>
+            <include refid="playerSql" />
+        </where>
     </select>
     <select id="selectAll" resultType="com.hsr.yxw.player.pojo.Player">
         select * from player
@@ -70,5 +85,6 @@
             <if test="lastLoginTime!=null"> lastLoginTime = #{lastLoginTime}, </if>
             <if test="admin!=null"> admin = #{admin}, </if>
         </set>
+        where id = #{id}
     </update>
 </mapper>
