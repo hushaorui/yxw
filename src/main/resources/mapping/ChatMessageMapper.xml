@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hsr.yxw.mapper.ChatMessageMapper">
+    <update id="createTable">
+        create table chat_message(
+           id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)primary key,
+           senderId bigint not null,
+           senderName varchar(255) not null,
+           sendTime bigint not null,
+           messageType varchar(255) not null,
+           receiverId bigint,
+           receiverName varchar(255),
+           content varchar(255) not null
+        )
+    </update>
+
+    <delete id="dropTable">
+        drop table chat_message
+    </delete>
+
+    <sql id="chatMessageSql">
+        <if test="chatMessage!=null">
+            <if test="chatMessage.senderId!=null">and senderId = #{chatMessage.senderId} </if>
+            <if test="chatMessage.senderName!=null and chatMessage.senderName!=''">and senderName = #{chatMessage.senderName} </if>
+            <if test="chatMessage.messageType!=null">and messageType = #{chatMessage.messageType} </if>
+            <if test="chatMessage.receiverId!=null">and receiverId = #{chatMessage.receiverId} </if>
+            <if test="chatMessage.receiverName!=null and chatMessage.receiverName!=''">and receiverName = #{chatMessage.receiverName} </if>
+            <if test="chatMessage.content!=null and chatMessage.content!=''">and content like '%' || #{chatMessage.content} || '%' </if>
+        </if>
+        <if test="sendTimeStart!=null">
+            and sendTime <![CDATA[ >= ]]> #{sendTimeStart}
+        </if>
+        <if test="sendTimeEnd!=null">
+            and sendTime <![CDATA[ <= ]]> #{sendTimeEnd}
+        </if>
+    </sql>
+
+    <delete id="deleteAll">
+        delete from chat_message
+    </delete>
+    <delete id="delete">
+        delete from chat_message where id in
+        <foreach item='item' index='index' collection='ids' open='(' separator=',' close=')'>
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteById">
+        delete from chat_message where id = #{value}
+    </delete>
+
+    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.ws.chat.common.ChatMessageQueryVo">
+        select count(1) from chat_message
+        <where>
+            <include refid="chatMessageSql" />
+        </where>
+    </select>
+    <select id="selectAll" resultType="com.hsr.yxw.ws.chat.pojo.ChatMessage">
+        select * from chat_message
+    </select>
+    <select id="selectById" parameterType="long" resultType="com.hsr.yxw.ws.chat.pojo.ChatMessage">
+        select * from chat_message where id = #{value}
+    </select>
+    <select id="selectByVo" parameterType="com.hsr.yxw.ws.chat.common.ChatMessageQueryVo" resultType="com.hsr.yxw.ws.chat.pojo.ChatMessage">
+        select id, senderId, senderName, sendTime, messageType, receiverId, receiverName
+        from chat_message
+        <where>
+            <include refid="chatMessageSql" />
+        </where>
+        order by id asc
+        <if test="firstResult!=null and maxResult!=null">
+            OFFSET #{firstResult} ROWS FETCH NEXT #{maxResult} ROWS ONLY
+        </if>
+    </select>
+    <insert id="insert" parameterType="com.hsr.yxw.ws.chat.pojo.ChatMessage" useGeneratedKeys="true" keyProperty="id">
+        insert into chat_message(senderId,senderName,sendTime,messageType,receiverId,receiverName,content)
+        values(#{senderId}, #{senderName}, #{sendTime}, #{messageType},#{receiverId,jdbcType=BIGINT},#{receiverName,jdbcType=VARCHAR},#{content})
+    </insert>
+    <select id="selectContentById" parameterType="long" resultType="String">
+        select content from chat_message where id = #{value}
+    </select>
+    <!-- update 更新方法无 -->
+</mapper>

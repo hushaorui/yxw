@@ -1,4 +1,4 @@
-package com.hsr.yxw.player.util;
+package com.hsr.yxw.player.common;
 
 import com.alibaba.druid.util.StringUtils;
 import com.hsr.yxw.common.CommonResult;

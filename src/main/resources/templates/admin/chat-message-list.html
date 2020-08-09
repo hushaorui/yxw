@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>DIY作品</title>
+
+    <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
+    <link rel="stylesheet" href="../../static/bootstrap/css/toastr.css" th:href="@{/bootstrap/css/toastr.css}">
+    <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../../static/bootstrap/js/common.js" th:src="@{/bootstrap/js/common.js}"></script>
+    <script src="../../static/bootstrap/js/toastr.min.js" th:src="@{/bootstrap/js/toastr.min.js}"></script>
+    <style>
+        .chat-message-tr:hover {
+            background-color: #5bc0de;
+        }
+    </style>
+</head>
+<body>
+<div style="margin:10px;">
+    <ol class="breadcrumb">
+        <li><a href="#" onclick="getContentHtml('/admin/admin-content')">主页</a></li>
+        <li><a href="#">聊天管理</a></li>
+        <li class="active">聊天信息列表</li>
+    </ol>
+    <button class="btn btn-danger" onclick="showBatchDeleteChatMessageModal()">批量删除</button>
+    <button class="btn btn-success float-right" onclick="requestPage()">刷新</button>
+    <form id="chat-message-list-form" action="/admin/chat-message-list" method="post">
+
+        <!-- 该table内都是查询的条件 -->
+        <table class="table" style="width: 80%;">
+            <tr>
+                <td><span>筛选：</span></td>
+                <td>
+                    <label for="chat-message-sender-id-input">发送者ID：</label>
+                    <input id="chat-message-sender-id-input" name="chatMessage.senderId" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getSenderId()}" />
+                </td>
+                <td>
+                    <label for="chat-message-sender-name-input">发送者名称：</label>
+                    <input id="chat-message-sender-name-input" name="chatMessage.senderName" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getSenderName()}" />
+                </td>
+                <td>
+                    <label for="chat-message-send-start-input">发送时间范围：</label>
+                    <input id="chat-message-send-start-input" name="sendTimeStart" th:value="${#dates.format(chatMessageQueryVo.sendTimeStart,'yyyy-MM-dd HH:mm:ss')}" />
+                    - <input id="chat-message-send-end-input" name="sendTimeEnd" th:value="${#dates.format(chatMessageQueryVo.sendTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-xs" onclick="clearCondition()">清空条件</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="message-type-select">类型：</label>
+                    <select id="message-type-select" name="chatMessage.messageType">
+                        <option value="">请选择...</option>
+                        <option th:each="item:${messageTypeMapping}" th:value="${item.key}" th:text="${item.key + '-' + item.value}"
+                                th:selected="${chatMessageQueryVo.getChatMessage() != null and chatMessageQueryVo.getChatMessage().getMessageType() != null and (item.key.toString() eq chatMessageQueryVo.getChatMessage().getMessageType().toString())}"></option>
+                    </select>
+                </td>
+                <td>
+                    <label for="chat-message-receiver-id-input">接收者ID：</label>
+                    <input id="chat-message-receiver-id-input" name="chatMessage.receiverId" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getReceiverId()}" />
+                </td>
+                <td>
+                    <label for="chat-message-receiver-name-input">接收者名称：</label>
+                    <input id="chat-message-receiver-name-input" name="chatMessage.receiverName" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getReceiverName()}" />
+                </td>
+                <td>
+                    <label for="chat-message-content-input">聊天内容：</label>
+                    <input id="chat-message-content-input" name="chatMessage.content" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getContent()}" />
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-xs" onclick="requestPage(1)">搜索</a>
+                </td>
+            </tr>
+        </table>
+
+        <table class="table">
+            <caption>
+                聊天记录列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="chat-message-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
+                每页显示数量：
+                <select id="chat-message-page-select" class="form-select-button" name="pageSize">
+                    <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
+                </select>
+                共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
+                <input type="hidden" name="pageNum" id="pageNum" th:value="${pageBean.currentPage}" />
+            </caption>
+            <thead>
+            <th><input type="checkbox" id="check-all" /></th>
+            <th>序号</th>
+            <th>ID</th>
+            <th>发送者ID</th>
+            <th>发送者名称</th>
+            <th>发送时间</th>
+            <th>信息类型</th>
+            <th>接收者ID</th>
+            <th>接收者名称</th>
+            <th>聊天内容</th>
+            <th>操作</th>
+            </thead>
+            <tbody th:each="chatMessage,stat:${pageBean.pageList}">
+            <tr class="chat-message-tr">
+                <td><input type="checkbox" class="chat-message-checkbox" th:idData="${chatMessage.id}" /></td>
+                <td th:text="${stat.count}"></td>
+                <td th:text="${chatMessage.id}"></td>
+                <td th:text="${chatMessage.senderId}"></td>
+                <td th:text="${chatMessage.senderName}"></td>
+                <td th:text="${#dates.format(chatMessage.sendTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${chatMessage.messageType}"></td>
+                <td th:text="${chatMessage.receiverId}"></td>
+                <td th:text="${chatMessage.receiverName}"></td>
+                <td><a class="btn btn-primary btn-xs" th:onclick="'showChatMessageDetailModal(' + ${chatMessage.id} + ')'">详情</a></td>
+                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteChatMessageModal(' + ${chatMessage.id} + ')'">删除</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <ul class="pagination">
+            <li>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="go-btn">GO!</button>
+                    </span>
+                </div>
+            </li>
+            <li th:each="otherPage,stat:${pageBean.otherPages}"
+                th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
+
+                <a href="#" th:text="${otherPage.value2}"
+                   th:onclick="'requestPage(' + ${otherPage.value1} + ')'"></a>
+            </li>
+        </ul>
+    </form>
+
+    <!-- 删除聊天记录模态框（Modal） -->
+    <div class="modal fade" id="deleteChatMessageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="deleteModalLabel">请确认</h4>
+                </div>
+                <div class="modal-body">是否删除ID为 <span id="delete-id-span"></span> 的聊天记录？</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteChatMessage()" >确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 查看聊天内容模态框（Modal） -->
+    <div class="modal fade" id="chatMessageDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="chatMessageDetailModalLabel">查看聊天内容</h4>
+                </div>
+                <div class="modal-body" id="chat-message-content-detail"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+</body>
+<script>
+    // 删除聊天记录
+    function deleteChatMessage() {
+        var ids = $("#delete-id-span").html();
+        if ("" === ids) {
+            return;
+        }
+        $.get("/admin/chat-message-delete", {"ids" : ids}, function (result) {
+            toastr[result.result](result.message);
+        }, "json");
+    }
+    // 显示确认删除聊天记录的模态框
+    function showDeleteChatMessageModal(id) {
+        $("#delete-id-span").html(id);
+        $("#deleteChatMessageModal").modal("show");
+    }
+    // 根据id查询聊天内容并显示
+    function showChatMessageDetailModal(id) {
+        $.get("/admin/chat-message-select-content", {"id": id}, function (data) {
+            $("#chat-message-content-detail").html(data);
+            $("#chatMessageDetailModal").modal("show");
+        }, "text");
+    }
+    // 显示批量删除聊天记录的模态框
+    function showBatchDeleteChatMessageModal() {
+        var ids = "";
+        // 遍历所有被选中的行
+        $.each($(".chat-message-checkbox[type=checkbox]:checked"), function (index, item) {
+            ids += "," + $(this).attr("idData");
+        });
+        if (ids === "") {
+            toastr.warning("您还未勾选任何聊天记录！");
+            return;
+        } else {
+            ids = ids.substring(1, ids.length);
+        }
+        $("#delete-id-span").html(ids);
+        $("#deleteChatMessageModal").modal("show");
+    }
+
+    // 请求其他页的数据
+    function requestPage(pageNum) {
+        if (pageNum) {
+            $("#pageNum").val(pageNum);
+        }
+        var jsonData = $("#chat-message-list-form").serialize();
+        getContentHtml('/admin/chat-message-list', true, jsonData);
+    }
+    // 清空查询条件
+    function clearCondition() {
+        $("#chat-message-sender-id-input").val("");
+        $("#chat-message-sender-name-input").val("");
+        $("#message-type-select").val("");
+        $("#chat-message-receiver-id-input").val("");
+        $("#chat-message-receiver-name-input").val("");
+        $("#chat-message-content-input").val("");
+        $("#chat-message-send-start-input").val("");
+        $("#chat-message-send-end-input").val("");
+    }
+
+    $(function() {
+        // 全选与全不选
+        $("#check-all").click(function() {
+            $(".chat-message-checkbox").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
+        });
+        // GO 直接请求某一页的数据
+        $("#go-btn").click(function() {
+            var pageNum = $("#go-input").val();
+            if ("" === pageNum) {
+                return;
+            }
+            requestPage(pageNum);
+        });
+    })
+</script>
+</html>

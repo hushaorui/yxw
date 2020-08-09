@@ -18,6 +18,10 @@
         drop table system_config
     </delete>
 
+    <delete id="deleteAll">
+        delete from system_config
+    </delete>
+
     <sql id="systemConfigSql">
         <if test="systemConfig!=null">
             <if test="systemConfig.classify!=null"> and classify = #{systemConfig.classify} </if>
@@ -44,7 +48,7 @@
         </if>
     </sql>
 
-    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.sysconfig.vo.SystemConfigQueryVo">
+    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.sysconfig.common.SystemConfigQueryVo">
         select count(1) from system_config
         <where>
             <include refid="systemConfigSql" />
@@ -63,7 +67,10 @@
         select * from system_config where classify = #{value}
     </select>
 
-    <select id="selectByVo" parameterType="com.hsr.yxw.sysconfig.vo.SystemConfigQueryVo" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+    <select id="selectAll" parameterType="com.hsr.yxw.sysconfig.common.SystemConfigQueryVo" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+        select * from system_config
+    </select>
+    <select id="selectByVo" parameterType="com.hsr.yxw.sysconfig.common.SystemConfigQueryVo" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
         select * from system_config
         <where>
             <include refid="systemConfigSql" />

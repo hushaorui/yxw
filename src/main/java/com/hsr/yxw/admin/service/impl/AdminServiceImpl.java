@@ -3,11 +3,14 @@ package com.hsr.yxw.admin.service.impl;
 import com.hsr.yxw.admin.service.AdminService;
 import com.hsr.yxw.common.WebConstants;
 import com.hsr.yxw.exception.ServiceException;
+import com.hsr.yxw.mapper.ChatMessageMapper;
 import com.hsr.yxw.mapper.PlayerMapper;
 import com.hsr.yxw.mapper.SystemConfigMapper;
 import com.hsr.yxw.player.pojo.Player;
 import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
+import com.hsr.yxw.ws.chat.common.ChatMessageUtils;
+import com.hsr.yxw.ws.chat.pojo.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ public class AdminServiceImpl implements AdminService {
     private PlayerMapper playerMapper;
     @Autowired
     private SystemConfigMapper systemConfigMapper;
+    @Autowired
+    private ChatMessageMapper chatMessageMapper;
     @Override
     public void initDB(boolean reset) throws ServiceException {
         try {
@@ -32,6 +37,9 @@ public class AdminServiceImpl implements AdminService {
                 try {
                     playerMapper.dropTable();
                 } catch (Exception ignore) {}
+                try {
+                    chatMessageMapper.dropTable();
+                } catch (Exception ignore) {}
             }
             // 创建表格
             try {
@@ -40,12 +48,33 @@ public class AdminServiceImpl implements AdminService {
             try {
                 playerMapper.createTable();
             } catch (Exception ignore) {}
+            try {
+                chatMessageMapper.createTable();
+            } catch (Exception ignore) {}
 
             initSystemConfigTable();
             initPlayerTable();
+            initChatMessageTable();
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException(e);
+        }
+    }
+
+    private void initChatMessageTable() {
+        // 纯测试数据
+        Player sender = new Player();
+        sender.setId(900L);
+        sender.setUsername("TestSendMessage");
+        Player receiver = new Player();
+        receiver.setId(901L);
+        receiver.setUsername("TestReceiveMessage");
+        ChatMessage chatMessage;
+        for (int i = 1; i <= 20; i++) {
+            chatMessage = ChatMessageUtils.createPublicChatMessage(sender, "公共聊天室聊天内容" + i);
+            chatMessageMapper.insert(chatMessage);
+            chatMessage = ChatMessageUtils.createPrivateChatMessage(sender, receiver, "私聊聊天内容" + i);
+            chatMessageMapper.insert(chatMessage);
         }
     }
 

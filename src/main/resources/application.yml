@@ -4,6 +4,8 @@ server:
   # 访问路径设置
   servlet:
     context-path: /
+  error:
+    include-stacktrace: always
 
 spring:
   #  freemarker:

@@ -5,7 +5,7 @@ import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.mapper.SystemConfigMapper;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 import com.hsr.yxw.sysconfig.service.SystemConfigService;
-import com.hsr.yxw.sysconfig.vo.SystemConfigQueryVo;
+import com.hsr.yxw.sysconfig.common.SystemConfigQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     @Override
     public PageBean<SystemConfig> getSystemConfigPageBean(Integer pageNum, Integer pageSize, SystemConfigQueryVo vo) throws ServiceException {
-        Integer count = systemConfigMapper.count(vo);
+        int count = systemConfigMapper.count(vo);
         PageBean<SystemConfig> pageBean = new PageBean<>(count, pageSize, pageNum);
         if (vo == null) {
             vo = new SystemConfigQueryVo();
@@ -251,53 +251,6 @@ public class SystemConfigServiceImpl implements SystemConfigService {
         if (existConfig == null) {
             throw new ServiceException("该id的配置已不存在：" + systemConfig);
         }
-        if (String.class.getSimpleName().equals(systemConfig.getValueType())) {
-            // 忽略
-        } else if (Byte.class.getSimpleName().equals(systemConfig.getValueType())) {
-            try {
-                Byte.parseByte(systemConfig.getConfigValue());
-            } catch (NumberFormatException e) {
-                throw new ServiceException("值：" + systemConfig.getConfigValue() + "不符合类型：" + systemConfig.getValueType());
-            }
-        } else if (Short.class.getSimpleName().equals(systemConfig.getValueType())) {
-            try {
-                Short.parseShort(systemConfig.getConfigValue());
-            } catch (NumberFormatException e) {
-                throw new ServiceException("值：" + systemConfig.getConfigValue() + "不符合类型：" + systemConfig.getValueType());
-            }
-        } else if (Integer.class.getSimpleName().equals(systemConfig.getValueType())) {
-            try {
-                Integer.parseInt(systemConfig.getConfigValue());
-            } catch (NumberFormatException e) {
-                throw new ServiceException("值：" + systemConfig.getConfigValue() + "不符合类型：" + systemConfig.getValueType());
-            }
-        } else if (Long.class.getSimpleName().equals(systemConfig.getValueType())) {
-            try {
-                Long.parseLong(systemConfig.getConfigValue());
-            } catch (NumberFormatException e) {
-                throw new ServiceException("值：" + systemConfig.getConfigValue() + "不符合类型：" + systemConfig.getValueType());
-            }
-        } else if (Boolean.class.getSimpleName().equals(systemConfig.getValueType())) {
-            try {
-                Boolean.parseBoolean(systemConfig.getConfigValue());
-            } catch (NumberFormatException e) {
-                throw new ServiceException("值：" + systemConfig.getConfigValue() + "不符合类型：" + systemConfig.getValueType());
-            }
-        } else if (Float.class.getSimpleName().equals(systemConfig.getValueType())) {
-            try {
-                Float.parseFloat(systemConfig.getConfigValue());
-            } catch (NumberFormatException e) {
-                throw new ServiceException("值：" + systemConfig.getConfigValue() + "不符合类型：" + systemConfig.getValueType());
-            }
-        } else if (Double.class.getSimpleName().equals(systemConfig.getValueType())) {
-            try {
-                Double.parseDouble(systemConfig.getConfigValue());
-            } catch (NumberFormatException e) {
-                throw new ServiceException("值：" + systemConfig.getConfigValue() + "不符合类型：" + systemConfig.getValueType());
-            }
-        } else {
-            throw new ServiceException("未知的值类型：" + systemConfig.getValueType());
-        }
         existConfig.setClassify(systemConfig.getClassify());
         existConfig.setConfigValue(systemConfig.getConfigValue());
         existConfig.setValueType(systemConfig.getValueType());
@@ -313,5 +266,14 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     @Override
     public List<String> selectAllValueType() throws ServiceException {
         return systemConfigMapper.selectAllValueType();
+    }
+
+    @Override
+    public void addSystemConfig(SystemConfig systemConfig) throws ServiceException {
+        SystemConfig exist = systemConfigMapper.selectByConfigKey(systemConfig.getConfigKey());
+        if (exist != null) {
+            throw new ServiceException("该键的配置已存在：" + systemConfig.getConfigKey());
+        }
+        systemConfigMapper.insert(systemConfig);
     }
 }

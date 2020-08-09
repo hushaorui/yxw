@@ -17,10 +17,10 @@ import java.io.IOException;
 @MapperScan(basePackages = "com.hsr.yxw.mapper")
 public class YxwApplication {
 
-    @Bean
+    /*@Bean
     public YxwCardConfig YxwCardConfig() throws IOException, IllegalAccessException, InstantiationException {
         return ConfigUtils.getYxwConfig(YxwCardConfig.class, false);
-    }
+    }*/
     public static void main(String[] args) {
         SpringApplication.run(YxwApplication.class, args);
     }

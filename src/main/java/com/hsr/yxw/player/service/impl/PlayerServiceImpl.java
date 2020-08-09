@@ -4,8 +4,9 @@ import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.mapper.PlayerMapper;
 import com.hsr.yxw.player.pojo.Player;
-import com.hsr.yxw.player.vo.PlayerQueryVo;
+import com.hsr.yxw.player.common.PlayerQueryVo;
 import com.hsr.yxw.player.service.PlayerService;
+import com.hsr.yxw.util.YxwStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +62,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public PageBean<Player> getPlayerPageBean(Integer pageNum, Integer pageSize, PlayerQueryVo vo) throws ServiceException {
-        Integer count = playerMapper.count(vo);
+        int count = playerMapper.count(vo);
         PageBean<Player> pageBean = new PageBean<Player>(count, pageSize, pageNum);
         if (vo == null) {
             vo = new PlayerQueryVo();
@@ -84,16 +85,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public void deletePlayers(String ids) throws ServiceException {
-        String[] idArray = ids.split("\\s*,\\s*");
-        ArrayList<Long> idList = new ArrayList<>(idArray.length);
-        for (String idString : idArray) {
-            try {
-                if ("1".equals(idString)) {
-                    throw new ServiceException("ID为1的用户禁止删除！");
-                }
-                idList.add(Long.parseLong(idString));
-            } catch (NumberFormatException ignore) {
-            }
+        ArrayList<Long> idList = YxwStringUtils.idStringToList(ids);
+        if (idList.contains(1L)) {
+            throw new ServiceException("ID为1的用户禁止删除！");
         }
         playerMapper.delete(idList);
     }

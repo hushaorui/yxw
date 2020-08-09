@@ -1,5 +1,7 @@
 package com.hsr.yxw.ws.chat.pojo;
 
+import com.hsr.yxw.ws.chat.common.ChatMessageType;
+
 public class ChatMessage {
     // 数据库保存的自增id
     private Long id;
@@ -9,6 +11,8 @@ public class ChatMessage {
     private String senderName;
     // 发送的时间
     private Long sendTime;
+    // 聊天信息类型
+    private ChatMessageType messageType;
     // 接收者id，为null时是所有用户
     private Long receiverId;
     // 接收者 receiverName 为null时是所有用户
@@ -46,6 +50,14 @@ public class ChatMessage {
 
     public void setSendTime(Long sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public ChatMessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(ChatMessageType messageType) {
+        this.messageType = messageType;
     }
 
     public Long getReceiverId() {

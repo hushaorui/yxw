@@ -24,7 +24,9 @@
         <li><a href="#">配置管理</a></li>
         <li class="active">配置列表</li>
     </ol>
+    <button class="btn btn-success" onclick="showAddSystemConfigModal()">添加配置</button>
     <button class="btn btn-danger" onclick="showBatchDeleteSystemConfigModal()">批量删除</button>
+    <button class="btn btn-success float-right" onclick="requestPage()">刷新</button>
 
     <form id="system-config-list-form" action="/admin/system-config-list" method="post">
         <table class="table" style="width: 60%;">
@@ -68,7 +70,7 @@
                     <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
                 </select>
                 共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
-                <input type="hidden" name="pageNum" id="pageNum" />
+                <input type="hidden" name="pageNum" id="pageNum" th:value="${pageBean.currentPage}" />
             </caption>
             <thead>
             <th><input type="checkbox" id="check-all" /></th>
@@ -131,6 +133,56 @@
         </div><!-- /.modal -->
     </div>
 
+    <!-- 添加配置模态框（Modal） -->
+    <div class="modal fade" id="addSystemConfigModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="addModalLabel">编辑配置</h4>
+                </div>
+                <form id="config-add-form" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="addConfigKey" class="col-sm-2 control-label">键</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="addConfigKey" name="configKey" placeholder="请输入键">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addClassify" class="col-sm-2 control-label">类别</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="addClassify" name="classify" placeholder="请输入类别">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addConfigValue" class="col-sm-2 control-label">配置值</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="addConfigValue" name="configValue" placeholder="请输入配置的值">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addValueType" class="col-sm-2 control-label"> 值类型</label>
+                        <div class="col-sm-8">
+                            <select id="addValueType" class="form-control" name="valueType">
+                                <option value="String">String</option>
+                                <option value="Byte">Byte</option>
+                                <option value="Short">Short</option>
+                                <option value="Integer">Integer</option>
+                                <option value="Long">Long</option>
+                                <option value="Boolean">Boolean</option>
+                                <option value="Float">Float</option>
+                                <option value="Double">Double</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="addSystemConfig()" >确认添加</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
     <!-- 编辑配置模态框（Modal） -->
     <div class="modal fade" id="editSystemConfigModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -148,21 +200,21 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="newClassify" class="col-sm-2 control-label">类别</label>
+                        <label for="updateClassify" class="col-sm-2 control-label">类别</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="newClassify" name="classify" placeholder="请输入类别">
+                            <input type="text" class="form-control" id="updateClassify" name="classify" placeholder="请输入类别">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="newConfigValue" class="col-sm-2 control-label">配置值</label>
+                        <label for="updateConfigValue" class="col-sm-2 control-label">配置值</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="newConfigValue" name="configValue" placeholder="请输入配置的值">
+                            <input type="text" class="form-control" id="updateConfigValue" name="configValue" placeholder="请输入配置的值">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="newValueType" class="col-sm-2 control-label"> 值类型</label>
+                        <label for="updateValueType" class="col-sm-2 control-label"> 值类型</label>
                         <div class="col-sm-8">
-                            <select id="newValueType" class="form-control" name="valueType">
+                            <select id="updateValueType" class="form-control" name="valueType">
                                 <option value="String">String</option>
                                 <option value="Byte">Byte</option>
                                 <option value="Short">Short</option>
@@ -195,21 +247,51 @@
             toastr[result.result](result.message);
         }, "json");
     }
-    // 更新配置
-    function updateSystemConfig() {
-        var classify = $("#newClassify").val().trim();
-        if (classify === "") {
-            toastr.warning("类别不可为空！");
+    //添加配置
+    function addSystemConfig() {
+        var configKey = $("#addConfigKey").val().trim();
+        if (configKey === "") {
+            toastr.warning("键不可为空！");
             return;
         }
-        var configValue = $("#newConfigValue").val();
+        var classify = $("#addClassify").val().trim();
+        var configValue = $("#addConfigValue").val();
+        var success = checkSystemConfig(classify, configValue);
+        if (! success) {
+            return;
+        }
+        $.post("/admin/system-config-add", $("#config-add-form").serialize(), function (result) {
+            if ("success" === result.result) {
+                $("#addSystemConfigModal").modal("hide");
+            }
+            toastr[result.result](result.message);
+        }, "json");
+    }
+    //校验
+    function checkSystemConfig(classify, configValue) {
+        if (classify === "") {
+            toastr.warning("类别不可为空！");
+            return false;
+        }
         if (configValue === "") {
             toastr.warning("值不可为空！");
+            return false;
+        }
+        return true;
+    }
+    // 更新配置
+    function updateSystemConfig() {
+        var classify = $("#updateClassify").val().trim();
+        var configValue = $("#updateConfigValue").val();
+        var success = checkSystemConfig(classify, configValue);
+        if (! success) {
             return;
         }
         // 提交
         $.post("/admin/system-config-update", $("#config-update-form").serialize(), function (result) {
-            $("#editSystemConfigModal").modal("hide");
+            if ("success" === result.result) {
+                $("#editSystemConfigModal").modal("hide");
+            }
             toastr[result.result](result.message);
         }, "json");
     }
@@ -222,15 +304,22 @@
         //console.log(id + " " + classify + " " + configValue + " " + valueType);
         $("#config-id-p").html(id);
         $("#config-id-input").val(id);
-        $("#newClassify").val(classify);
-        $("#newConfigValue").val(configValue);
-        $("#newValueType").val(valueType);
+        $("#updateClassify").val(classify);
+        $("#updateConfigValue").val(configValue);
+        $("#updateValueType").val(valueType);
         $("#editSystemConfigModal").modal("show");
     }
     // 显示删除配置的确认框
     function showDeleteSystemConfigModal(id) {
         $("#delete-id-span").html(id);
         $("#deleteSystemConfigModal").modal("show");
+    }
+    // 显示添加配置的确认框
+    function showAddSystemConfigModal() {
+        $("#addConfigKey").val("");
+        $("#addClassify").val("");
+        $("#addConfigValue").val("");
+        $("#addSystemConfigModal").modal("show");
     }
     // 显示批量删除配置的确认框
     function showBatchDeleteSystemConfigModal() {
@@ -248,7 +337,9 @@
     }
     // 请求其他页的数据
     function requestPage(pageNum) {
-        $("#pageNum").val(pageNum);
+        if (pageNum) {
+            $("#pageNum").val(pageNum);
+        }
         var jsonData = $("#system-config-list-form").serialize();
         getContentHtml('/admin/system-config-list', true, jsonData);
     }

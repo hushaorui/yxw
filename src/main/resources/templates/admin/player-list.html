@@ -24,7 +24,9 @@
         <li><a href="#">用户管理</a></li>
         <li class="active">用户列表</li>
     </ol>
+    <button class="btn btn-success" onclick="showAddPlayerModal()">添加玩家</button>
     <button class="btn btn-danger" onclick="showBatchDeletePlayerModal()">批量删除</button>
+    <button class="btn btn-success float-right" onclick="requestPage()">刷新</button>
     <form id="player-list-form" action="/admin/player-list" method="post">
         <!-- 该table内都是查询的条件 -->
         <table class="table" style="width: 80%;">
@@ -54,12 +56,12 @@
                 <td>
                     <label for="player-create-start-input">创建时间范围：</label>
                     <input id="player-create-start-input" name="createTimeStart" th:value="${#dates.format(playerQueryVo.createTimeStart,'yyyy-MM-dd HH:mm:ss')}" />
-                    -<input id="player-create-end-input" name="createTimeEnd" th:value="${#dates.format(playerQueryVo.createTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
+                    - <input id="player-create-end-input" name="createTimeEnd" th:value="${#dates.format(playerQueryVo.createTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
                 </td>
                 <td>
                     <label for="player-login-start-input">最后登录时间范围：</label>
                     <input id="player-login-start-input" name="lastLoginTimeStart" th:value="${#dates.format(playerQueryVo.lastLoginTimeStart,'yyyy-MM-dd HH:mm:ss')}" />
-                    -<input id="player-login-end-input" name="lastLoginTimeEnd" th:value="${#dates.format(playerQueryVo.lastLoginTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
+                    - <input id="player-login-end-input" name="lastLoginTimeEnd" th:value="${#dates.format(playerQueryVo.lastLoginTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
                 </td>
                 <td>
                     <a class="btn btn-primary btn-xs" onclick="checkAndRequestPage()">搜索</a>
@@ -74,7 +76,7 @@
                     <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
                 </select>
                 共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
-                <input type="hidden" name="pageNum" id="pageNum" />
+                <input type="hidden" name="pageNum" id="pageNum" th:value="${pageBean.currentPage}" />
             </caption>
             <thead>
                 <th><input type="checkbox" id="check-all" /></th>
@@ -137,6 +139,51 @@
         </div><!-- /.modal -->
     </div>
 
+    <!-- 添加玩家模态框（Modal） -->
+    <div class="modal fade" id="addPlayerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="addModalLabel">添加</h4>
+                </div>
+                <form id="player-add-form" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="addUsername" class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="addUsername" name="username" placeholder="请输入用户名">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addPassword" class="col-sm-2 control-label">密码</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="addPassword" name="password" placeholder="请输入密码">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addRePassword" class="col-sm-2 control-label">确认密码</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="addRePassword" placeholder="请确认密码">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateAdmin" class="col-sm-2 control-label"> 是否管理员</label>
+                        <div class="col-sm-8">
+                            <select id="addAdmin" class="form-control" name="admin">
+                                <option value="false">不是</option>
+                                <option value="true">是</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="addPlayer()" >确认添加</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
     <!-- 编辑玩家模态框（Modal） -->
     <div class="modal fade" id="editPlayerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -150,25 +197,25 @@
                         <label class="col-sm-2 control-label">ID</label>
                         <div class="col-sm-8">
                             <p id="player-id-p" class="form-control-static"></p>
-                            <input id="player-id-input" type="hidden" name="id" />
+                            <input id="player-update-id-input" type="hidden" name="id" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="newUsername" class="col-sm-2 control-label">用户名</label>
+                        <label for="updateUsername" class="col-sm-2 control-label">用户名</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="newUsername" name="username" placeholder="请输入密码">
+                            <input type="text" class="form-control" id="updateUsername" name="username" placeholder="请输入密码">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="newPassword" class="col-sm-2 control-label">密码</label>
+                        <label for="updatePassword" class="col-sm-2 control-label">密码</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="newPassword" name="password" placeholder="请输入密码">
+                            <input type="text" class="form-control" id="updatePassword" name="password" placeholder="请输入密码">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="newAdmin" class="col-sm-2 control-label"> 是否管理员</label>
+                        <label for="updateAdmin" class="col-sm-2 control-label"> 是否管理员</label>
                         <div class="col-sm-8">
-                            <select id="newAdmin" class="form-control" name="admin">
+                            <select id="updateAdmin" class="form-control" name="admin">
                                 <option value="">请选择...</option>
                                 <option value="false">不是</option>
                                 <option value="true">是</option>
@@ -196,30 +243,57 @@
             toastr[result.result](result.message);
         }, "json");
     }
-    //提交玩家修改
-    function updatePlayer() {
+    // 添加玩家
+    function addPlayer() {
+        var username = $("#addUsername").val();
+        var password = $("#addPassword").val();
+        var admin = $("#addAdmin").val();
         // 校验
-        var username = $("#newUsername").val();
+        var success = checkPlayerForm(username, password, admin);
+        if (! success) {
+            return;
+        }
+        var rePassword = $("#addRePassword").val();
+        if (password !== rePassword) {
+            toastr.warning("两次密码不一致！");
+        }
+        // 提交
+        $.post("/admin/player-add", $("#player-add-form").serialize(), function (result) {
+            $("#addPlayerModal").modal("hide");
+            toastr[result.result](result.message);
+        }, "json");
+    }
+    function checkPlayerForm(username, password, admin) {
         if (username === "") {
             toastr.warning("用户名不可为空！");
-            return;
+            return false;
         }
         if (! /[\u4e00-\u9fa5_a-zA-Z0-9]{1,36}/.test(username)) {
             toastr.warning("用户名只能由汉字、字母、数字组成，长度不超过36个字符！");
-            return;
+            return false;
         }
-        var password = $("#newPassword").val();
         if (password === "") {
             toastr.warning("密码不可为空！");
-            return;
+            return false;
         }
         if (! /[\u4e00-\u9fa5_a-zA-Z0-9]{1,36}/.test(password)) {
             toastr.warning("密码只能由汉字、字母、数字组成，长度不超过36个字符！");
-            return;
+            return false;
         }
-        var admin = $("#newAdmin").val();
         if (admin === "") {
             toastr.warning("请选择是否为管理员！");
+            return false;
+        }
+        return true;
+    }
+    //提交玩家修改
+    function updatePlayer() {
+        var username = $("#updateUsername").val();
+        var password = $("#updatePassword").val();
+        var admin = $("#updateAdmin").val();
+        // 校验
+        var success = checkPlayerForm(username, password, admin);
+        if (! success) {
             return;
         }
         // 提交
@@ -236,16 +310,24 @@
         var admin = $(aElement).parent().siblings(".player-admin-td").html();
         //console.log(id + " " + username + " " + password + " " + admin);
         $("#player-id-p").html(id);
-        $("#player-id-input").val(id);
-        $("#newUsername").val(username);
-        $("#newPassword").val(password);
-        $("#newAdmin").val(admin);
+        $("#player-update-id-input").val(id);
+        $("#updateUsername").val(username);
+        $("#updatePassword").val(password);
+        $("#updateAdmin").val(admin);
         $("#editPlayerModal").modal("show");
     }
     // 显示删除玩家的确认框
     function showDeletePlayerModal(id) {
         $("#delete-id-span").html(id);
         $("#deletePlayerModal").modal("show");
+    }
+    // 显示添加玩家的确认框
+    function showAddPlayerModal() {
+        $("#addUsername").val("");
+        $("#addPassword").val("");
+        $("#addRePassword").val("");
+        $("#addAdmin").val("false");
+        $("#addPlayerModal").modal("show");
     }
     // 显示批量删除玩家的确认框
     function showBatchDeletePlayerModal() {
@@ -301,7 +383,9 @@
 
     // 请求其他页的数据
     function requestPage(pageNum) {
-        $("#pageNum").val(pageNum);
+        if (pageNum) {
+            $("#pageNum").val(pageNum);
+        }
         var jsonData = $("#player-list-form").serialize();
         getContentHtml('/admin/player-list', true, jsonData);
     }

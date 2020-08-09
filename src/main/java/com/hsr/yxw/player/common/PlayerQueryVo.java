@@ -1,4 +1,4 @@
-package com.hsr.yxw.player.vo;
+package com.hsr.yxw.player.common;
 
 import com.hsr.yxw.common.CommonVo;
 import com.hsr.yxw.player.pojo.Player;

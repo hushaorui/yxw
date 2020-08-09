@@ -1,4 +1,4 @@
-package com.hsr.yxw.sysconfig.vo;
+package com.hsr.yxw.sysconfig.common;
 
 import com.hsr.yxw.common.CommonVo;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;

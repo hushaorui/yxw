@@ -34,7 +34,7 @@
     <delete id="dropTable">
         drop table player
     </delete>
-    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.player.vo.PlayerQueryVo">
+    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.player.common.PlayerQueryVo">
         select count(1) from player
         <where>
             <include refid="playerSql" />
@@ -49,7 +49,7 @@
     <select id="selectByUsername" parameterType="String" resultType="com.hsr.yxw.player.pojo.Player">
         select * from player where username = #{value}
     </select>
-    <select id="selectByVo" parameterType="com.hsr.yxw.player.vo.PlayerQueryVo" resultType="com.hsr.yxw.player.pojo.Player">
+    <select id="selectByVo" parameterType="com.hsr.yxw.player.common.PlayerQueryVo" resultType="com.hsr.yxw.player.pojo.Player">
         select * from player
         <where>
             <include refid="playerSql" />
@@ -71,6 +71,9 @@
         <foreach item='item' index='index' collection='ids' open='(' separator=',' close=')'>
             #{item}
         </foreach>
+    </delete>
+    <delete id="deleteAll">
+        delete from player
     </delete>
     <update id="update" parameterType="com.hsr.yxw.player.pojo.Player">
         update player

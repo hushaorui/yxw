@@ -97,7 +97,8 @@
     <div class="top-head">
         <div id="logo">logo</div>
         <div id="title">xxx后台管理系统</div>
-        <div id="per-mes">当前时间：<span id="current-time-span"></span> 您好，admin。欢迎您使用后台管理系统！
+        当前时间：<span id="current-time-span"></span>
+        <div id="per-mes"> 您好，admin。欢迎您使用后台管理系统！
             <a href="/logout">注销</a>
         </div>
 
@@ -110,7 +111,7 @@
 
             <li role="presentation" class="active">
                 <!-- 选项控制data-target对应的显隐 -->
-                <a href="#" class="menu-a">用户管理</a>
+                <a href="#" class="menu-a">系统管理</a>
                 <!-- 隐藏的详细菜单 -->
                 <ul id="list1" class="menu-ul">
                     <li class="active">
@@ -118,18 +119,22 @@
                             用户列表
                         </a>
                     </li>
-                    <li><a href="#">操作二</a></li>
-                </ul>
-            </li>
-            <li role="presentation">
-                <a href="#" class="menu-a">配置管理</a>
-                <ul id="list2" class="menu-ul">
                     <li class="active">
                         <a href="#" onclick="getContentHtml('/admin/system-config-list')">
                             配置列表
                         </a>
                     </li>
-                    <li><a href="#">操作二</a></li>
+                    <li class="active">
+                        <a href="#" onclick="getContentHtml('/admin/chat-message-list')">
+                            聊天记录列表
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li role="presentation">
+                <a href="#" class="menu-a">其他管理</a>
+                <ul id="list2" class="menu-ul">
+
                 </ul>
             </li>
             <li role="presentation">
@@ -152,7 +157,7 @@
 </body>
 <script>
     function getContentHtml(url, isPost, jsonData) {
-        $("#right-content").html("<h2>加载中.....</h2>");
+        $("#right-content").html("<h3>加载中.....</h3>");
         if (isPost) {
             $.post(url, jsonData, function (html) {
                 $("#right-content").html(html);

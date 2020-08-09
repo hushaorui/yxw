@@ -4,7 +4,7 @@ import com.hsr.yxw.common.CommonResult;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.player.pojo.Player;
 import com.hsr.yxw.player.service.PlayerService;
-import com.hsr.yxw.player.util.PlayerUtil;
+import com.hsr.yxw.player.common.PlayerUtil;
 import com.hsr.yxw.run.SpringBootUtil;
 import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.service.SystemConfigService;

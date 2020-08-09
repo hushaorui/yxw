@@ -3,9 +3,8 @@ package com.hsr.yxw.sysconfig.service;
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
-import com.hsr.yxw.sysconfig.vo.SystemConfigQueryVo;
+import com.hsr.yxw.sysconfig.common.SystemConfigQueryVo;
 
-import javax.xml.ws.Service;
 import java.util.List;
 
 public interface SystemConfigService {
@@ -34,4 +33,6 @@ public interface SystemConfigService {
 
     List<String> selectAllClassify() throws ServiceException;
     List<String> selectAllValueType() throws ServiceException;
+
+    void addSystemConfig(SystemConfig systemConfig) throws ServiceException;
 }

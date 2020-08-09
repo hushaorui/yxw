@@ -3,7 +3,7 @@ package com.hsr.yxw.mapper.test;
 import com.alibaba.fastjson.JSONArray;
 import com.hsr.yxw.mapper.PlayerMapper;
 import com.hsr.yxw.player.pojo.Player;
-import com.hsr.yxw.player.vo.PlayerQueryVo;
+import com.hsr.yxw.player.common.PlayerQueryVo;
 import com.hsr.yxw.run.YxwApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,7 +85,7 @@ public class PlayerMapperTest {
     @Test
     public void test_deleteById() {
         try {
-            playerMapper.deleteById(1);
+            playerMapper.deleteById(1L);
             List<Long> list = new ArrayList<>();
             list.add(3L);
             list.add(4L);

@@ -4,9 +4,10 @@ import com.alibaba.druid.util.StringUtils;
 import com.hsr.yxw.common.CommonResult;
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.exception.ServiceException;
+import com.hsr.yxw.sysconfig.common.SystemConfigUtils;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 import com.hsr.yxw.sysconfig.service.SystemConfigService;
-import com.hsr.yxw.sysconfig.vo.SystemConfigQueryVo;
+import com.hsr.yxw.sysconfig.common.SystemConfigQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,25 +35,38 @@ public class AdminSystemConfigController {
         model.addAttribute("pageSizes", PageBean.pageSizes);
         return "admin/system-config-list";
     }
+    @RequestMapping(value = "admin/system-config-add", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult addSystemConfig(SystemConfig systemConfig) {
+        if (systemConfig == null) {
+            return CommonResult.dataCannotBeNullError();
+        }
+        try {
+            //校验
+            CommonResult commonResult = SystemConfigUtils.checkSystemConfig(systemConfig);
+            if (commonResult != null) {
+                return commonResult;
+            }
+            systemConfigService.addSystemConfig(systemConfig);
+            return CommonResult.addSuccess();
+        } catch (ServiceException e) {
+            return CommonResult.error(e.getMessage());
+        }
+    }
     @RequestMapping(value = "admin/system-config-update", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult updateSystemConfig(SystemConfig systemConfig) throws Exception {
         if (systemConfig == null || systemConfig.getId() == null) {
-            return CommonResult.error("数据不可为空！");
+            return CommonResult.dataCannotBeNullError();
         }
         try {
-            if (systemConfig.getClassify() == null || "".equals(systemConfig.getClassify().trim())) {
-                return CommonResult.error("类别不可为空！");
-            }
-            if (systemConfig.getConfigValue() == null || "".equals(systemConfig.getConfigValue().trim())) {
-                return CommonResult.error("值不可为空！");
-            }
-            if (systemConfig.getValueType() == null || "".equals(systemConfig.getValueType().trim())) {
-                return CommonResult.error("值类型不可为空！");
+            CommonResult commonResult = SystemConfigUtils.checkSystemConfig(systemConfig);
+            if (commonResult != null) {
+                return commonResult;
             }
             // 更新
             systemConfigService.updateSystemConfig(systemConfig);
-            return CommonResult.success("修改配置成功！");
+            return CommonResult.updateSuccess();
         } catch (ServiceException e) {
             return CommonResult.error(e.getMessage());
         }
@@ -65,7 +79,7 @@ public class AdminSystemConfigController {
         }
         try {
             systemConfigService.deleteSystemConfigs(ids);
-            return CommonResult.success("删除成功！");
+            return CommonResult.deleteSuccess();
         } catch (ServiceException e) {
             return CommonResult.error(e.getMessage());
         }

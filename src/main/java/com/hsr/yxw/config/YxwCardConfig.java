@@ -1,17 +1,13 @@
 package com.hsr.yxw.config;
 
 import com.hsr.yxw.common.YxwConfig;
-import com.hsr.yxw.em.card.DLRareLevel;
-import com.hsr.yxw.em.card.MonsterElement;
-import com.hsr.yxw.em.card.MonsterRace;
-import com.hsr.yxw.em.card.MonsterType;
-import com.hsr.yxw.pojo.Card;
-import com.hsr.yxw.pojo.MonsterCard;
-
-import java.util.TreeMap;
 
 public class YxwCardConfig implements YxwConfig {
-    public TreeMap<Long, Card> cards;
+    @Override
+    public void init() {
+
+    }
+    /*public TreeMap<Long, Card> cards;
     @Override
     public void init() {
         cards = new TreeMap<>();
@@ -53,5 +49,5 @@ public class YxwCardConfig implements YxwConfig {
         card3.setMonsterElement(MonsterElement.GROUND); // 地属性
         card3.setMonsterType(MonsterType.NORMAL); // 通常
         cards.put(card3.getId(), card3);
-    }
+    }*/
 }

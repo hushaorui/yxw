@@ -1,11 +1,11 @@
-package com.hsr.yxw.pojo;
+package com.hsr.yxw.card.pojo;
 
 import com.hsr.yxw.em.card.DLRareLevel;
 import com.hsr.yxw.em.card.MonsterElement;
 import com.hsr.yxw.em.card.MonsterRace;
 import com.hsr.yxw.em.card.MonsterType;
 
-public class MonsterCard extends Card {
+public class YxwMonsterCard extends YxwCard {
     private static final long serialVersionUID = 0L;
 
     /** 怪兽属性 */

@@ -3,7 +3,7 @@ package com.hsr.yxw.player.service;
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.player.pojo.Player;
-import com.hsr.yxw.player.vo.PlayerQueryVo;
+import com.hsr.yxw.player.common.PlayerQueryVo;
 
 import java.util.List;
 
