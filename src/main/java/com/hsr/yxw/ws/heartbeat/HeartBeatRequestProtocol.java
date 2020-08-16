@@ -13,4 +13,13 @@ public class HeartBeatRequestProtocol extends ProtocolIF {
         setType(type);
         setMessage(message);
     }
+    // 客户端当前时间
+    private long clientTime;
+
+    public long getClientTime() {
+        return clientTime;
+    }
+    public void setClientTime(long clientTime) {
+        this.clientTime = clientTime;
+    }
 }

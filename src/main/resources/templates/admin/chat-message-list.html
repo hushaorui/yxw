@@ -5,8 +5,8 @@
     <title>DIY作品</title>
 
     <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
     <link rel="stylesheet" href="../../static/bootstrap/css/toastr.css" th:href="@{/bootstrap/css/toastr.css}">
+    <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
     <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
     <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
     <script src="../../static/bootstrap/js/common.js" th:src="@{/bootstrap/js/common.js}"></script>
@@ -24,8 +24,8 @@
         <li><a href="#">聊天管理</a></li>
         <li class="active">聊天信息列表</li>
     </ol>
+    <button class="btn btn-success" onclick="requestChatMessageListPage();toastr.success('刷新成功！')">刷新</button>
     <button class="btn btn-danger" onclick="showBatchDeleteChatMessageModal()">批量删除</button>
-    <button class="btn btn-success float-right" onclick="requestPage()">刷新</button>
     <form id="chat-message-list-form" action="/admin/chat-message-list" method="post">
 
         <!-- 该table内都是查询的条件 -->
@@ -46,7 +46,7 @@
                     - <input id="chat-message-send-end-input" name="sendTimeEnd" th:value="${#dates.format(chatMessageQueryVo.sendTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
                 </td>
                 <td>
-                    <a class="btn btn-primary btn-xs" onclick="clearCondition()">清空条件</a>
+                    <a class="btn btn-primary btn-xs" onclick="clearChatMessageCondition()">清空条件</a>
                 </td>
             </tr>
             <tr>
@@ -71,7 +71,7 @@
                     <input id="chat-message-content-input" name="chatMessage.content" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getContent()}" />
                 </td>
                 <td>
-                    <a class="btn btn-primary btn-xs" onclick="requestPage(1)">搜索</a>
+                    <a class="btn btn-primary btn-xs" onclick="requestChatMessageListPage(1)">搜索</a>
                 </td>
             </tr>
         </table>
@@ -84,10 +84,10 @@
                     <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
                 </select>
                 共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
-                <input type="hidden" name="pageNum" id="pageNum" th:value="${pageBean.currentPage}" />
+                <input type="hidden" name="pageNum" id="chatMessagePageNum" th:value="${pageBean.currentPage}" />
             </caption>
             <thead>
-            <th><input type="checkbox" id="check-all" /></th>
+            <th><input type="checkbox" id="chat-message-check-all" /></th>
             <th>序号</th>
             <th>ID</th>
             <th>发送者ID</th>
@@ -118,9 +118,9 @@
         <ul class="pagination">
             <li>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                    <input type="text" class="form-control" id="chat-message-go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="go-btn">GO!</button>
+                        <button class="btn btn-default" type="button" id="chat-message-go-btn">GO!</button>
                     </span>
                 </div>
             </li>
@@ -128,7 +128,7 @@
                 th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
 
                 <a href="#" th:text="${otherPage.value2}"
-                   th:onclick="'requestPage(' + ${otherPage.value1} + ')'"></a>
+                   th:onclick="'requestChatMessageListPage(' + ${otherPage.value1} + ')'"></a>
             </li>
         </ul>
     </form>
@@ -139,12 +139,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="deleteModalLabel">请确认</h4>
+                    <h4 class="modal-title">请确认</h4>
                 </div>
-                <div class="modal-body">是否删除ID为 <span id="delete-id-span"></span> 的聊天记录？</div>
+                <div class="modal-body">是否删除ID为 <span id="chat-message-delete-id-span"></span> 的聊天记录？</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteChatMessage()" >确认</button>
+                    <button type="button" class="btn btn-primary" onclick="deleteChatMessage()" >确认</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -156,7 +156,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="chatMessageDetailModalLabel">查看聊天内容</h4>
+                    <h4 class="modal-title">查看聊天内容</h4>
                 </div>
                 <div class="modal-body" id="chat-message-content-detail"></div>
                 <div class="modal-footer">
@@ -170,17 +170,20 @@
 <script>
     // 删除聊天记录
     function deleteChatMessage() {
-        var ids = $("#delete-id-span").html();
+        var ids = $("#chat-message-delete-id-span").html();
         if ("" === ids) {
             return;
         }
         $.get("/admin/chat-message-delete", {"ids" : ids}, function (result) {
+            if ("success" === result.result) {
+                $("#deleteChatMessageModal").modal("hide");
+            }
             toastr[result.result](result.message);
         }, "json");
     }
     // 显示确认删除聊天记录的模态框
     function showDeleteChatMessageModal(id) {
-        $("#delete-id-span").html(id);
+        $("#chat-message-delete-id-span").html(id);
         $("#deleteChatMessageModal").modal("show");
     }
     // 根据id查询聊天内容并显示
@@ -203,20 +206,20 @@
         } else {
             ids = ids.substring(1, ids.length);
         }
-        $("#delete-id-span").html(ids);
+        $("#chat-message-delete-id-span").html(ids);
         $("#deleteChatMessageModal").modal("show");
     }
 
     // 请求其他页的数据
-    function requestPage(pageNum) {
-        if (pageNum) {
-            $("#pageNum").val(pageNum);
+    function requestChatMessageListPage(chatMessagePageNum) {
+        if (chatMessagePageNum) {
+            $("#chatMessagePageNum").val(chatMessagePageNum);
         }
         var jsonData = $("#chat-message-list-form").serialize();
         getContentHtml('/admin/chat-message-list', true, jsonData);
     }
     // 清空查询条件
-    function clearCondition() {
+    function clearChatMessageCondition() {
         $("#chat-message-sender-id-input").val("");
         $("#chat-message-sender-name-input").val("");
         $("#message-type-select").val("");
@@ -229,16 +232,16 @@
 
     $(function() {
         // 全选与全不选
-        $("#check-all").click(function() {
+        $("#chat-message-check-all").click(function() {
             $(".chat-message-checkbox").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
         });
         // GO 直接请求某一页的数据
-        $("#go-btn").click(function() {
-            var pageNum = $("#go-input").val();
-            if ("" === pageNum) {
+        $("#chat-message-go-btn").click(function() {
+            var chatMessagePageNum = $("#chat-message-go-input").val();
+            if ("" === chatMessagePageNum) {
                 return;
             }
-            requestPage(pageNum);
+            requestChatMessageListPage(chatMessagePageNum);
         });
     })
 </script>

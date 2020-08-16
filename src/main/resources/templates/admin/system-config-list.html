@@ -5,8 +5,8 @@
     <title>DIY作品</title>
 
     <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
     <link rel="stylesheet" href="../../static/bootstrap/css/toastr.css" th:href="@{/bootstrap/css/toastr.css}">
+    <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
     <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
     <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
     <script src="../../static/bootstrap/js/common.js" th:src="@{/bootstrap/js/common.js}"></script>
@@ -24,41 +24,41 @@
         <li><a href="#">配置管理</a></li>
         <li class="active">配置列表</li>
     </ol>
+    <button class="btn btn-success" onclick="requestSystemConfigPage();toastr.success('刷新成功！')">刷新</button>
     <button class="btn btn-success" onclick="showAddSystemConfigModal()">添加配置</button>
     <button class="btn btn-danger" onclick="showBatchDeleteSystemConfigModal()">批量删除</button>
-    <button class="btn btn-success float-right" onclick="requestPage()">刷新</button>
 
     <form id="system-config-list-form" action="/admin/system-config-list" method="post">
         <table class="table" style="width: 60%;">
             <tr>
                 <td><span>筛选：</span></td>
                 <td>
-                    <label for="classify-like-select">类别：</label>
-                    <select id="classify-like-select" name="classifyLike">
+                    <label for="config-classify-like-select">类别：</label>
+                    <select id="config-classify-like-select" name="classifyLike">
                         <option value="">请选择...</option>
                         <option th:each="classify,stat:${classifyList}" th:value="${classify}" th:text="${classify}" th:selected="${classify eq systemConfigQueryVo.classifyLike}"></option>
                     </select>
                 </td>
                 <td>
-                    <label for="key-like-input">键：</label>
-                    <input id="key-like-input" name="configKeyLike" th:value="${systemConfigQueryVo.configKeyLike}" />
+                    <label for="config-key-like-input">键：</label>
+                    <input id="config-key-like-input" name="configKeyLike" th:value="${systemConfigQueryVo.configKeyLike}" />
                 </td>
                 <td>
-                    <label for="value-like-input">值：</label>
-                    <input id="value-like-input" name="configValueLike" th:value="${systemConfigQueryVo.configValueLike}" />
+                    <label for="config-value-like-input">值：</label>
+                    <input id="config-value-like-input" name="configValueLike" th:value="${systemConfigQueryVo.configValueLike}" />
                 </td>
                 <td>
-                    <label for="value-type-like-select">类别：</label>
-                    <select id="value-type-like-select" name="valueTypeLike">
+                    <label for="config-value-type-like-select">类别：</label>
+                    <select id="config-value-type-like-select" name="valueTypeLike">
                         <option value="">请选择...</option>
                         <option th:each="valueType,stat:${valueTypeList}" th:value="${valueType}" th:text="${valueType}" th:selected="${valueType eq systemConfigQueryVo.valueTypeLike}"></option>
                     </select>
                 </td>
                 <td>
-                    <a class="btn btn-primary btn-xs" onclick="clearCondition()">清空条件</a>
+                    <a class="btn btn-primary btn-xs" onclick="clearSystemConfigCondition()">清空条件</a>
                 </td>
                 <td>
-                    <a class="btn btn-primary btn-xs" onclick="requestPage(1)">搜索</a>
+                    <a class="btn btn-primary btn-xs" onclick="requestSystemConfigPage(1)">搜索</a>
                 </td>
             </tr>
         </table>
@@ -70,10 +70,10 @@
                     <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
                 </select>
                 共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
-                <input type="hidden" name="pageNum" id="pageNum" th:value="${pageBean.currentPage}" />
+                <input type="hidden" name="pageNum" id="systemConfigPageNum" th:value="${pageBean.currentPage}" />
             </caption>
             <thead>
-            <th><input type="checkbox" id="check-all" /></th>
+            <th><input type="checkbox" id="system-config-check-all" /></th>
             <th>序号</th>
             <th>ID</th>
             <th>键</th>
@@ -101,9 +101,9 @@
         <ul class="pagination">
             <li>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                    <input type="text" class="form-control" id="system-config-go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
                     <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" id="go-btn">GO!</button>
+                    <button class="btn btn-default" type="button" id="system-config-go-btn">GO!</button>
                 </span>
                 </div>
             </li>
@@ -111,7 +111,7 @@
                 th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
 
                 <a href="#" th:text="${otherPage.value2}"
-                   th:onclick="'requestPage(' + ${otherPage.value1} + ')'"></a>
+                   th:onclick="'requestSystemConfigPage(' + ${otherPage.value1} + ')'"></a>
             </li>
         </ul>
     </form>
@@ -124,7 +124,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="deleteModalLabel">请确认</h4>
                 </div>
-                <div class="modal-body">是否删除ID为 <span id="delete-id-span"></span> 的配置？</div>
+                <div class="modal-body">是否删除ID为 <span id="config-delete-id-span"></span> 的配置？</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteSystemConfig()" >确认</button>
@@ -139,7 +139,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="addModalLabel">编辑配置</h4>
+                    <h4 class="modal-title" id="addModalLabel">添加配置</h4>
                 </div>
                 <form id="config-add-form" class="form-horizontal" role="form">
                     <div class="form-group">
@@ -239,7 +239,7 @@
 <script>
     // 删除配置
     function deleteSystemConfig() {
-        var ids = $("#delete-id-span").html();
+        var ids = $("#config-delete-id-span").html();
         if ("" === ids) {
             return;
         }
@@ -311,7 +311,7 @@
     }
     // 显示删除配置的确认框
     function showDeleteSystemConfigModal(id) {
-        $("#delete-id-span").html(id);
+        $("#config-delete-id-span").html(id);
         $("#deleteSystemConfigModal").modal("show");
     }
     // 显示添加配置的确认框
@@ -331,37 +331,39 @@
         if (ids === "") {
             toastr.warning("您还未勾选任何配置");
             return;
+        } else {
+            ids = ids.substring(1, ids.length);
         }
-        $("#delete-id-span").html(ids);
-        $("#delete-system-configModal").modal("show");
+        $("#config-delete-id-span").html(ids);
+        $("#deleteSystemConfigModal").modal("show");
     }
     // 请求其他页的数据
-    function requestPage(pageNum) {
-        if (pageNum) {
-            $("#pageNum").val(pageNum);
+    function requestSystemConfigPage(systemConfigPageNum) {
+        if (systemConfigPageNum) {
+            $("#systemConfigPageNum").val(systemConfigPageNum);
         }
         var jsonData = $("#system-config-list-form").serialize();
         getContentHtml('/admin/system-config-list', true, jsonData);
     }
     // 清空所有条件
-    function clearCondition() {
-        $("#classify-like-select").val("");
-        $("#key-like-input").val("");
-        $("#value-like-input").val("");
-        $("#value-type-like-select").val("");
+    function clearSystemConfigCondition() {
+        $("#config-classify-like-select").val("");
+        $("#config-key-like-input").val("");
+        $("#config-value-like-input").val("");
+        $("#config-value-type-like-select").val("");
     }
     $(function() {
         // 全选与全不选
-        $("#check-all").click(function() {
+        $("#system-config-check-all").click(function() {
             $(".system-config-checkbox").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
         });
         // GO 直接请求某一页的数据
-        $("#go-btn").click(function() {
-            var pageNum = $("#go-input").val();
-            if ("" === pageNum) {
+        $("#system-config-go-btn").click(function() {
+            var systemConfigPageNum = $("#system-config-go-input").val();
+            if ("" === systemConfigPageNum) {
                 return;
             }
-            requestPage(pageNum);
+            requestSystemConfigPage(systemConfigPageNum);
         });
     })
 </script>

@@ -115,6 +115,11 @@
                 <!-- 隐藏的详细菜单 -->
                 <ul id="list1" class="menu-ul">
                     <li class="active">
+                        <a href="#" onclick="getContentHtml('/admin/admin-content')">
+                            主页
+                        </a>
+                    </li>
+                    <li class="active">
                         <a href="#" onclick="getContentHtml('/admin/player-list')">
                             用户列表
                         </a>
@@ -157,13 +162,21 @@
 </body>
 <script>
     function getContentHtml(url, isPost, jsonData) {
-        $("#right-content").html("<h3>加载中.....</h3>");
+        var hasLoad = false;
+        // 500毫秒以上未得到服务器返回，则显示加载界面
+        setTimeout(function () {
+            if (! hasLoad) {
+                $("#right-content").html("<h3>加载中.....</h3>");
+            }
+        },500);
         if (isPost) {
             $.post(url, jsonData, function (html) {
+                hasLoad = true;
                 $("#right-content").html(html);
             }, "html");
         } else {
             $.get(url, jsonData, function (html) {
+                hasLoad = true;
                 $("#right-content").html(html);
             }, "html");
         }

@@ -21,7 +21,7 @@ public class WsBaseHandler {
     @Autowired
     private HeartBeatHandler heartBeatHandler;
 
-    private final Map<String, IHandler> handlers = new HashMap<>();
+    private Map<String, IHandler> handlers;
     public WsBaseHandler() {
         // 注册处理类
         registerHandler();
@@ -31,11 +31,16 @@ public class WsBaseHandler {
         //scheduledThreadPool.scheduleAtFixedRate(this::sendServerInfoToAll, 2,2, TimeUnit.SECONDS);
     }
     private void registerHandler() {
+        handlers = new HashMap<>();
         // 每一个处理类都需要在这里注册
         handlers.put(WsProtoConstants.chat_hall_protocol, chatHallHandler);
         handlers.put(WsProtoConstants.heart_beat_protocol, heartBeatHandler);
     }
     public IHandler getHandler(String protocolName) {
+        // 第一次，注册
+        if (handlers == null) {
+            registerHandler();
+        }
         return handlers.get(protocolName);
     }
 

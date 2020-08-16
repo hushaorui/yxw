@@ -5,8 +5,8 @@
     <title>DIY作品</title>
 
     <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
     <link rel="stylesheet" href="../../static/bootstrap/css/toastr.css" th:href="@{/bootstrap/css/toastr.css}">
+    <link rel="stylesheet" href="../../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
     <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
     <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
     <script src="../../static/bootstrap/js/common.js" th:src="@{/bootstrap/js/common.js}"></script>
@@ -24,9 +24,9 @@
         <li><a href="#">用户管理</a></li>
         <li class="active">用户列表</li>
     </ol>
+    <button class="btn btn-success" onclick="requestPlayerListPage();toastr.success('刷新成功！')">刷新</button>
     <button class="btn btn-success" onclick="showAddPlayerModal()">添加玩家</button>
     <button class="btn btn-danger" onclick="showBatchDeletePlayerModal()">批量删除</button>
-    <button class="btn btn-success float-right" onclick="requestPage()">刷新</button>
     <form id="player-list-form" action="/admin/player-list" method="post">
         <!-- 该table内都是查询的条件 -->
         <table class="table" style="width: 80%;">
@@ -41,7 +41,7 @@
                     <input id="player-password-input" name="player.password" th:value="${playerQueryVo.getPlayer() == null ? '':playerQueryVo.getPlayer().getPassword()}" />
                 </td>
                 <td>
-                    <a class="btn btn-primary btn-xs" onclick="clearCondition()">清空条件</a>
+                    <a class="btn btn-primary btn-xs" onclick="clearPlayerCondition()">清空条件</a>
                 </td>
             </tr>
             <tr>
@@ -64,7 +64,7 @@
                     - <input id="player-login-end-input" name="lastLoginTimeEnd" th:value="${#dates.format(playerQueryVo.lastLoginTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
                 </td>
                 <td>
-                    <a class="btn btn-primary btn-xs" onclick="checkAndRequestPage()">搜索</a>
+                    <a class="btn btn-primary btn-xs" onclick="checkAndRequestPlayerListPage()">搜索</a>
                 </td>
             </tr>
         </table>
@@ -76,10 +76,10 @@
                     <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
                 </select>
                 共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
-                <input type="hidden" name="pageNum" id="pageNum" th:value="${pageBean.currentPage}" />
+                <input type="hidden" name="pageNum" id="playerListPageNum" th:value="${pageBean.currentPage}" />
             </caption>
             <thead>
-                <th><input type="checkbox" id="check-all" /></th>
+                <th><input type="checkbox" id="player-list-check-all" /></th>
                 <th>序号</th>
                 <th>ID</th>
                 <th>用户名</th>
@@ -107,9 +107,9 @@
         <ul class="pagination">
             <li>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                    <input type="text" class="form-control" id="player-list-go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="go-btn">GO!</button>
+                        <button class="btn btn-default" type="button" id="player-list-go-btn">GO!</button>
                     </span>
                 </div>
             </li>
@@ -117,7 +117,7 @@
                 th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
 
                 <a href="#" th:text="${otherPage.value2}"
-                   th:onclick="'requestPage(' + ${otherPage.value1} + ')'"></a>
+                   th:onclick="'requestPlayerListPage(' + ${otherPage.value1} + ')'"></a>
             </li>
         </ul>
     </form>
@@ -128,12 +128,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="deleteModalLabel">请确认</h4>
+                    <h4 class="modal-title">请确认</h4>
                 </div>
-                <div class="modal-body">是否删除ID为 <span id="delete-id-span"></span> 的用户？</div>
+                <div class="modal-body">是否删除ID为
+                    <span id="delete-id-span"></span>
+                    的用户？
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePlayer()" >确认</button>
+                    <button type="button" class="btn btn-primary" onclick="deletePlayer()" >确认</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -145,7 +148,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="addModalLabel">添加</h4>
+                    <h4 class="modal-title">添加</h4>
                 </div>
                 <form id="player-add-form" class="form-horizontal" role="form">
                     <div class="form-group">
@@ -240,6 +243,9 @@
             return;
         }
         $.get("/admin/player-delete", {"ids" : ids}, function (result) {
+            if ("success" === result.result) {
+                $("#deletePlayerModal").modal("hide");
+            }
             toastr[result.result](result.message);
         }, "json");
     }
@@ -259,7 +265,9 @@
         }
         // 提交
         $.post("/admin/player-add", $("#player-add-form").serialize(), function (result) {
-            $("#addPlayerModal").modal("hide");
+            if ("success" === result.result) {
+                $("#addPlayerModal").modal("hide");
+            }
             toastr[result.result](result.message);
         }, "json");
     }
@@ -298,7 +306,9 @@
         }
         // 提交
         $.post("/admin/player-update", $("#player-update-form").serialize(), function (result) {
-            $("#editPlayerModal").modal("hide");
+            if ("success" === result.result) {
+                $("#editPlayerModal").modal("hide");
+            }
             toastr[result.result](result.message);
         }, "json");
     }
@@ -346,7 +356,7 @@
         $("#deletePlayerModal").modal("show");
     }
     // 清空筛选条件
-    function clearCondition() {
+    function clearPlayerCondition() {
         $("#player-username-input").val("");
         $("#player-password-input").val("");
         $("#player-admin-select").val("");
@@ -356,7 +366,7 @@
         $("#player-login-end-input").val("");
     }
     //校验时间格式，如果无误则查询
-    function checkAndRequestPage() {
+    function checkAndRequestPlayerListPage() {
         var regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
         var time1 = $("#player-create-start-input").val().trim();
         if (time1 !== "" && ! regex.test(time1)) {
@@ -378,29 +388,29 @@
             toastr.warning("最后登录时间：" + time4 + "格式错误，请参照当前时间格式：" + $("#current-time-span").html());
             return;
         }
-        requestPage(1);
+        requestPlayerListPage(1);
     }
 
     // 请求其他页的数据
-    function requestPage(pageNum) {
-        if (pageNum) {
-            $("#pageNum").val(pageNum);
+    function requestPlayerListPage(playerListPageNum) {
+        if (playerListPageNum) {
+            $("#playerListPageNum").val(playerListPageNum);
         }
         var jsonData = $("#player-list-form").serialize();
         getContentHtml('/admin/player-list', true, jsonData);
     }
     $(function() {
         // 全选与全不选
-        $("#check-all").click(function() {
+        $("#player-list-check-all").click(function() {
             $(".player-checkbox").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
         });
         // GO 直接请求某一页的数据
-        $("#go-btn").click(function() {
-            var pageNum = $("#go-input").val();
-            if ("" === pageNum) {
+        $("#player-list-go-btn").click(function() {
+            var playerListPageNum = $("#player-list-go-input").val();
+            if ("" === playerListPageNum) {
                 return;
             }
-            requestPage(pageNum);
+            requestPlayerListPage(playerListPageNum);
         });
     })
 </script>

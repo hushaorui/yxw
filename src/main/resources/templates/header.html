@@ -16,7 +16,7 @@
             position: absolute;
             height: 80%;
             width: 40%;
-            background-color: #dddddd;
+            background-color: #f6f6f6;
             display: none;
             border: #888 solid 1px;
         }
@@ -31,35 +31,48 @@
             <button type="button" class="btn btn-default" id="chat-hall-btn">聊天大厅</button>
             <button type="button" class="btn btn-default">
                 <span class="glyphicon glyphicon-user"></span>
-                <span id="user-id-label" th:text="${session.sessionPlayer.id}">[...]</span>
+                <span id="user-name-label" th:text="${session.sessionPlayer.username}">[...]</span>
+                <input type="hidden" id="player-user-id-hidden-input" th:value="${session.sessionPlayer.id}"  />
             </button>
             <button type="button" class="btn btn-default" onclick="window.location.href = '/logout';">注销</button>
         </div>
     </div>
 </div>
-<div id="chat-hall">
-    <p>聊天大厅</p>
+<div class="panel panel-default" id="chat-hall">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            聊天大厅
+        </h3>
+    </div>
+    <div class="panel-body" id="chat-hall-body">
+
+    </div>
 </div>
 </body>
 <script>
+    // 玩家id
+    var userId = $("#player-user-id-hidden-input").val();
+    // websocket对象
+    var ws;
+    // ws是否已经连接
+    var hasConnected = false;
+    // url前缀
+    var contextPath = $("#contextPath").val();
 $(function() {
     initChatHallOffset();
     // 打开与关闭聊天大厅
     $("#chat-hall-btn").click(function() {
         $("#chat-hall").toggle();
     });
-
-    var userId = $("#user-id-label").html().trim();
-    var ws;
-    var contextPath = $("#contextPath").val();
     $.get(contextPath + "/getWsUrlPrefix", function (wsUrlPrefix) {
         ws = new WebSocket(wsUrlPrefix + userId);
         ws.onopen = function () {
+            hasConnected = true;
             console.log("建立 websocket 连接...");
         };
         ws.onmessage = function(event){
             //服务端发送的消息
-            //console.log("服务端发过来的信息：" + event.data);
+            console.log("服务端发过来的信息：" + event.data);
             handleResponse(ws, event);
         };
         ws.onclose = function(){
@@ -75,7 +88,21 @@ $(function() {
     });
 })
 function sendHeartBeatRequest(ws) {
-
+    if (! hasConnected) {
+        return;
+    }
+    // 基础协议类型
+    var baseProtoType = "heart_beat";
+    // 子协议类型
+    var protoType = "HEART_BEAT";
+    // 当前时间的毫秒值
+    var currentTime = new Date().getTime();
+    // 需要发送的json数据
+    var messageJson = {"type" : protoType, "clientTime" : currentTime};
+    // 最后发送的结构
+    var jsonData = {"type" : baseProtoType, "message" : JSON.stringify(messageJson)};
+    // 发送
+    ws.send(JSON.stringify(jsonData));
 }
 // 处理服务端返回的响应
 function handleResponse(ws, event) {
