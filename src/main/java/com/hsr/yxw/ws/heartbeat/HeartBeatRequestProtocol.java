@@ -7,7 +7,8 @@ import com.hsr.yxw.ws.common.ProtocolIF;
  */
 public class HeartBeatRequestProtocol extends ProtocolIF {
     /** 心跳 */
-    public static final String HEART_BEAT = "HEART_BEAT";
+    static final String HEART_BEAT = "HEART_BEAT";
+
     public HeartBeatRequestProtocol() {}
     public HeartBeatRequestProtocol(String type, String message) {
         setType(type);

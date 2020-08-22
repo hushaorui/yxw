@@ -59,9 +59,10 @@
     // url前缀
     var contextPath = $("#contextPath").val();
 $(function() {
-    initChatHallOffset();
+    updateChatHallOffset();
     // 打开与关闭聊天大厅
     $("#chat-hall-btn").click(function() {
+        updateChatHallOffset();
         $("#chat-hall").toggle();
     });
     $.get(contextPath + "/getWsUrlPrefix", function (wsUrlPrefix) {
@@ -72,11 +73,10 @@ $(function() {
         };
         ws.onmessage = function(event){
             //服务端发送的消息
-            console.log("服务端发过来的信息：" + event.data);
+            //console.log("服务端发过来的信息：" + event.data);
             handleResponse(ws, event);
         };
         ws.onclose = function(){
-            $('#message_content').append('用户['+userId+'] 已经离开' + '\n');
             console.log("关闭 websocket 连接...");
         }
         sendHeartBeatRequest(ws);
@@ -124,8 +124,8 @@ function handleResponse(ws, event) {
         alert("未知的基础协议类型：" + event.data["type"]);
     }
 }
-// 初始化聊天框的位置
-function initChatHallOffset() {
+// 修改聊天框的位置大小
+function updateChatHallOffset() {
     var element = $("#chat-hall");
     // 计算聊天大厅div的横坐标
     var x = $(window).width() - element.width() - 10;

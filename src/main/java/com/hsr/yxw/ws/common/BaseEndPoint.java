@@ -61,7 +61,6 @@ public class BaseEndPoint {
 
     @OnMessage
     public void onMessage(@PathParam("id") Long id, String message){
-        System.out.println("有新消息： " + message + "  发送者id：" + id);
         if (! StringUtils.isEmpty(message)) {
             BaseProtocol baseProtocol;
             try {
@@ -88,7 +87,7 @@ public class BaseEndPoint {
                 baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
                 baseProtocol.setMessage(HeartBeatResponseProtocol.notFormat(message));
             }
-            // 发送响应信息
+            // 发送响应信息，可能为空，处理器可自行发送信息
             if (baseProtocol != null) {
                 wsCommonService.sendMessage(id, baseProtocol);
             }

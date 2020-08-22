@@ -12,7 +12,7 @@ public class HeartBeatHandler implements IHandler {
     public BaseProtocol handle(Long id, String message) {
 
         // 将json字符串解析为心跳的请求协议
-        HeartBeatRequestProtocol requestProtocol = HeartBeatRequestProtocol.parseStringToProtoCol(message);
+        HeartBeatRequestProtocol requestProtocol = HeartBeatRequestProtocol.parseStringToProtoCol(message, HeartBeatRequestProtocol.class);
         if (requestProtocol == null) {
             return null;
         }
@@ -24,7 +24,8 @@ public class HeartBeatHandler implements IHandler {
             default:
                 responseBaseProtocol.setMessage(HeartBeatResponseProtocol.unknownProto(requestProtocol.getType()));
         }
-        return responseBaseProtocol;
+        // 为null则不用另行返回信息
+        return null;
     }
 
     /**

@@ -38,11 +38,4 @@ public class ProtocolIF {
             return null;
         }
     }
-    public static  <T> T parseStringToProtoCol(String jsonString) {
-        try {
-            return JSONArray.parseObject(jsonString, (Type) ProtocolIF.class);
-        } catch (Exception ignore) {
-            return null;
-        }
-    }
 }
