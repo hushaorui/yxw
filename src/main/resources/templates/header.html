@@ -98,9 +98,9 @@ function sendHeartBeatRequest(ws) {
     // 当前时间的毫秒值
     var currentTime = new Date().getTime();
     // 需要发送的json数据
-    var messageJson = {"type" : protoType, "clientTime" : currentTime};
+    var messageJson = {"reqType" : protoType, "clientTime" : currentTime};
     // 最后发送的结构
-    var jsonData = {"type" : baseProtoType, "message" : JSON.stringify(messageJson)};
+    var jsonData = {"baseType" : baseProtoType, "protoString" : JSON.stringify(messageJson)};
     // 发送
     ws.send(JSON.stringify(jsonData));
 }
@@ -109,18 +109,20 @@ function handleResponse(ws, event) {
     // 字符串转json
     var baseProtoData = JSON.parse(event.data);
     // 基础协议的类型，参考 WsProtoConstants
-    var baseProtoType = baseProtoData["type"];
+    var baseProtoType = baseProtoData["baseType"];
     if (baseProtoType === "heart_beat") {
         // 子协议内容
-        var subProtoData = JSON.parse(baseProtoData["message"]);
+        var subProtoData = JSON.parse(baseProtoData["protoString"]);
         // 子协议类型
-        var subProtoType = subProtoData["type"];
+        var subProtoType = subProtoData["resType"];
         if (subProtoType === "SERVER_INFO") {
             
         }
-    } else if (baseProtoType === "chatHall") {
+    }
+    else if (baseProtoType === "chat_hall") {
 
-    } else {
+    }
+    else {
         alert("未知的基础协议类型：" + event.data["type"]);
     }
 }

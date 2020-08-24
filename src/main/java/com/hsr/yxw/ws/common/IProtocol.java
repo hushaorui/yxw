@@ -11,9 +11,6 @@ public abstract class IProtocol {
     public String toJsonString() {
         return JSONArray.toJSONString(this);
     }
-    public String toString() {
-        return JSONArray.toJSONString(this);
-    }
 
     public static <T> T parseToObj(String jsonString, Class<?> clazz) {
         try {

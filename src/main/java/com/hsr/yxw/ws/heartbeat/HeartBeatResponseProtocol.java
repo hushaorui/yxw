@@ -1,5 +1,6 @@
 package com.hsr.yxw.ws.heartbeat;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.hsr.yxw.ws.common.BaseProtoType;
 import com.hsr.yxw.ws.common.IResponseProtocol;
 
@@ -63,6 +64,7 @@ public class HeartBeatResponseProtocol extends IResponseProtocol {
         return notFormat("");
     }
 
+    @JSONField(serialize = false)
     @Override
     public BaseProtoType getBaseType() {
         return BaseProtoType.heart_beat;

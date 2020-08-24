@@ -14,10 +14,9 @@ public class ChatHallService {
      * @param message
      */
     public void sendPublicChatMessage(Long senderId, String message) {
-        BaseProtocol baseProtocol = new BaseProtocol(ChatHallResponseProtocol.RECEIVE_PUBLIC_CHAT_MESSAGE);
         ChatHallResponseProtocol chatHallResponseProtocol = new ChatHallResponseProtocol();
-
-        baseProtocol.setMessage(chatHallResponseProtocol);
-        wsCommonService.sendMessageToAll(baseProtocol, null);
+        chatHallResponseProtocol.setResType(ChatHallResponseProtocol.RECEIVE_PUBLIC_CHAT_MESSAGE);
+        //chatHallResponseProtocol.setContent(chatHallResponseProtocol);
+        wsCommonService.sendMessageToAll(chatHallResponseProtocol, null);
     }
 }

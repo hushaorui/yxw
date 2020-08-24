@@ -35,60 +35,56 @@ public class BaseEndPoint {
     public void onOpen(@PathParam("id") Long id, Session session) throws ServiceException {
         System.out.println("新的连接，用户id：" + id);
         Player player = playerService.getPlayerById(id);
+        HeartBeatResponseProtocol heartBeatResponseProtocol;
         // 创建心跳协议类型的基础协议
         if (player == null) {
             // 心跳协议的响应协议
-            HeartBeatResponseProtocol heartBeatResponseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.CONNECT_FAILED, "用户id " + id + " 不存在，连接失败");
-            BaseProtocol.buildResponse(heartBeatResponseProtocol);
+            heartBeatResponseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.CONNECT_FAILED, "用户id " + id + " 不存在，连接失败");
             // 给连接的用户发送连接失败信息
-            wsCommonService.sendMessage(session, baseProtocol);
+            wsCommonService.sendMessage(session, heartBeatResponseProtocol);
             return;
         }
         boolean success = PlayerWebSocketPool.addToOnline(player, session);
         if (success) {
-            baseProtocol.setProto(HeartBeatResponseProtocol.connectSuccess());
+            heartBeatResponseProtocol = HeartBeatResponseProtocol.connectSuccess();
         } else {
-            baseProtocol.setProto(HeartBeatResponseProtocol.alreadyLogin());
+            heartBeatResponseProtocol = HeartBeatResponseProtocol.alreadyLogin();
         }
         // 给连接的用户发送信息
-        wsCommonService.sendMessage(session, baseProtocol);
-
+        wsCommonService.sendMessage(session, heartBeatResponseProtocol);
         System.out.println("在线人数" + PlayerWebSocketPool.count());
         PlayerWebSocketPool.getAllPlayerMap().keySet().forEach(item -> System.out.println("当前所有在线用户：" + item));
-
     }
 
     @OnMessage
     public void onMessage(@PathParam("id") Long id, String message){
         if (! StringUtils.isEmpty(message)) {
-            BaseProtocol baseProtocol;
+            IResponseProtocol responseProtocol;
             try {
-                baseProtocol = BaseProtocol.parse(message);
+                BaseProtocol baseProtocol = BaseProtocol.parse(message);
                 if (baseProtocol == null) {
                     return;
                 }
                 // 能够正确解析 {"":type, "message": "{"type":type, "message":msg....}"}
                 if (! wsBaseHandler.containSubProtocol(baseProtocol.getBaseType())) {
-                    baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
-                    HeartBeatResponseProtocol heartBeatResponseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.UNKNOWN_PROTO,
-                            "未知的基础协议名称：" + baseProtocol.getType());
-                    baseProtocol.setMessage(heartBeatResponseProtocol);
+                    responseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.UNKNOWN_PROTO,
+                            "未知的基础协议名称：" + baseProtocol.getBaseType());
+                    wsCommonService.sendMessage(id, responseProtocol);
                     return;
                 }
-                if (StringUtils.isEmpty(baseProtocol.getMessage())) {
+                if (StringUtils.isEmpty(baseProtocol.getProtoString())) {
                     // 空白的协议
-                    baseProtocol.setMessage(HeartBeatResponseProtocol.emptyProto());
+                    responseProtocol = HeartBeatResponseProtocol.emptyProto();
                 } else {
                     // 交给对应的处理类进行处理
-                    baseProtocol = wsBaseHandler.handle(id, baseProtocol.getType(), baseProtocol.getMessage());
+                    responseProtocol = wsBaseHandler.handle(id, baseProtocol.getBaseType(), baseProtocol.getProtoString());
                 }
             } catch (Exception e) {
-                baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
-                baseProtocol.setMessage(HeartBeatResponseProtocol.notFormat(message));
+                responseProtocol = HeartBeatResponseProtocol.notFormat(message);
             }
             // 发送响应信息，可能为空，处理器可自行发送信息
-            if (baseProtocol != null) {
-                wsCommonService.sendMessage(id, baseProtocol);
+            if (responseProtocol != null) {
+                wsCommonService.sendMessage(id, responseProtocol);
             }
         }
     }

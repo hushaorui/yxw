@@ -1,7 +1,5 @@
 package com.hsr.yxw.ws.common;
 
-import com.alibaba.fastjson.JSONArray;
-
 public abstract class IResponseProtocol extends IProtocol {
     private String resType;
 
@@ -11,9 +9,5 @@ public abstract class IResponseProtocol extends IProtocol {
 
     public void setResType(String resType) {
         this.resType = resType;
-    }
-
-    public String toJsonString() {
-        return JSONArray.toJSONString(this);
     }
 }

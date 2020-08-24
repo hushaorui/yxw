@@ -31,9 +31,6 @@ public class WsServerInfo {
         this.playerCount = PlayerWebSocketPool.count();
         this.serverTime = System.currentTimeMillis();
     }
-    public String toString() {
-        return toJsonString();
-    }
     public String toJsonString() {
         return JSONArray.toJSONString(this);
     }

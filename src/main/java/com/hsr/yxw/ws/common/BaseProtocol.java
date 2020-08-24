@@ -9,28 +9,38 @@ public class BaseProtocol {
     private BaseProtoType baseType;
     private String protoString;
 
-    private BaseProtocol(BaseProtoType baseType) {
-        this.baseType = baseType;
-    }
     private BaseProtocol(BaseProtoType baseType, IResponseProtocol subProto) {
         this.baseType = baseType;
-        this.protoString = subProto.toJsonString();
+        if (subProto != null) {
+            this.protoString = subProto.toJsonString();
+        }
     }
+    /**
+     * 空参构造方法不允许删除，删除会导致解析为json字符串失败，但是也不能调用此构造方法
+     */
+    private BaseProtocol() {}
 
     public BaseProtoType getBaseType() {
         return baseType;
+    }
+
+    public void setBaseType(BaseProtoType baseType) {
+        this.baseType = baseType;
+    }
+
+    public void setProtoString(String protoString) {
+        this.protoString = protoString;
     }
 
     public String getProtoString() {
         return protoString;
     }
 
-//    public void setProto(IResponseProtocol subProto) {
-//        this.protoString = subProto.toJsonString();
-//    }
-
     public static BaseProtocol buildResponse(IResponseProtocol subProto) {
-        return new BaseProtocol(subProto.getResType(), subProto);
+        if (subProto == null) {
+            return new BaseProtocol(BaseProtoType.heart_beat, subProto);
+        }
+        return new BaseProtocol(subProto.getBaseType(), subProto);
     }
 
     public static BaseProtocol parse(String jsonString) {
@@ -42,9 +52,6 @@ public class BaseProtocol {
     }
 
     public String toJsonString() {
-        return JSONArray.toJSONString(this);
-    }
-    public String toString() {
         return JSONArray.toJSONString(this);
     }
 }

@@ -10,7 +10,7 @@ public class HeartBeatHandler implements IHandler<HeartBeatRequestProtocol, Hear
 
     private WsCommonService wsCommonService = WsCommonService.getInstance();
     @Override
-    public HeartBeatResponseProtocol handle(Long id, HeartBeatRequestProtocol requestIProtocol) {
+    public IResponseProtocol handle(Long id, HeartBeatRequestProtocol requestIProtocol) {
         if (requestIProtocol == null) {
             return null;
         }

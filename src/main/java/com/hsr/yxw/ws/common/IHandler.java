@@ -7,7 +7,7 @@ public interface IHandler<REQ extends IRequestProtocol, RES extends IResponsePro
      * @param requestProtocol 请求协议对象
      * @return 可为null
      */
-    RES handle(Long senderId, REQ requestProtocol);
+    IResponseProtocol handle(Long senderId, REQ requestProtocol);
 
     REQ parseRequest(String message);
 }
