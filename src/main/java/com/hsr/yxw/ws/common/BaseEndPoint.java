@@ -36,20 +36,19 @@ public class BaseEndPoint {
         System.out.println("新的连接，用户id：" + id);
         Player player = playerService.getPlayerById(id);
         // 创建心跳协议类型的基础协议
-        BaseProtocol baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
         if (player == null) {
             // 心跳协议的响应协议
             HeartBeatResponseProtocol heartBeatResponseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.CONNECT_FAILED, "用户id " + id + " 不存在，连接失败");
-            baseProtocol.setMessage(heartBeatResponseProtocol.toJsonString());
+            BaseProtocol.buildResponse(heartBeatResponseProtocol);
             // 给连接的用户发送连接失败信息
             wsCommonService.sendMessage(session, baseProtocol);
             return;
         }
         boolean success = PlayerWebSocketPool.addToOnline(player, session);
         if (success) {
-            baseProtocol.setMessage(HeartBeatResponseProtocol.connectSuccess());
+            baseProtocol.setProto(HeartBeatResponseProtocol.connectSuccess());
         } else {
-            baseProtocol.setMessage(HeartBeatResponseProtocol.alreadyLogin());
+            baseProtocol.setProto(HeartBeatResponseProtocol.alreadyLogin());
         }
         // 给连接的用户发送信息
         wsCommonService.sendMessage(session, baseProtocol);
@@ -64,12 +63,12 @@ public class BaseEndPoint {
         if (! StringUtils.isEmpty(message)) {
             BaseProtocol baseProtocol;
             try {
-                baseProtocol = BaseProtocol.parseStringToProtoCol(message, BaseProtocol.class);
+                baseProtocol = BaseProtocol.parse(message);
                 if (baseProtocol == null) {
                     return;
                 }
                 // 能够正确解析 {"":type, "message": "{"type":type, "message":msg....}"}
-                if (! wsBaseHandler.containProtocolName(baseProtocol.getType())) {
+                if (! wsBaseHandler.containSubProtocol(baseProtocol.getBaseType())) {
                     baseProtocol = new BaseProtocol(WsProtoConstants.heart_beat_protocol);
                     HeartBeatResponseProtocol heartBeatResponseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.UNKNOWN_PROTO,
                             "未知的基础协议名称：" + baseProtocol.getType());

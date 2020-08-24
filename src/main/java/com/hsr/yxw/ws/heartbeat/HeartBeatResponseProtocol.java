@@ -1,11 +1,12 @@
 package com.hsr.yxw.ws.heartbeat;
 
-import com.hsr.yxw.ws.common.ProtocolIF;
+import com.hsr.yxw.ws.common.BaseProtoType;
+import com.hsr.yxw.ws.common.IResponseProtocol;
 
 /**
  * 心跳响应协议，其他协议不满足条件时，都可以返回心跳响应协议
  */
-public class HeartBeatResponseProtocol extends ProtocolIF {
+public class HeartBeatResponseProtocol extends IResponseProtocol {
     /** 连接成功 */
     public static final String CONNECT_SUCCESS = "CONNECT_SUCCESS";
     /** 连接失败 */
@@ -21,11 +22,19 @@ public class HeartBeatResponseProtocol extends ProtocolIF {
     /** 账号已经被登录了，无法顶号 */
     private static final String ALREADY_LOGIN = "ALREADY_LOGIN";
 
+    private String message;
+
     public HeartBeatResponseProtocol() {}
 
-    public HeartBeatResponseProtocol(String type, String message) {
-        setType(type);
-        setMessage(message);
+    public HeartBeatResponseProtocol(String resType, String message) {
+        this.setResType(resType);
+        this.message = message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
+    }
+    public String getMessage() {
+        return message;
     }
 
     /** 未知的协议类型 */
@@ -52,5 +61,10 @@ public class HeartBeatResponseProtocol extends ProtocolIF {
     /** 不符合格式的协议 */
     public static HeartBeatResponseProtocol notFormat() {
         return notFormat("");
+    }
+
+    @Override
+    public BaseProtoType getBaseType() {
+        return BaseProtoType.heart_beat;
     }
 }

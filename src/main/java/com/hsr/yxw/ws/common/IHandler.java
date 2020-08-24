@@ -1,11 +1,13 @@
 package com.hsr.yxw.ws.common;
 
-public interface IHandler {
+public interface IHandler<REQ extends IRequestProtocol, RES extends IResponseProtocol> {
     /**
      * 处理请求
      * @param senderId 发送者id
-     * @param jsonString 能够被解析为协议对象的json字符串
+     * @param requestProtocol 请求协议对象
      * @return 可为null
      */
-    BaseProtocol handle(Long senderId, String jsonString);
+    RES handle(Long senderId, REQ requestProtocol);
+
+    REQ parseRequest(String message);
 }

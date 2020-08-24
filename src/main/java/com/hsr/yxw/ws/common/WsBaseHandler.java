@@ -7,9 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.RemoteEndpoint;
-import javax.websocket.Session;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +18,7 @@ public class WsBaseHandler {
     @Autowired
     private HeartBeatHandler heartBeatHandler;
 
-    private Map<String, IHandler> handlers;
+    private Map<BaseProtoType, IHandler> handlers;
     public WsBaseHandler() {
         handlers = new HashMap<>();
         // 每隔一定时间，给所有的玩家发送服务器信息
@@ -31,29 +28,39 @@ public class WsBaseHandler {
     // 注册处理类
     private void registerHandler() {
         // 每一个处理类都需要在这里注册
-        handlers.put(WsProtoConstants.chat_hall_protocol, chatHallHandler);
-        handlers.put(WsProtoConstants.heart_beat_protocol, heartBeatHandler);
+        handlers.put(BaseProtoType.chat_hall, chatHallHandler);
+        handlers.put(BaseProtoType.heart_beat, heartBeatHandler);
     }
-    private IHandler getHandler(String protocolName) {
+    private IHandler getHandler(BaseProtoType baseProtoType) {
         if (handlers.isEmpty()) {
             registerHandler();
         }
-        if (handlers.containsKey(protocolName)) {
-            return handlers.get(protocolName);
+        if (handlers.containsKey(baseProtoType)) {
+            return handlers.get(baseProtoType);
         } else {
-            System.out.println("未知的子协议名称：" + protocolName);
+            System.out.println("未知的子协议名称：" + baseProtoType);
             return null;
         }
     }
 
-    public BaseProtocol handle(Long id, String protocolName, String message) {
-        return getHandler(protocolName).handle(id, message);
+    public IResponseProtocol handle(Long id, BaseProtoType baseProtoType, String message) {
+        IHandler handler = getHandler(baseProtoType);
+        try {
+            if (handler != null) {
+                return handler.handle(id, handler.parseRequest(message));
+            } else {
+                return HeartBeatResponseProtocol.unknownProto(String.valueOf(baseProtoType));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-    public boolean containProtocolName(String protocolName) {
+    public boolean containSubProtocol(BaseProtoType baseProtoType) {
         if (handlers.isEmpty()) {
             registerHandler();
         }
-        return handlers.containsKey(protocolName);
+        return handlers.containsKey(baseProtoType);
     }
 
 }

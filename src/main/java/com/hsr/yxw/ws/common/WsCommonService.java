@@ -17,8 +17,8 @@ public class WsCommonService {
      * @param id 唯一用户id
      * @param protocol 协议
      */
-    public boolean sendMessage(Long id, BaseProtocol protocol){
-        return sendMessage(id, protocol.toJsonString());
+    public boolean sendMessage(Long id, IResponseProtocol protocol){
+        return sendMessage(id, BaseProtocol.buildResponse(protocol).toJsonString());
     }
     /**
      * 给指定用户发送信息
@@ -40,8 +40,8 @@ public class WsCommonService {
      * @param session 会话
      * @param protocol 协议
      */
-    public void sendMessage(Session session, BaseProtocol protocol){
-        sendMessage(session, protocol.toJsonString());
+    public void sendMessage(Session session, IResponseProtocol protocol){
+        sendMessage(session, BaseProtocol.buildResponse(protocol).toJsonString());
     }
     /**
      * 给指定用户发送信息
@@ -80,7 +80,7 @@ public class WsCommonService {
      * @param protocol 协议
      * @param wsPlayerFilter 过滤器，为null时则发给所有用户
      */
-    public void sendMessageToAll(BaseProtocol protocol, WsPlayerFilter wsPlayerFilter){
-        sendMessageToAll(protocol.toJsonString(), wsPlayerFilter);
+    public void sendMessageToAll(IResponseProtocol protocol, WsPlayerFilter wsPlayerFilter){
+        sendMessageToAll(BaseProtocol.buildResponse(protocol).toJsonString(), wsPlayerFilter);
     }
 }

@@ -1,19 +1,15 @@
 package com.hsr.yxw.ws.heartbeat;
 
-import com.hsr.yxw.ws.common.ProtocolIF;
+import com.hsr.yxw.ws.common.BaseProtoType;
+import com.hsr.yxw.ws.common.IRequestProtocol;
 
 /**
  * 每隔一定时间，浏览器会发送心跳协议
  */
-public class HeartBeatRequestProtocol extends ProtocolIF {
+public class HeartBeatRequestProtocol extends IRequestProtocol {
     /** 心跳 */
     static final String HEART_BEAT = "HEART_BEAT";
 
-    public HeartBeatRequestProtocol() {}
-    public HeartBeatRequestProtocol(String type, String message) {
-        setType(type);
-        setMessage(message);
-    }
     // 客户端当前时间
     private long clientTime;
 
@@ -22,5 +18,10 @@ public class HeartBeatRequestProtocol extends ProtocolIF {
     }
     public void setClientTime(long clientTime) {
         this.clientTime = clientTime;
+    }
+
+    @Override
+    public BaseProtoType getBaseType() {
+        return BaseProtoType.heart_beat;
     }
 }
