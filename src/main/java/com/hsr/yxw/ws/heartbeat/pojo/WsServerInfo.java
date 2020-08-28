@@ -11,25 +11,25 @@ public class WsServerInfo {
     private int playerCount;
     /**服务器时间*/
     private long serverTime;
+    /**(信息从客户端到服务端)延迟: ms*/
+    private long ping;
 
     public int getPlayerCount() {
         return playerCount;
     }
-
-    public void setPlayerCount(int playerCount) {
-        this.playerCount = playerCount;
-    }
-
     public long getServerTime() {
         return serverTime;
     }
-
-    public void setServerTime(long serverTime) {
-        this.serverTime = serverTime;
+    public long getPing() {
+        return ping;
     }
-    public WsServerInfo() {
+    public WsServerInfo(long clientTime) {
         this.playerCount = PlayerWebSocketPool.count();
         this.serverTime = System.currentTimeMillis();
+        this.ping = serverTime - clientTime;
+        if (this.ping < 0) {
+            this.ping = - this.ping;
+        }
     }
     public String toJsonString() {
         return JSONArray.toJSONString(this);

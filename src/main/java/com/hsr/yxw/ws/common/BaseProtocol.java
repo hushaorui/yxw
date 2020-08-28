@@ -38,7 +38,7 @@ public class BaseProtocol {
 
     public static BaseProtocol buildResponse(IResponseProtocol subProto) {
         if (subProto == null) {
-            return new BaseProtocol(BaseProtoType.heart_beat, subProto);
+            return new BaseProtocol(BaseProtoType.BASE_HEART_BEAT, subProto);
         }
         return new BaseProtocol(subProto.getBaseType(), subProto);
     }

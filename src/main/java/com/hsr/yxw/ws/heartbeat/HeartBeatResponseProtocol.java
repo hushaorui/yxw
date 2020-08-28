@@ -67,6 +67,6 @@ public class HeartBeatResponseProtocol extends IResponseProtocol {
     @JSONField(serialize = false)
     @Override
     public BaseProtoType getBaseType() {
-        return BaseProtoType.heart_beat;
+        return BaseProtoType.BASE_HEART_BEAT;
     }
 }

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
     <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
     <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../static/bootstrap/js/proto/proto.js" th:src="@{/bootstrap/js/proto/proto.js}"></script>
     <style>
         #chat-hall {
             position: absolute;
@@ -51,13 +52,13 @@
 </body>
 <script>
     // 玩家id
-    var userId = $("#player-user-id-hidden-input").val();
+    let userId = $("#player-user-id-hidden-input").val();
     // websocket对象
-    var ws;
+    let ws;
     // ws是否已经连接
-    var hasConnected = false;
+    let hasConnected = false;
     // url前缀
-    var contextPath = $("#contextPath").val();
+    const contextPath = $("#contextPath").val();
 $(function() {
     updateChatHallOffset();
     // 打开与关闭聊天大厅
@@ -86,52 +87,54 @@ $(function() {
             sendHeartBeatRequest(ws);
         },2000);
     });
-})
+});
+
 function sendHeartBeatRequest(ws) {
     if (! hasConnected) {
         return;
     }
     // 基础协议类型
-    var baseProtoType = "heart_beat";
+    let baseProtoType = "BASE_HEART_BEAT";
     // 子协议类型
-    var protoType = "HEART_BEAT";
+    let protoType = "SUB_HEART_BEAT";
     // 当前时间的毫秒值
-    var currentTime = new Date().getTime();
+    let currentTime = new Date().getTime();
     // 需要发送的json数据
-    var messageJson = {"reqType" : protoType, "clientTime" : currentTime};
+    let messageJson = {"reqType" : protoType, "clientTime" : currentTime};
     // 最后发送的结构
-    var jsonData = {"baseType" : baseProtoType, "protoString" : JSON.stringify(messageJson)};
+    let jsonData = {"baseType" : baseProtoType, "protoString" : JSON.stringify(messageJson)};
     // 发送
     ws.send(JSON.stringify(jsonData));
 }
 // 处理服务端返回的响应
 function handleResponse(ws, event) {
     // 字符串转json
-    var baseProtoData = JSON.parse(event.data);
+    let baseProtoData = JSON.parse(event.data);
     // 基础协议的类型，参考 WsProtoConstants
-    var baseProtoType = baseProtoData["baseType"];
-    if (baseProtoType === "heart_beat") {
+    let baseProtoType = baseProtoData["baseType"];
+    if (baseProtoType === "BASE_HEART_BEAT") {
         // 子协议内容
-        var subProtoData = JSON.parse(baseProtoData["protoString"]);
+        let subProtoData = JSON.parse(baseProtoData["protoString"]);
         // 子协议类型
-        var subProtoType = subProtoData["resType"];
+        let subProtoType = subProtoData["resType"];
         if (subProtoType === "SERVER_INFO") {
-            
+            let serverInfoJson = JSON.parse(subProtoData["message"]);
+            console.log(serverInfoJson);
         }
     }
-    else if (baseProtoType === "chat_hall") {
+    else if (baseProtoType === "BASE_CHAT_HALL") {
 
     }
     else {
-        alert("未知的基础协议类型：" + event.data["type"]);
+        alert("未知的基础协议类型：" + event.data["baseType"]);
     }
 }
 // 修改聊天框的位置大小
 function updateChatHallOffset() {
-    var element = $("#chat-hall");
+    let element = $("#chat-hall");
     // 计算聊天大厅div的横坐标
-    var x = $(window).width() - element.width() - 10;
-    var y = $("#chat-hall-btn").height() + 15;
+    let x = $(window).width() - element.width() - 10;
+    let y = $("#chat-hall-btn").height() + 15;
     element.offset({ top: y, left: x })
 }
 

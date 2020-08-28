@@ -24,6 +24,6 @@ public class ChatHallResponseProtocol extends IResponseProtocol {
 
     @Override
     public BaseProtoType getBaseType() {
-        return BaseProtoType.chat_hall;
+        return BaseProtoType.BASE_CHAT_HALL;
     }
 }

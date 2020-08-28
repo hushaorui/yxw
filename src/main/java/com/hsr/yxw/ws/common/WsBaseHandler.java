@@ -28,8 +28,8 @@ public class WsBaseHandler {
     // 注册处理类
     private void registerHandler() {
         // 每一个处理类都需要在这里注册
-        handlers.put(BaseProtoType.chat_hall, chatHallHandler);
-        handlers.put(BaseProtoType.heart_beat, heartBeatHandler);
+        handlers.put(BaseProtoType.BASE_CHAT_HALL, chatHallHandler);
+        handlers.put(BaseProtoType.BASE_HEART_BEAT, heartBeatHandler);
     }
     private IHandler getHandler(BaseProtoType baseProtoType) {
         if (handlers.isEmpty()) {

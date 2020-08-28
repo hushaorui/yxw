@@ -1,7 +1,9 @@
 package com.hsr.yxw.ws.heartbeat;
 
 import com.alibaba.fastjson.JSONArray;
-import com.hsr.yxw.ws.common.*;
+import com.hsr.yxw.ws.common.IHandler;
+import com.hsr.yxw.ws.common.IResponseProtocol;
+import com.hsr.yxw.ws.common.WsCommonService;
 import com.hsr.yxw.ws.heartbeat.pojo.WsServerInfo;
 import org.springframework.stereotype.Component;
 
@@ -10,19 +12,20 @@ public class HeartBeatHandler implements IHandler<HeartBeatRequestProtocol, Hear
 
     private WsCommonService wsCommonService = WsCommonService.getInstance();
     @Override
-    public IResponseProtocol handle(Long id, HeartBeatRequestProtocol requestIProtocol) {
-        if (requestIProtocol == null) {
+    public IResponseProtocol handle(Long id, HeartBeatRequestProtocol request) {
+        if (request == null) {
             return null;
         }
-        switch (requestIProtocol.getReqType()) {
-            case HeartBeatRequestProtocol.HEART_BEAT:
-                sendServerInfo(id);
+        HeartBeatResponseProtocol responseProtocol;
+        switch (request.getReqType()) {
+            case HeartBeatRequestProtocol.SUB_HEART_BEAT:
+                responseProtocol = getServerInfo(request.getClientTime());
                 break;
             default:
-                return HeartBeatResponseProtocol.unknownProto(requestIProtocol.getReqType());
+                return HeartBeatResponseProtocol.unknownProto(request.getReqType());
         }
         // 为null则不用另行返回信息
-        return null;
+        return responseProtocol;
     }
 
     @Override
@@ -33,12 +36,11 @@ public class HeartBeatHandler implements IHandler<HeartBeatRequestProtocol, Hear
     /**
      * 给该用户发送服务器信息
      */
-    private void sendServerInfo(Long id) {
+    private HeartBeatResponseProtocol getServerInfo(long clientTime) {
         HeartBeatResponseProtocol heartBeatResponseProtocol = new HeartBeatResponseProtocol();
         heartBeatResponseProtocol.setResType(HeartBeatResponseProtocol.SERVER_INFO);
-        WsServerInfo wsServerInfo = new WsServerInfo();
+        WsServerInfo wsServerInfo = new WsServerInfo(clientTime);
         heartBeatResponseProtocol.setMessage(wsServerInfo.toJsonString());
-        WsPlayer wsPlayer = PlayerWebSocketPool.getWsPlayer(id);
-        wsCommonService.sendMessage(wsPlayer.getWsSession(), heartBeatResponseProtocol);
+        return heartBeatResponseProtocol;
     }
 }

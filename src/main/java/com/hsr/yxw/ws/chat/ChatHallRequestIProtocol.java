@@ -23,6 +23,6 @@ public class ChatHallRequestIProtocol extends IRequestProtocol {
 
     @Override
     public BaseProtoType getBaseType() {
-        return BaseProtoType.chat_hall;
+        return BaseProtoType.BASE_CHAT_HALL;
     }
 }
