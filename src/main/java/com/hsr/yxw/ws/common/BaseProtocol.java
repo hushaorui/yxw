@@ -54,4 +54,9 @@ public class BaseProtocol {
     public String toJsonString() {
         return JSONArray.toJSONString(this);
     }
+
+    @Override
+    public String toString() {
+        return toJsonString();
+    }
 }

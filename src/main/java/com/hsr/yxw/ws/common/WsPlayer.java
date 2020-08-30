@@ -3,6 +3,7 @@ package com.hsr.yxw.ws.common;
 import com.hsr.yxw.player.pojo.Player;
 
 import javax.websocket.Session;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 封装了 websocketSession的玩家类
@@ -15,7 +16,7 @@ public class WsPlayer {
         hide,
     }
     private Player player;
-    private Session wsSession;
+    private ConcurrentHashMap<String, Session> wsSessions = new ConcurrentHashMap<>();
     /*默认在线状态*/
     private Status status = Status.online;
 
@@ -27,12 +28,8 @@ public class WsPlayer {
         this.player = player;
     }
 
-    public Session getWsSession() {
-        return wsSession;
-    }
-
-    public void setWsSession(Session wsSession) {
-        this.wsSession = wsSession;
+    public ConcurrentHashMap<String, Session> getWsSessions() {
+        return wsSessions;
     }
 
     public Status getStatus() {

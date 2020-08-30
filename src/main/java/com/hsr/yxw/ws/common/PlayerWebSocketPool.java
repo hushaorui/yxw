@@ -18,31 +18,35 @@ public class PlayerWebSocketPool {
      * @param player
      * @param session
      */
-    public static boolean addToOnline(Player player, Session session){
-        if (player != null && session != null){
-            if (ONLINE_PLAYERS.containsKey(player.getId())) {
-                // 已经登录了，不允许登录
-                return false;
+    public static void addToOnline(Player player, Session session){
+        if (player != null && session != null) {
+            WsPlayer wsPlayer = ONLINE_PLAYERS.get(player.getId());
+            if (wsPlayer == null) {
+                wsPlayer = new WsPlayer();
+                wsPlayer.setPlayer(player);
+                ONLINE_PLAYERS.put(player.getId(), wsPlayer);
             }
-            // 在线状态是无法登陆的，防止挤号
-            WsPlayer wsPlayer = new WsPlayer();
-            wsPlayer.setPlayer(player);
-            wsPlayer.setWsSession(session);
-            ONLINE_PLAYERS.put(player.getId(), wsPlayer);
-            return true;
+            wsPlayer.getWsSessions().put(session.getId(), session);
         } else {
-            return false;
+            throw new RuntimeException("代码错误！");
         }
     }
 
     /**
-     * 离线
+     * session离线，用户离线返回true
      * @param id
      */
-    public static void offLine(Long id){
-        if (id != null){
-            ONLINE_PLAYERS.remove(id);
+    public static boolean offLine(Long id, Session session){
+        WsPlayer wsPlayer = ONLINE_PLAYERS.get(id);
+        if (wsPlayer != null) {
+            wsPlayer.getWsSessions().remove(session.getId());
+            if (wsPlayer.getWsSessions().isEmpty()){
+                // 如果该用户没有任何一个连接，则该用户离线，将之移出
+                ONLINE_PLAYERS.remove(id);
+                return true;
+            }
         }
+        return false;
     }
     /**
      * 获取在线人数

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.websocket.Session;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,9 +22,6 @@ public class WsBaseHandler {
     private Map<BaseProtoType, IHandler> handlers;
     public WsBaseHandler() {
         handlers = new HashMap<>();
-        // 每隔一定时间，给所有的玩家发送服务器信息
-        //ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(1);
-        //scheduledThreadPool.scheduleAtFixedRate(this::sendServerInfoToAll, 2,2, TimeUnit.SECONDS);
     }
     // 注册处理类
     private void registerHandler() {
@@ -43,11 +41,11 @@ public class WsBaseHandler {
         }
     }
 
-    public IResponseProtocol handle(Long id, BaseProtoType baseProtoType, String message) {
+    public IResponseProtocol handle(WsPlayer wsPlayer, Session session, BaseProtoType baseProtoType, String message) {
         IHandler handler = getHandler(baseProtoType);
         try {
             if (handler != null) {
-                return handler.handle(id, handler.parseRequest(message));
+                return handler.handle(wsPlayer, session, handler.parseRequest(message));
             } else {
                 return HeartBeatResponseProtocol.unknownProto(String.valueOf(baseProtoType));
             }
@@ -56,7 +54,7 @@ public class WsBaseHandler {
             return null;
         }
     }
-    public boolean containSubProtocol(BaseProtoType baseProtoType) {
+    boolean containSubProtocol(BaseProtoType baseProtoType) {
         if (handlers.isEmpty()) {
             registerHandler();
         }

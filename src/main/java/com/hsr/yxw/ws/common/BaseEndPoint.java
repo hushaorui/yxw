@@ -44,12 +44,8 @@ public class BaseEndPoint {
             wsCommonService.sendMessage(session, heartBeatResponseProtocol);
             return;
         }
-        boolean success = PlayerWebSocketPool.addToOnline(player, session);
-        if (success) {
-            heartBeatResponseProtocol = HeartBeatResponseProtocol.connectSuccess();
-        } else {
-            heartBeatResponseProtocol = HeartBeatResponseProtocol.alreadyLogin();
-        }
+        PlayerWebSocketPool.addToOnline(player, session);
+        heartBeatResponseProtocol = HeartBeatResponseProtocol.connectSuccess();
         // 给连接的用户发送信息
         wsCommonService.sendMessage(session, heartBeatResponseProtocol);
         System.out.println("在线人数" + PlayerWebSocketPool.count());
@@ -57,10 +53,16 @@ public class BaseEndPoint {
     }
 
     @OnMessage
-    public void onMessage(@PathParam("id") Long id, String message){
+    public void onMessage(@PathParam("id") Long id, Session session, String message){
+
         if (! StringUtils.isEmpty(message)) {
+            WsPlayer wsPlayer = PlayerWebSocketPool.getWsPlayer(id);
+            if (wsPlayer == null) {
+                return;
+            }
             IResponseProtocol responseProtocol;
             try {
+                // 开始解析协议
                 BaseProtocol baseProtocol = BaseProtocol.parse(message);
                 if (baseProtocol == null) {
                     return;
@@ -69,7 +71,7 @@ public class BaseEndPoint {
                 if (! wsBaseHandler.containSubProtocol(baseProtocol.getBaseType())) {
                     responseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.UNKNOWN_PROTO,
                             "未知的基础协议名称：" + baseProtocol.getBaseType());
-                    wsCommonService.sendMessage(id, responseProtocol);
+                    wsCommonService.sendMessage(session, responseProtocol);
                     return;
                 }
                 if (StringUtils.isEmpty(baseProtocol.getProtoString())) {
@@ -77,26 +79,28 @@ public class BaseEndPoint {
                     responseProtocol = HeartBeatResponseProtocol.emptyProto();
                 } else {
                     // 交给对应的处理类进行处理
-                    responseProtocol = wsBaseHandler.handle(id, baseProtocol.getBaseType(), baseProtocol.getProtoString());
+                    responseProtocol = wsBaseHandler.handle(wsPlayer, session, baseProtocol.getBaseType(), baseProtocol.getProtoString());
                 }
             } catch (Exception e) {
                 responseProtocol = HeartBeatResponseProtocol.notFormat(message);
             }
             // 发送响应信息，可能为空，处理器可自行发送信息
             if (responseProtocol != null) {
-                wsCommonService.sendMessage(id, responseProtocol);
+                wsCommonService.sendMessageToPlayer(wsPlayer, responseProtocol);
             }
         }
     }
 
     @OnClose
-    public void onClose(@PathParam("id") Long id,Session session){
-        System.out.println(id + " 连接关闭");
-        PlayerWebSocketPool.offLine(id);
-        System.out.println("在线人数：" + PlayerWebSocketPool.count());
-        PlayerWebSocketPool.getAllPlayerMap().keySet().forEach(item -> System.out.println("当前所有在线用户：" + item));
-        for (Map.Entry<Long, WsPlayer> item : PlayerWebSocketPool.getAllPlayerMap().entrySet()){
-            System.out.println("剩余用户id: " + item.getKey());
+    public void onClose(@PathParam("id") Long id, Session session){
+        System.out.println("玩家id：" + id + "，sessionId：" + session.getId() + " 连接关闭");
+        boolean isOffLine = PlayerWebSocketPool.offLine(id, session);
+        if (isOffLine) {
+            System.out.println("在线人数：" + PlayerWebSocketPool.count());
+            PlayerWebSocketPool.getAllPlayerMap().keySet().forEach(item -> System.out.println("当前所有在线用户：" + item));
+            for (Map.Entry<Long, WsPlayer> item : PlayerWebSocketPool.getAllPlayerMap().entrySet()){
+                System.out.println("剩余用户id: " + item.getKey());
+            }
         }
     }
 
@@ -107,7 +111,7 @@ public class BaseEndPoint {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("连接出现异常： {}" + throwable);
+        System.out.println(String.format("连接出现异常： %s", throwable));
     }
 
 }
