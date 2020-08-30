@@ -9,17 +9,26 @@
     <title>DIY作品</title>
 
     <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
     <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
     <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../static/bootstrap/js/common.js" th:src="@{/bootstrap/js/common.js}"></script>
     <script src="../static/bootstrap/js/proto/proto.js" th:src="@{/bootstrap/js/proto/proto.js}"></script>
     <style>
         #chat-hall {
             position: absolute;
+            background-color: #f6f6f6;
             height: 80%;
             width: 40%;
-            background-color: #f6f6f6;
+            right: 0;
+            top: 40px;
             display: none;
             border: #888 solid 1px;
+        }
+        #chat-hall-close-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
         }
     </style>
 </head>
@@ -35,17 +44,22 @@
                 <span id="user-name-label" th:text="${session.sessionPlayer.username}">[...]</span>
                 <input type="hidden" id="player-user-id-hidden-input" th:value="${session.sessionPlayer.id}"  />
             </button>
+            <button type="button" class="btn btn-default" id="show-ping-btn">ping: 0</button>
             <button type="button" class="btn btn-default" onclick="window.location.href = '/logout';">注销</button>
         </div>
     </div>
 </div>
 <div class="panel panel-default" id="chat-hall">
     <div class="panel-heading">
-        <h3 class="panel-title">
+        <span class="panel-title">
             聊天大厅
-        </h3>
+        </span>
+        <button type="button" id="chat-hall-close-btn" class="float-right btn btn-danger" onclick="$('#chat-hall').hide();">X</button>
     </div>
     <div class="panel-body" id="chat-hall-body">
+
+    </div>
+    <div id="chat-hall-input">
 
     </div>
 </div>
@@ -60,12 +74,12 @@
     // url前缀
     const contextPath = $("#contextPath").val();
 $(function() {
-    updateChatHallOffset();
     // 打开与关闭聊天大厅
     $("#chat-hall-btn").click(function() {
-        updateChatHallOffset();
         $("#chat-hall").toggle();
     });
+    // 注册处理器
+    registerAllHandler();
     $.get(contextPath + "/getWsUrlPrefix", function (wsUrlPrefix) {
         ws = new WebSocket(wsUrlPrefix + userId);
         ws.onopen = function () {
@@ -78,8 +92,10 @@ $(function() {
             handleResponse(ws, event);
         };
         ws.onclose = function(){
+            hasConnected = false;
             console.log("关闭 websocket 连接...");
-        }
+            $("#show-ping-btn").html("ping: 460");
+        };
         sendHeartBeatRequest(ws);
 
         // 创建定时器，每隔一定时间，发送心跳协议
@@ -88,6 +104,24 @@ $(function() {
         },2000);
     });
 });
+
+function registerAllHandler() {
+    registerWSHandler("BASE_HEART_BEAT", "SERVER_INFO", function (subProtoData) {
+        let serverInfo = JSON.parse(subProtoData[message]);
+        let serverTime = serverInfo["serverTime"];
+        let ping = serverInfo["ping"];
+        let playerCount = serverInfo["playerCount"];
+        let currentTime = new Date().getTime();
+        // 总延迟 = 客户端到服务端的时间 + 服务端到客户端的时间
+        ping += (currentTime - serverTime);
+        //console.log("总在线人数：" + playerCount + "，ping：" + ping);
+        $("#show-ping-btn").html("ping: " + ping);
+    });
+    registerWSHandler("BASE_HEART_BEAT", "CONNECT_SUCCESS", function (subProtoData) {
+        let msg = subProtoData[message];
+        console.log("连接成功后服务端发送过来的响应信息： " + msg);
+    })
+}
 
 function sendHeartBeatRequest(ws) {
     if (! hasConnected) {
@@ -100,43 +134,30 @@ function sendHeartBeatRequest(ws) {
     // 当前时间的毫秒值
     let currentTime = new Date().getTime();
     // 需要发送的json数据
-    let messageJson = {"reqType" : protoType, "clientTime" : currentTime};
+    let messageJson = {reqType : protoType, "clientTime" : currentTime};
     // 最后发送的结构
-    let jsonData = {"baseType" : baseProtoType, "protoString" : JSON.stringify(messageJson)};
+    let jsonData = {baseType : baseProtoType, protoString : JSON.stringify(messageJson)};
     // 发送
     ws.send(JSON.stringify(jsonData));
 }
-// 处理服务端返回的响应
-function handleResponse(ws, event) {
-    // 字符串转json
-    let baseProtoData = JSON.parse(event.data);
-    // 基础协议的类型，参考 WsProtoConstants
-    let baseProtoType = baseProtoData["baseType"];
-    if (baseProtoType === "BASE_HEART_BEAT") {
-        // 子协议内容
-        let subProtoData = JSON.parse(baseProtoData["protoString"]);
-        // 子协议类型
-        let subProtoType = subProtoData["resType"];
-        if (subProtoType === "SERVER_INFO") {
-            let serverInfoJson = JSON.parse(subProtoData["message"]);
-            console.log(serverInfoJson);
-        }
-    }
-    else if (baseProtoType === "BASE_CHAT_HALL") {
 
-    }
-    else {
-        alert("未知的基础协议类型：" + event.data["baseType"]);
-    }
-}
 // 修改聊天框的位置大小
-function updateChatHallOffset() {
-    let element = $("#chat-hall");
-    // 计算聊天大厅div的横坐标
-    let x = $(window).width() - element.width() - 10;
-    let y = $("#chat-hall-btn").height() + 15;
-    element.offset({ top: y, left: x })
-}
+// function updateChatHallOffset() {
+//     let element = $("#chat-hall");
+//     // height: 80%;
+//     // width: 40%;
+//     element.height("80%");
+//     element.width("40%");
+//     let screenWidth = $(window).width();
+//     console.log("屏幕宽度：" + screenWidth);
+//     console.log("聊天大厅宽度：" + element.width());
+//     // 计算聊天大厅div的横坐标
+//     let x = screenWidth - element.width() - 390;
+//     let y = $("#chat-hall-btn").height() + 15;
+//     element.offset({ top: y, left: x });
+//     console.log("x:" + x + ",y:" + y);
+//
+// }
 
 
 </script>
