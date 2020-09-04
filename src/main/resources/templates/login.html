@@ -5,7 +5,7 @@
     <title>DIY作品</title>
 
     <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../static/bootstrap/css/common.css" th:href="@{/bootstrap/css/common.css}">
+    <link rel="stylesheet" href="../static/custom/css/common.css" th:href="@{/bootstrap/css/common.css}">
     <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
     <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
 
@@ -67,6 +67,11 @@
        });
     });
     function toLogin() {
+        var username = $("#username").val().trim();
+        var password = $("#password").val().trim();
+        if (username === "" || password === "") {
+            return;
+        }
         $.post("toLogin", $("form").serialize(), function (data) {
             if (data.result === "success") {
                 window.location.href = data.message;
