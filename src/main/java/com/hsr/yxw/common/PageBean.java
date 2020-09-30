@@ -68,6 +68,8 @@ public class PageBean<T> {
     }
 
     public void setOtherPage() {
+        // 一侧最大显示数字的页码数量(指当前页一侧)，这样保持对称
+        int maxPageCountOneSide = 4;
         otherPages = new ArrayList<>();
         // totalPage = 6  currentPage = 1  pageSize = 10
         otherPages.add(new TwinsValue<Integer, String>(1, "首页"));
@@ -77,31 +79,68 @@ public class PageBean<T> {
         }
         //当前页为1时
         if (currentPage == 1) {
-            otherPages.add(new TwinsValue<Integer, String>(1, "1"));
+            otherPages.add(new TwinsValue<>(1, "1"));
         }
         // 从1到 currentPage前一页
-        for (int i = 1; i < currentPage; i++) {
-            otherPages.add(new TwinsValue<Integer, String>(i, String.valueOf(i)));
+        int leftStart;
+        if (currentPage - maxPageCountOneSide > 1) {
+            leftStart = currentPage - maxPageCountOneSide;
+        } else {
+            leftStart = 1;
+        }
+        for (int i = leftStart; i < currentPage; i++) {
+            otherPages.add(new TwinsValue<>(i, String.valueOf(i)));
         }
         // 当前页
         if (currentPage != 1 && ! totalPage.equals(currentPage)) {
-            otherPages.add(new TwinsValue<Integer, String>(currentPage, String.valueOf(currentPage)));
+            otherPages.add(new TwinsValue<>(currentPage, String.valueOf(currentPage)));
         }
+        int rightCount = 0;
         // 从当前页 + 1到尾页
         for (int i = currentPage + 1; i <= totalPage; i++) {
-            otherPages.add(new TwinsValue<Integer, String>(i, String.valueOf(i)));
+            rightCount ++;
+            otherPages.add(new TwinsValue<>(i, String.valueOf(i)));
+            if (rightCount >= maxPageCountOneSide) {
+                break;
+            }
         }
         // 当前页为尾页 且 不为 1时
         if (totalPage.equals(currentPage) && currentPage != 1) {
-            otherPages.add(new TwinsValue<Integer, String>(totalPage, String.valueOf(totalPage)));
+            otherPages.add(new TwinsValue<>(totalPage, String.valueOf(totalPage)));
         }
         // 下一页
         if (totalPage > currentPage) {
-            otherPages.add(new TwinsValue<Integer, String>(currentPage + 1, "下一页"));
+            otherPages.add(new TwinsValue<>(currentPage + 1, "下一页"));
         }
         //尾页
-        otherPages.add(new TwinsValue<Integer, String>(totalPage, "尾页"));
+        otherPages.add(new TwinsValue<>(totalPage, "尾页"));
     }
+
+    //以下请勿调用======================================================
+    public PageBean() {}
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
+    }
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+    public void setFirstResult(Integer firstResult) {
+        this.firstResult = firstResult;
+    }
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
+    }
+    public void setPrePage(Integer prePage) {
+        this.prePage = prePage;
+    }
+    public void setNextPage(Integer nextPage) {
+        this.nextPage = nextPage;
+    }
+    public void setTotalPage(Integer totalPage) {
+        this.totalPage = totalPage;
+    }
+    //=================================================================
+
 
     public PageBean(Integer totalCount, Integer pageSize, Integer currentPage) {
         this.totalCount = totalCount;//从数据库中查询的总记录数
@@ -155,6 +194,12 @@ public class PageBean<T> {
     }
     public void setPageList(List<T> pageList) {
         this.pageList = pageList;
+    }
+    public void setPageList(List<T> pageList, boolean setOtherPage) {
+        this.pageList = pageList;
+        if (setOtherPage) {
+            setOtherPage();
+        }
     }
     public Integer getTotalCount() {
         return totalCount;
