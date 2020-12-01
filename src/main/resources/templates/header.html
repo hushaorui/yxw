@@ -8,7 +8,8 @@
     <meta charset="UTF-8">
     <title>DIY作品</title>
 
-    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"
+          th:href="@{/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../static/custom/css/common.css" th:href="@{/custom/css/common.css}">
     <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
     <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
@@ -25,16 +26,45 @@
             display: none;
             border: #888 solid 1px;
         }
+
         #chat-hall-close-btn {
             position: absolute;
             top: 0;
             right: 0;
         }
+        #chat-hall-body {
+            border: #0f0f0f solid 1px;
+        }
+        #chat-hall-bottom {
+            /*border: #0f0f0f solid 1px;*/
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            margin: 0;
+            padding: 0;
+        }
+        #chat-hall-bottom-select {
+            height: 100%;
+            width: 10%;
+            margin: 0;
+            padding: 0;
+        }
+        #chat-hall-bottom-input {
+            height: 100%;
+            width: 80%;
+            margin: 0;
+        }
+        #chat-hall-bottom-btn {
+            height: 100%;
+            width: 8%;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
-<div th:fragment="header" >
-    <input type="hidden" id="contextPath" th:value="${#httpServletRequest.getContextPath()}" />
+<div th:fragment="header">
+    <input type="hidden" id="contextPath" th:value="${#httpServletRequest.getContextPath()}"/>
     <div id="header">
         <div class="btn-group" style="float: right;">
             <button type="button" class="btn btn-default" onclick="window.location.href = '/index';">首页</button>
@@ -42,7 +72,7 @@
             <button type="button" class="btn btn-default">
                 <span class="glyphicon glyphicon-user"></span>
                 <span id="user-name-label" th:text="${session.sessionPlayer.username}">[...]</span>
-                <input type="hidden" id="player-user-id-hidden-input" th:value="${session.sessionPlayer.id}"  />
+                <input type="hidden" id="player-user-id-hidden-input" th:value="${session.sessionPlayer.id}"/>
             </button>
             <button type="button" class="btn btn-default" id="show-ping-btn">ping: 0</button>
             <button type="button" class="btn btn-default" onclick="window.location.href = '/logout';">注销</button>
@@ -54,13 +84,19 @@
         <span class="panel-title">
             聊天大厅
         </span>
-        <button type="button" id="chat-hall-close-btn" class="float-right btn btn-danger" onclick="$('#chat-hall').hide();">X</button>
+        <button type="button" id="chat-hall-close-btn" class="float-right btn btn-danger"
+                onclick="$('#chat-hall').hide();">X
+        </button>
     </div>
-    <div class="panel-body" id="chat-hall-body">
-
+    <div id="chat-hall-body">
+fsdf
     </div>
-    <div id="chat-hall-input">
-
+    <div id="chat-hall-bottom">
+        <select class="btn btn-primary" id="chat-hall-bottom-select">
+            <option>公共</option>
+        </select>
+        <input id="chat-hall-bottom-input" />
+        <button id="chat-hall-bottom-btn">发送</button>
     </div>
 </div>
 </body>
@@ -73,92 +109,84 @@
     let hasConnected = false;
     // url前缀
     const contextPath = $("#contextPath").val();
-$(function() {
-    // 打开与关闭聊天大厅
-    $("#chat-hall-btn").click(function() {
-        $("#chat-hall").toggle();
-    });
-    // 注册处理器
-    registerAllHandler();
-    $.get(contextPath + "/getWsUrlPrefix", function (wsUrlPrefix) {
-        ws = new WebSocket(wsUrlPrefix + userId);
-        ws.onopen = function () {
-            hasConnected = true;
-            console.log("建立 websocket 连接...");
-        };
-        ws.onmessage = function(event){
-            //服务端发送的消息
-            //console.log("服务端发过来的信息：" + event.data);
-            handleResponse(ws, event);
-        };
-        ws.onclose = function(){
-            hasConnected = false;
-            console.log("关闭 websocket 连接...");
-            $("#show-ping-btn").html("ping: 460");
-        };
-        sendHeartBeatRequest(ws);
-
-        // 创建定时器，每隔一定时间，发送心跳协议
-        setInterval(function () {
+    $(function () {
+        // 打开与关闭聊天大厅
+        $("#chat-hall-btn").click(function () {
+            $("#chat-hall").toggle();
+        });
+        // 注册处理器
+        registerAllResponseHandler();
+        $.get(contextPath + "/getWsUrlPrefix", function (wsUrlPrefix) {
+            ws = new WebSocket(wsUrlPrefix + userId);
+            ws.onopen = function () {
+                hasConnected = true;
+                console.log("建立 websocket 连接...");
+            };
+            ws.onmessage = function (event) {
+                //服务端发送的消息
+                //console.log("服务端发过来的信息：" + event.data);
+                handleResponse(ws, event);
+            };
+            ws.onclose = function () {
+                hasConnected = false;
+                console.log("关闭 websocket 连接...");
+                $("#show-ping-btn").html("ping: 460");
+            };
             sendHeartBeatRequest(ws);
-        },2000);
-    });
-});
 
-function registerAllHandler() {
-    registerWSHandler("BASE_HEART_BEAT", "SERVER_INFO", function (subProtoData) {
-        let currentTime = new Date().getTime();
-        let serverInfo = JSON.parse(subProtoData[message]);
-        let serverTime = serverInfo["serverTime"];
-        let ping = serverInfo["ping"];
-        let playerCount = serverInfo["playerCount"];
-        // 总延迟 = 客户端到服务端的时间 + 服务端到客户端的时间
-        ping += (currentTime - serverTime);
-        //console.log("总在线人数：" + playerCount + "，ping：" + ping);
-        $("#show-ping-btn").html("ping: " + ping);
+            // 创建定时器，每隔一定时间，发送心跳协议
+            setInterval(function () {
+                sendHeartBeatRequest(ws);
+            }, 2000);
+        });
+        $("#chat-hall-bottom-btn").click(function () {
+            let inputString = $("#chat-hall-bottom-input").val();
+            if (inputString.length <= 0) {
+                return;
+            }
+            // 发送公共聊天信息
+            sendPublicChatRequest(ws, inputString);
+        });
     });
-    registerWSHandler("BASE_HEART_BEAT", "CONNECT_SUCCESS", function (subProtoData) {
-        let msg = subProtoData[message];
-        console.log("连接成功后服务端发送过来的响应信息： " + msg);
-    })
-}
 
-function sendHeartBeatRequest(ws) {
-    if (! hasConnected) {
-        return;
+    // 注册所有ws相关接收处理器
+    function registerAllResponseHandler() {
+        registerWSHandler("BASE_HEART_BEAT", "SERVER_INFO", function (subProtoData) {
+            let currentTime = new Date().getTime();
+            let serverInfo = JSON.parse(subProtoData[message]);
+            let serverTime = serverInfo["serverTime"];
+            let ping = serverInfo["ping"];
+            let playerCount = serverInfo["playerCount"];
+            // 总延迟 = 客户端到服务端的时间 + 服务端到客户端的时间
+            ping += (currentTime - serverTime);
+            //console.log("总在线人数：" + playerCount + "，ping：" + ping);
+            $("#show-ping-btn").html("ping: " + ping);
+        });
+        registerWSHandler("BASE_HEART_BEAT", "CONNECT_SUCCESS", function (subProtoData) {
+            let msg = subProtoData[message];
+            console.log("连接成功后服务端发送过来的响应信息： " + msg);
+        })
     }
-    // 基础协议类型
-    let baseProtoType = "BASE_HEART_BEAT";
-    // 子协议类型
-    let protoType = "SUB_HEART_BEAT";
-    // 当前时间的毫秒值
-    let currentTime = new Date().getTime();
-    // 需要发送的json数据
-    let messageJson = {reqType : protoType, "clientTime" : currentTime};
-    // 最后发送的结构
-    let jsonData = {baseType : baseProtoType, protoString : JSON.stringify(messageJson)};
-    // 发送
-    ws.send(JSON.stringify(jsonData));
-}
 
-// 修改聊天框的位置大小
-// function updateChatHallOffset() {
-//     let element = $("#chat-hall");
-//     // height: 80%;
-//     // width: 40%;
-//     element.height("80%");
-//     element.width("40%");
-//     let screenWidth = $(window).width();
-//     console.log("屏幕宽度：" + screenWidth);
-//     console.log("聊天大厅宽度：" + element.width());
-//     // 计算聊天大厅div的横坐标
-//     let x = screenWidth - element.width() - 390;
-//     let y = $("#chat-hall-btn").height() + 15;
-//     element.offset({ top: y, left: x });
-//     console.log("x:" + x + ",y:" + y);
-//
-// }
+    // 发送心跳协议请求
+    function sendHeartBeatRequest(ws) {
+        // 基础协议类型
+        let baseProtoType = "BASE_HEART_BEAT";
+        // 子协议类型
+        let protoType = "SUB_HEART_BEAT";
+        // 当前时间的毫秒值
+        let currentTime = new Date().getTime();
+        // 需要发送的json数据
+        let messageJson = {reqType: protoType, "clientTime": currentTime};
+        sendRequest(ws, baseProtoType, protoType, messageJson);
+    }
 
+    // 发送公共聊天请求
+    function sendPublicChatRequest(ws, chatMessage) {
+        let protoType = "SEND_PUBLIC_CHAT_MESSAGE";
+        let messageJson = {reqType: protoType, "message": chatMessage};
+        sendRequest(ws, "BASE_CHAT_HALL", protoType, messageJson);
+    }
 
 </script>
 </html>

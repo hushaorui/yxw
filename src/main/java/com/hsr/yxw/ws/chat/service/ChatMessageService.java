@@ -3,6 +3,7 @@ package com.hsr.yxw.ws.chat.service;
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.mapper.ChatMessageMapper;
 import com.hsr.yxw.util.YxwStringUtils;
+import com.hsr.yxw.ws.chat.common.ChatMessageType;
 import com.hsr.yxw.ws.chat.pojo.ChatMessage;
 import com.hsr.yxw.ws.chat.common.ChatMessageQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,31 @@ import java.util.List;
 @Service
 public class ChatMessageService {
 
-    @Autowired
     private ChatMessageMapper chatMessageMapper;
+
+    @Autowired
+    public ChatMessageService(ChatMessageMapper chatMessageMapper) {
+        this.chatMessageMapper = chatMessageMapper;
+    }
+
+    public ChatMessage save(ChatMessageType messageType, long senderId, String senderName, Long sendTime, Long receiverId, String receiverName, String content) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setSenderId(senderId);
+        chatMessage.setSenderName(senderName);
+        if (sendTime == null || sendTime <= 0) {
+            sendTime = System.currentTimeMillis();
+        }
+        chatMessage.setSendTime(sendTime);
+        if (messageType == null) {
+            messageType = ChatMessageType.PUBLIC;
+        }
+        chatMessage.setMessageType(messageType);
+        chatMessage.setReceiverId(receiverId);
+        chatMessage.setReceiverName(receiverName);
+        chatMessage.setContent(content);
+        chatMessageMapper.insert(chatMessage);
+        return chatMessage;
+    }
 
     public PageBean<ChatMessage> getChatMessagePageBean(Integer pageNum, Integer pageSize, ChatMessageQueryVo vo) {
         int count = chatMessageMapper.count(vo);

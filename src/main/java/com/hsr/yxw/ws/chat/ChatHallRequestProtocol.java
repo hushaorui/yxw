@@ -6,7 +6,7 @@ import com.hsr.yxw.ws.common.IRequestProtocol;
 /**
  * 聊天大厅使用的协议
  */
-public class ChatHallRequestIProtocol extends IRequestProtocol {
+public class ChatHallRequestProtocol extends IRequestProtocol {
 
     /** 发送公共聊天内容 */
     public static final String SEND_PUBLIC_CHAT_MESSAGE = "SEND_PUBLIC_CHAT_MESSAGE";
@@ -19,7 +19,7 @@ public class ChatHallRequestIProtocol extends IRequestProtocol {
         this.message = message;
     }
 
-    public ChatHallRequestIProtocol() {}
+    public ChatHallRequestProtocol() {}
 
     @Override
     public BaseProtoType getBaseType() {

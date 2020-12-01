@@ -52,3 +52,14 @@ function handleResponse(ws, event) {
         }
     }
 }
+
+// 公用发送请求
+function sendRequest(ws, baseProtoType, protoType, messageJson) {
+    if (! hasConnected) {
+        return;
+    }
+    // 最后发送的结构
+    let jsonData = {baseType : baseProtoType, protoString : JSON.stringify(messageJson)};
+    // 发送
+    ws.send(JSON.stringify(jsonData));
+}
