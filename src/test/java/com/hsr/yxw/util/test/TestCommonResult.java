@@ -12,4 +12,4 @@ public class TestCommonResult {
         String jsonString = JSONArray.toJSONString(commonResult);
         System.out.println(jsonString);
     }
-}
+}

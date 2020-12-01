@@ -15,9 +15,9 @@ public class WsCommonService {
     }
     private WsCommonService() {}
 
-    public void sendMessageToPlayer(WsPlayer wsPlayer, String message) {
+    public void sendMessageToAccount(WsAccount wsAccount, String message) {
         HashSet<String> closeSessionIdSet = null;
-        for (Map.Entry<String, Session> entry : wsPlayer.getWsSessions().entrySet()) {
+        for (Map.Entry<String, Session> entry : wsAccount.getWsSessions().entrySet()) {
             Session session = entry.getValue();
             if (session.isOpen()) {
                 sendMessage(session, message);
@@ -31,36 +31,36 @@ public class WsCommonService {
         // 删除已经关闭的session
         if (closeSessionIdSet != null) {
             for (String sessionId : closeSessionIdSet) {
-                wsPlayer.getWsSessions().remove(sessionId);
+                wsAccount.getWsSessions().remove(sessionId);
             }
         }
     }
-    public void sendMessageToPlayer(WsPlayer wsPlayer, IResponseProtocol responseProtocol) {
-        if (wsPlayer != null) {
-            sendMessageToPlayer(wsPlayer, BaseProtocol.buildResponse(responseProtocol).toJsonString());
+    public void sendMessageToAccount(WsAccount wsAccount, IResponseProtocol responseProtocol) {
+        if (wsAccount != null) {
+            sendMessageToAccount(wsAccount, BaseProtocol.buildResponse(responseProtocol).toJsonString());
         }
     }
     /**
      * 给指定用户发送信息
-     * @param wsPlayer 唯一用户
+     * @param wsAccount 唯一用户
      * @param protocol 协议
      */
-    public boolean sendMessage(WsPlayer wsPlayer, String sessionId, IResponseProtocol protocol){
-        return sendMessage(wsPlayer, sessionId, BaseProtocol.buildResponse(protocol).toJsonString());
+    public boolean sendMessage(WsAccount wsAccount, String sessionId, IResponseProtocol protocol){
+        return sendMessage(wsAccount, sessionId, BaseProtocol.buildResponse(protocol).toJsonString());
     }
     /**
      * 给指定用户发送信息
-     * @param wsPlayer 唯一用户
+     * @param wsAccount 唯一用户
      * @param message json字符串
      */
-    public boolean sendMessage(WsPlayer wsPlayer, String sessionId, String message){
-        if (wsPlayer != null && wsPlayer.getWsSessions().containsKey(sessionId)) {
-            Session session = wsPlayer.getWsSessions().get(sessionId);
+    public boolean sendMessage(WsAccount wsAccount, String sessionId, String message){
+        if (wsAccount != null && wsAccount.getWsSessions().containsKey(sessionId)) {
+            Session session = wsAccount.getWsSessions().get(sessionId);
             if (session.isOpen()) {
-                sendMessage(wsPlayer.getWsSessions().get(sessionId), message);
+                sendMessage(wsAccount.getWsSessions().get(sessionId), message);
                 return true;
             } else {
-                wsPlayer.getWsSessions().remove(sessionId);
+                wsAccount.getWsSessions().remove(sessionId);
                 return false;
             }
         } else {
@@ -91,14 +91,14 @@ public class WsCommonService {
     /***
      * 发送给满足条件的用户
      * @param responseProtocol 响应
-     * @param wsPlayerFilter 过滤器，为null时则发给所有用户
+     * @param wsAccountFilter 过滤器，为null时则发给所有用户
      */
-    public void sendMessageToAll(IResponseProtocol responseProtocol, WsPlayerFilter wsPlayerFilter){
+    public void sendMessageToAll(IResponseProtocol responseProtocol, WsAccountFilter wsAccountFilter){
         final String message = BaseProtocol.buildResponse(responseProtocol).toJsonString();
-        PlayerWebSocketPool.getAllPlayerMap().forEach((username, wsPlayer) -> {
-            if (wsPlayerFilter != null && wsPlayerFilter.doFilter(wsPlayer)) {
-                sendMessageToPlayer(wsPlayer, message);
+        AccountWebSocketPool.getAllAccountMap().forEach((username, wsAccount) -> {
+            if (wsAccountFilter != null && wsAccountFilter.doFilter(wsAccount)) {
+                sendMessageToAccount(wsAccount, message);
             }
         });
     }
-}
+}

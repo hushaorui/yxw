@@ -4,9 +4,9 @@ import com.hsr.yxw.admin.service.AdminService;
 import com.hsr.yxw.common.WebConstants;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.mapper.ChatMessageMapper;
-import com.hsr.yxw.mapper.PlayerMapper;
+import com.hsr.yxw.mapper.AccountMapper;
 import com.hsr.yxw.mapper.SystemConfigMapper;
-import com.hsr.yxw.player.pojo.Player;
+import com.hsr.yxw.account.pojo.Account;
 import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 import com.hsr.yxw.ws.chat.common.ChatMessageUtils;
@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class AdminServiceImpl implements AdminService {
     @Autowired
-    private PlayerMapper playerMapper;
+    private AccountMapper accountMapper;
     @Autowired
     private SystemConfigMapper systemConfigMapper;
     @Autowired
@@ -35,7 +35,7 @@ public class AdminServiceImpl implements AdminService {
                     systemConfigMapper.dropTable();
                 } catch (Exception ignore) {}
                 try {
-                    playerMapper.dropTable();
+                    accountMapper.dropTable();
                 } catch (Exception ignore) {}
                 try {
                     chatMessageMapper.dropTable();
@@ -46,14 +46,14 @@ public class AdminServiceImpl implements AdminService {
                 systemConfigMapper.createTable();
             } catch (Exception ignore) {}
             try {
-                playerMapper.createTable();
+                accountMapper.createTable();
             } catch (Exception ignore) {}
             try {
                 chatMessageMapper.createTable();
             } catch (Exception ignore) {}
 
             initSystemConfigTable();
-            initPlayerTable();
+            initAccountTable();
             initChatMessageTable();
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,10 +63,10 @@ public class AdminServiceImpl implements AdminService {
 
     private void initChatMessageTable() {
         // 纯测试数据
-        Player sender = new Player();
+        Account sender = new Account();
         sender.setId(900L);
         sender.setUsername("TestSendMessage");
-        Player receiver = new Player();
+        Account receiver = new Account();
         receiver.setId(901L);
         receiver.setUsername("TestReceiveMessage");
         ChatMessage chatMessage;
@@ -102,21 +102,21 @@ public class AdminServiceImpl implements AdminService {
             }
         }
     }
-    private void initPlayerTable() throws Exception {
-        int playerCount = playerMapper.count(null);
-        if (playerCount == 0) {
-            Player admin = new Player("admin", "admin", true, System.currentTimeMillis());
-            playerMapper.insert(admin);
-            Player player1 = new Player("player1", "player1", false, System.currentTimeMillis());
-            Player player2 = new Player("player2", "player2", false, System.currentTimeMillis());
-            playerMapper.insert(player1);
-            playerMapper.insert(player2);
+    private void initAccountTable() throws Exception {
+        int accountCount = accountMapper.count(null);
+        if (accountCount == 0) {
+            Account admin = new Account("admin", "admin", true, System.currentTimeMillis());
+            accountMapper.insert(admin);
+            Account account1 = new Account("account1", "account1", false, System.currentTimeMillis());
+            Account account2 = new Account("account2", "account2", false, System.currentTimeMillis());
+            accountMapper.insert(account1);
+            accountMapper.insert(account2);
 
             // 测试数据
             for (int i = 1; i < 50; i++) {
-                Player player = new Player("test"+i, "test"+i, false, System.currentTimeMillis());
-                playerMapper.insert(player);
+                Account account = new Account("test"+i, "test"+i, false, System.currentTimeMillis());
+                accountMapper.insert(account);
             }
         }
     }
-}
+}

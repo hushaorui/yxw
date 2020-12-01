@@ -1,8 +1,8 @@
 package com.hsr.yxw.ws.common;
 
 import com.hsr.yxw.exception.ServiceException;
-import com.hsr.yxw.player.pojo.Player;
-import com.hsr.yxw.player.service.PlayerService;
+import com.hsr.yxw.account.pojo.Account;
+import com.hsr.yxw.account.service.AccountService;
 import com.hsr.yxw.ws.heartbeat.HeartBeatResponseProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,10 +19,10 @@ import java.util.Map;
 public class BaseEndPoint {
 
 
-    private static PlayerService playerService;
+    private static AccountService accountService;
     @Autowired
-    public void setUserService(PlayerService playerService){
-        BaseEndPoint.playerService = playerService;
+    public void setUserService(AccountService accountService){
+        BaseEndPoint.accountService = accountService;
     }
     private static WsBaseHandler wsBaseHandler;
     @Autowired
@@ -34,30 +34,30 @@ public class BaseEndPoint {
     @OnOpen
     public void onOpen(@PathParam("id") Long id, Session session) throws ServiceException {
         System.out.println("新的连接，用户id：" + id);
-        Player player = playerService.getPlayerById(id);
+        Account account = accountService.getAccountById(id);
         HeartBeatResponseProtocol heartBeatResponseProtocol;
         // 创建心跳协议类型的基础协议
-        if (player == null) {
+        if (account == null) {
             // 心跳协议的响应协议
             heartBeatResponseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.CONNECT_FAILED, "用户id " + id + " 不存在，连接失败");
             // 给连接的用户发送连接失败信息
             wsCommonService.sendMessage(session, heartBeatResponseProtocol);
             return;
         }
-        PlayerWebSocketPool.addToOnline(player, session);
+        AccountWebSocketPool.addToOnline(account, session);
         heartBeatResponseProtocol = HeartBeatResponseProtocol.connectSuccess();
         // 给连接的用户发送信息
         wsCommonService.sendMessage(session, heartBeatResponseProtocol);
-        System.out.println("在线人数" + PlayerWebSocketPool.count());
-        PlayerWebSocketPool.getAllPlayerMap().keySet().forEach(item -> System.out.println("当前所有在线用户：" + item));
+        System.out.println("在线人数" + AccountWebSocketPool.count());
+        AccountWebSocketPool.getAllAccountMap().keySet().forEach(item -> System.out.println("当前所有在线用户：" + item));
     }
 
     @OnMessage
     public void onMessage(@PathParam("id") Long id, Session session, String message){
 
         if (! StringUtils.isEmpty(message)) {
-            WsPlayer wsPlayer = PlayerWebSocketPool.getWsPlayer(id);
-            if (wsPlayer == null) {
+            WsAccount wsAccount = AccountWebSocketPool.getWsAccount(id);
+            if (wsAccount == null) {
                 return;
             }
             IResponseProtocol responseProtocol;
@@ -79,14 +79,14 @@ public class BaseEndPoint {
                     responseProtocol = HeartBeatResponseProtocol.emptyProto();
                 } else {
                     // 交给对应的处理类进行处理
-                    responseProtocol = wsBaseHandler.handle(wsPlayer, session, baseProtocol.getBaseType(), baseProtocol.getProtoString());
+                    responseProtocol = wsBaseHandler.handle(wsAccount, session, baseProtocol.getBaseType(), baseProtocol.getProtoString());
                 }
             } catch (Exception e) {
                 responseProtocol = HeartBeatResponseProtocol.notFormat(message);
             }
             // 发送响应信息，可能为空，处理器可自行发送信息
             if (responseProtocol != null) {
-                wsCommonService.sendMessageToPlayer(wsPlayer, responseProtocol);
+                wsCommonService.sendMessageToAccount(wsAccount, responseProtocol);
             }
         }
     }
@@ -94,11 +94,11 @@ public class BaseEndPoint {
     @OnClose
     public void onClose(@PathParam("id") Long id, Session session){
         System.out.println("玩家id：" + id + "，sessionId：" + session.getId() + " 连接关闭");
-        boolean isOffLine = PlayerWebSocketPool.offLine(id, session);
+        boolean isOffLine = AccountWebSocketPool.offLine(id, session);
         if (isOffLine) {
-            System.out.println("在线人数：" + PlayerWebSocketPool.count());
-            PlayerWebSocketPool.getAllPlayerMap().keySet().forEach(item -> System.out.println("当前所有在线用户：" + item));
-            for (Map.Entry<Long, WsPlayer> item : PlayerWebSocketPool.getAllPlayerMap().entrySet()){
+            System.out.println("在线人数：" + AccountWebSocketPool.count());
+            AccountWebSocketPool.getAllAccountMap().keySet().forEach(item -> System.out.println("当前所有在线用户：" + item));
+            for (Map.Entry<Long, WsAccount> item : AccountWebSocketPool.getAllAccountMap().entrySet()){
                 System.out.println("剩余用户id: " + item.getKey());
             }
         }
@@ -114,4 +114,4 @@ public class BaseEndPoint {
         System.out.println(String.format("连接出现异常： %s", throwable));
     }
 
-}
+}

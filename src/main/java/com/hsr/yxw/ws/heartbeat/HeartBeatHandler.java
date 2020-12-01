@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.hsr.yxw.ws.common.IHandler;
 import com.hsr.yxw.ws.common.IResponseProtocol;
 import com.hsr.yxw.ws.common.WsCommonService;
-import com.hsr.yxw.ws.common.WsPlayer;
+import com.hsr.yxw.ws.common.WsAccount;
 import com.hsr.yxw.ws.heartbeat.pojo.WsServerInfo;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ public class HeartBeatHandler implements IHandler<HeartBeatRequestProtocol, Hear
 
     private WsCommonService wsCommonService = WsCommonService.getInstance();
     @Override
-    public IResponseProtocol handle(WsPlayer wsPlayer, Session session, HeartBeatRequestProtocol request) {
+    public IResponseProtocol handle(WsAccount wsAccount, Session session, HeartBeatRequestProtocol request) {
         if (request == null) {
             return null;
         }
@@ -45,4 +45,4 @@ public class HeartBeatHandler implements IHandler<HeartBeatRequestProtocol, Hear
         heartBeatResponseProtocol.setMessage(wsServerInfo.toJsonString());
         wsCommonService.sendMessage(session, heartBeatResponseProtocol);
     }
-}
+}

@@ -68,4 +68,4 @@ public class SystemConfigQueryVo extends CommonVo {
     public void setLastUpdateTimeEnd(Long lastUpdateTimeEnd) {
         this.lastUpdateTimeEnd = lastUpdateTimeEnd;
     }
-}
+}

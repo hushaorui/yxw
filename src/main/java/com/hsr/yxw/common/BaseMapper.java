@@ -34,4 +34,4 @@ public interface BaseMapper<POJO, VO> {
     void update(POJO pojo);
     // 更新对象中的非null属性
     void updateForNotNull(POJO pojo);
-}
+}

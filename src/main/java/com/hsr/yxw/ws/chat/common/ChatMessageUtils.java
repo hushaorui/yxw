@@ -1,6 +1,6 @@
 package com.hsr.yxw.ws.chat.common;
 
-import com.hsr.yxw.player.pojo.Player;
+import com.hsr.yxw.account.pojo.Account;
 import com.hsr.yxw.ws.chat.pojo.ChatMessage;
 
 public abstract class ChatMessageUtils {
@@ -11,7 +11,7 @@ public abstract class ChatMessageUtils {
      * @param content 内容
      * @return 对象
      */
-    public static ChatMessage createPublicChatMessage(Player sender, String content) {
+    public static ChatMessage createPublicChatMessage(Account sender, String content) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setContent(content);
         chatMessage.setSenderId(sender.getId());
@@ -28,7 +28,7 @@ public abstract class ChatMessageUtils {
      * @param content 内容
      * @return 对象
      */
-    public static ChatMessage createPrivateChatMessage(Player sender, Player receiver, String content) {
+    public static ChatMessage createPrivateChatMessage(Account sender, Account receiver, String content) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setContent(content);
         chatMessage.setSenderId(sender.getId());
@@ -59,4 +59,4 @@ public abstract class ChatMessageUtils {
         return content;
     }
 
-}
+}

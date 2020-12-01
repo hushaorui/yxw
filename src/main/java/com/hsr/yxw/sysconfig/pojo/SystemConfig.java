@@ -72,4 +72,4 @@ public class SystemConfig {
     public void setLastUpdateTime(Long lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
     }
-}
+}

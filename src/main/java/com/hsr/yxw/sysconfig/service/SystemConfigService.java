@@ -35,4 +35,4 @@ public interface SystemConfigService {
     List<String> selectAllValueType() throws ServiceException;
 
     void addSystemConfig(SystemConfig systemConfig) throws ServiceException;
-}
+}

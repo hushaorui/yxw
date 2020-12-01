@@ -59,4 +59,4 @@ public class BaseProtocol {
     public String toString() {
         return toJsonString();
     }
-}
+}

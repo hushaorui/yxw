@@ -20,7 +20,7 @@ public class AdminChatMessageController {
     private ChatMessageService chatMessageService;
 
     @RequestMapping(value="admin/chat-message-list")
-    public String playerList(Integer pageNum, Integer pageSize, ChatMessageQueryVo vo, Model model) throws Exception {
+    public String accountList(Integer pageNum, Integer pageSize, ChatMessageQueryVo vo, Model model) throws Exception {
         PageBean<ChatMessage> pageBean = chatMessageService.getChatMessagePageBean(pageNum, pageSize, vo);
         model.addAttribute("pageBean", pageBean);
         model.addAttribute("chatMessageQueryVo", vo);
@@ -33,7 +33,7 @@ public class AdminChatMessageController {
 
     @RequestMapping(value = "admin/chat-message-delete")
     @ResponseBody
-    public CommonResult deletePlayer(String ids) {
+    public CommonResult deleteAccount(String ids) {
         if (StringUtils.isEmpty(ids)) {
             return CommonResult.error("ID不可为空！");
         }
@@ -50,4 +50,4 @@ public class AdminChatMessageController {
     public String selectContentById(Long id) {
         return chatMessageService.selectContentById(id);
     }
-}
+}

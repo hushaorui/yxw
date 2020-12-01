@@ -10,4 +10,4 @@ public abstract class IResponseProtocol extends IProtocol {
     public void setResType(String resType) {
         this.resType = resType;
     }
-}
+}

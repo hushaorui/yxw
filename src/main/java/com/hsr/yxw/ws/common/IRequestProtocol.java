@@ -10,4 +10,4 @@ public abstract class IRequestProtocol extends IProtocol {
     public void setReqType(String reqType) {
         this.reqType = reqType;
     }
-}
+}

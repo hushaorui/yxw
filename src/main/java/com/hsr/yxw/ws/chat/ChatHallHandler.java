@@ -3,7 +3,7 @@ package com.hsr.yxw.ws.chat;
 import com.alibaba.fastjson.JSONArray;
 import com.hsr.yxw.ws.common.IHandler;
 import com.hsr.yxw.ws.common.IResponseProtocol;
-import com.hsr.yxw.ws.common.WsPlayer;
+import com.hsr.yxw.ws.common.WsAccount;
 import com.hsr.yxw.ws.heartbeat.HeartBeatResponseProtocol;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,18 +19,18 @@ public class ChatHallHandler implements IHandler<ChatHallRequestProtocol, ChatHa
     private ChatHallService chatHallService;
 
     @Override
-    public IResponseProtocol handle(WsPlayer wsPlayer, Session session, ChatHallRequestProtocol requestProtocol) {
+    public IResponseProtocol handle(WsAccount wsAccount, Session session, ChatHallRequestProtocol requestProtocol) {
         if (requestProtocol == null) {
             return null;
         }
         if (ChatHallRequestProtocol.SEND_PUBLIC_CHAT_MESSAGE.equals(requestProtocol.getReqType())) {
             // 发送给所有没有屏蔽公共聊天消息的玩家
-            chatHallService.sendPublicChatMessage(wsPlayer, requestProtocol.getMessage());
+            chatHallService.sendPublicChatMessage(wsAccount, requestProtocol.getMessage());
         } else {
-            log.error(String.format("玩家名称：%s，未知的请求类型：%s", wsPlayer.getPlayer().getUsername(), requestProtocol.getReqType()));
+            log.error(String.format("玩家名称：%s，未知的请求类型：%s", wsAccount.getAccount().getUsername(), requestProtocol.getReqType()));
             return HeartBeatResponseProtocol.unknownProto(requestProtocol.getReqType());
         }
-        log.info(String.format("成功处理请求，玩家名称：%s，请求结构：%s", wsPlayer.getPlayer().getUsername(), JSONArray.toJSONString(requestProtocol)));
+        log.info(String.format("成功处理请求，玩家名称：%s，请求结构：%s", wsAccount.getAccount().getUsername(), JSONArray.toJSONString(requestProtocol)));
         return null;
     }
 
@@ -38,4 +38,4 @@ public class ChatHallHandler implements IHandler<ChatHallRequestProtocol, ChatHa
     public ChatHallRequestProtocol parseRequest(String message) {
         return JSONArray.parseObject(message, ChatHallRequestProtocol.class);
     }
-}
+}

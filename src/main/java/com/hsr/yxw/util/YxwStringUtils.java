@@ -21,4 +21,4 @@ public abstract class YxwStringUtils {
     public static ArrayList<Long> idStringToList(String idString) {
         return idStringToList(idString, ",");
     }
-}
+}

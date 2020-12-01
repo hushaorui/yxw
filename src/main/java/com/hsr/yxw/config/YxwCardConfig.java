@@ -50,4 +50,4 @@ public class YxwCardConfig implements YxwConfig {
         card3.setMonsterType(MonsterType.NORMAL); // 通常
         cards.put(card3.getId(), card3);
     }*/
-}
+}

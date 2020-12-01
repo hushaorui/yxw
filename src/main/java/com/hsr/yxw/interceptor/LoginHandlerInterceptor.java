@@ -23,12 +23,12 @@ public class LoginHandlerInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 从session中获取登录后的用户信息
-        Object player = request.getSession().getAttribute("sessionPlayer");
-        if (player == null) {
+        Object account = request.getSession().getAttribute("sessionAccount");
+        if (account == null) {
             // 重定向至登录
             response.sendRedirect(request.getContextPath() + "/login");
             return false;
         }
         return true;
     }
-}
+}

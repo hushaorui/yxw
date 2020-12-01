@@ -23,4 +23,4 @@ public class AdminIndexController {
     public String content() {
         return "admin/admin-content";
     }
-}
+}

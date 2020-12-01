@@ -22,4 +22,4 @@ public enum MonsterType {
         this.id = id;
         this.name = name;
     }
-}
+}

@@ -19,4 +19,4 @@ public class GameFigure implements Serializable {
     /** 人物技能 */
     private List<GameSkill> gameSkills;
 
-}
+}

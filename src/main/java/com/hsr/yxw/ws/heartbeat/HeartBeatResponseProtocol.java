@@ -69,4 +69,4 @@ public class HeartBeatResponseProtocol extends IResponseProtocol {
     public BaseProtoType getBaseType() {
         return BaseProtoType.BASE_HEART_BEAT;
     }
-}
+}

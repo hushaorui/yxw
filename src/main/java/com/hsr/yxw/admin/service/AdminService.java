@@ -1,7 +1,7 @@
 package com.hsr.yxw.admin.service;
 
 import com.hsr.yxw.exception.ServiceException;
-import com.hsr.yxw.player.pojo.Player;
+import com.hsr.yxw.account.pojo.Account;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 
 import java.util.List;
@@ -20,4 +20,4 @@ public interface AdminService {
      * @throws ServiceException
      */
     List<SystemConfig> getDefaultSystemConfigList();
-}
+}

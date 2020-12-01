@@ -25,4 +25,4 @@ public class YxwApplication {
         SpringApplication.run(YxwApplication.class, args);
     }
 
-}
+}

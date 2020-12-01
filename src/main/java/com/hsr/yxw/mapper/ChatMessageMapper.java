@@ -11,4 +11,4 @@ import org.springframework.stereotype.Component;
 public interface ChatMessageMapper extends BaseMapper<ChatMessage, ChatMessageQueryVo> {
 
     String selectContentById(long id);
-}
+}

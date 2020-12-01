@@ -20,4 +20,4 @@ public class SpringBootUtil {
     public static int getServerPort() {
         return applicationContext.getWebServer().getPort();
     }
-}
+}

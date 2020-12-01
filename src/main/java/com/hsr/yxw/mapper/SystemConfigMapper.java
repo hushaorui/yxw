@@ -18,4 +18,4 @@ public interface SystemConfigMapper extends BaseMapper<SystemConfig, SystemConfi
     List<String> selectAllClassify();
 
     List<String> selectAllValueType();
-}
+}

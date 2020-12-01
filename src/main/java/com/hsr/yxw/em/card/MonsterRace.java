@@ -41,4 +41,4 @@ public enum MonsterRace {
         this.id = id;
         this.name = name;
     }
-}
+}

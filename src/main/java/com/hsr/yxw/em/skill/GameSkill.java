@@ -20,4 +20,4 @@ public enum GameSkill {
         this.id = id;
         this.name = name;
     }
-}
+}

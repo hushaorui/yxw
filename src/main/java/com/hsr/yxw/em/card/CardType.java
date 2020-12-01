@@ -20,4 +20,4 @@ public enum CardType {
         this.id = id;
         this.name = name;
     }
-}
+}

@@ -78,4 +78,4 @@ public class YxwMonsterCard extends YxwCard {
     public void setMonsterType(MonsterType monsterType) {
         this.monsterType = monsterType;
     }
-}
+}

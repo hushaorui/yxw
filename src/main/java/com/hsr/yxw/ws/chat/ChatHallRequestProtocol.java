@@ -25,4 +25,4 @@ public class ChatHallRequestProtocol extends IRequestProtocol {
     public BaseProtoType getBaseType() {
         return BaseProtoType.BASE_CHAT_HALL;
     }
-}
+}

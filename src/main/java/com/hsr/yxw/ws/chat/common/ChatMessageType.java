@@ -27,4 +27,4 @@ public enum ChatMessageType {
         this.id = id;
         this.desc = desc;
     }
-}
+}

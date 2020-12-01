@@ -30,4 +30,4 @@ public class TwinsValue<T1, T2> {
     public void setValue2(T2 value2) {
         this.value2 = value2;
     }
-}
+}

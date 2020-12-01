@@ -19,4 +19,4 @@ public class CommonVo {
     public void setMaxResult(Integer maxResult) {
         this.maxResult = maxResult;
     }
-}
+}

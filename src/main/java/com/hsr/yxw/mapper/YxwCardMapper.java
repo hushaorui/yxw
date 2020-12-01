@@ -7,4 +7,4 @@ import org.springframework.stereotype.Component;
 //@Mapper
 public interface YxwCardMapper {
 
-}
+}

@@ -25,4 +25,4 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
 			e.printStackTrace();
 		}
 	}
-}
+}

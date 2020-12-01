@@ -2,9 +2,9 @@ package com.hsr.yxw.controller;
 
 import com.hsr.yxw.common.CommonResult;
 import com.hsr.yxw.exception.ServiceException;
-import com.hsr.yxw.player.pojo.Player;
-import com.hsr.yxw.player.service.PlayerService;
-import com.hsr.yxw.player.common.PlayerUtil;
+import com.hsr.yxw.account.pojo.Account;
+import com.hsr.yxw.account.service.AccountService;
+import com.hsr.yxw.account.common.AccountUtil;
 import com.hsr.yxw.run.SpringBootUtil;
 import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.service.SystemConfigService;
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class IndexController {
     @Autowired
-    private PlayerService playerService;
+    private AccountService accountService;
     @Autowired
     private SystemConfigService systemConfigService;
 
@@ -52,18 +52,18 @@ public class IndexController {
     @RequestMapping(value = "toLogin", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult toLogin(String username, String password, Boolean remember, HttpSession session) {
-        Player player;
+        Account account;
         try {
-            player = playerService.login(username, password);
+            account = accountService.login(username, password);
         } catch (ServiceException e) {
             e.printStackTrace();
             return CommonResult.systemError();
         }
-        if (player == null) {
+        if (account == null) {
             return CommonResult.error("账号或密码错误！");
         }
-        session.setAttribute("sessionPlayer", player);
-        return CommonResult.success(player.getAdmin() ? "admin/admin-index" : "index");
+        session.setAttribute("sessionAccount", account);
+        return CommonResult.success(account.getAdmin() ? "admin/admin-index" : "index");
     }
 
     @RequestMapping(value = "toRegister", method = RequestMethod.POST)
@@ -74,14 +74,14 @@ public class IndexController {
             if (! openRegisterSwitch) {
                 return CommonResult.error("注册功能未开放，请通知管理员！");
             }
-            CommonResult commonResult = PlayerUtil.checkUsernameAndPassword(username, password);
+            CommonResult commonResult = AccountUtil.checkUsernameAndPassword(username, password);
             if (commonResult != null) {
                 return commonResult;
             }
-            Player player = new Player();
-            player.setUsername(username);
-            player.setPassword(password);
-            playerService.register(player);
+            Account account = new Account();
+            account.setUsername(username);
+            account.setPassword(password);
+            accountService.register(account);
             return CommonResult.success("注册成功！");
         } catch (ServiceException e) {
             return CommonResult.error(e.getMessage());
@@ -94,7 +94,7 @@ public class IndexController {
      */
     @RequestMapping(value = "logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("sessionPlayer");
+        session.removeAttribute("sessionAccount");
         return "redirect:login";
     }
 
@@ -112,4 +112,4 @@ public class IndexController {
         String prefix = "ws://" + ip + ":" + SpringBootUtil.getServerPort() + "/ws/";
         return prefix;
     }
-}
+}

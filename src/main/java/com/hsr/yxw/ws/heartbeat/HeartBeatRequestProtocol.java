@@ -24,4 +24,4 @@ public class HeartBeatRequestProtocol extends IRequestProtocol {
     public BaseProtoType getBaseType() {
         return BaseProtoType.BASE_HEART_BEAT;
     }
-}
+}

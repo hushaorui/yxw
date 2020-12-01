@@ -41,11 +41,11 @@ public class WsBaseHandler {
         }
     }
 
-    public IResponseProtocol handle(WsPlayer wsPlayer, Session session, BaseProtoType baseProtoType, String message) {
+    public IResponseProtocol handle(WsAccount wsAccount, Session session, BaseProtoType baseProtoType, String message) {
         IHandler handler = getHandler(baseProtoType);
         try {
             if (handler != null) {
-                return handler.handle(wsPlayer, session, handler.parseRequest(message));
+                return handler.handle(wsAccount, session, handler.parseRequest(message));
             } else {
                 return HeartBeatResponseProtocol.unknownProto(String.valueOf(baseProtoType));
             }
@@ -61,4 +61,4 @@ public class WsBaseHandler {
         return handlers.containsKey(baseProtoType);
     }
 
-}
+}

@@ -56,4 +56,4 @@ public abstract class ConfigUtils {
         FileUtils.writeStringToFile(file, configString, WebConstants.DEFAULT_ENCODING);
         return (T) yxwConfig;
     }
-}
+}

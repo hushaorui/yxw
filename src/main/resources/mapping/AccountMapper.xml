@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hsr.yxw.mapper.PlayerMapper">
-    <sql id="playerSql">
-        <if test="player!=null">
-            <if test="player.username!=null">and username like '%' || #{player.username} || '%' </if>
-            <if test="player.password!=null">and password like '%' || #{player.password} || '%' </if>
-            <if test="player.admin!=null">and admin = #{player.admin} </if>
+<mapper namespace="com.hsr.yxw.mapper.AccountMapper">
+    <sql id="accountSql">
+        <if test="account!=null">
+            <if test="account.username!=null">and username like '%' || #{account.username} || '%' </if>
+            <if test="account.password!=null">and password like '%' || #{account.password} || '%' </if>
+            <if test="account.admin!=null">and admin = #{account.admin} </if>
         </if>
         <if test="createTimeStart!=null">
             and createTime <![CDATA[ >= ]]> #{createTimeStart}
@@ -22,7 +22,7 @@
         </if>
     </sql>
     <update id="createTable">
-        create table player(
+        create table account(
            id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)primary key,
            username varchar(255) unique not null,
            admin boolean,
@@ -32,56 +32,56 @@
         )
     </update>
     <delete id="dropTable">
-        drop table player
+        drop table account
     </delete>
-    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.player.common.PlayerQueryVo">
-        select count(1) from player
+    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.account.common.AccountQueryVo">
+        select count(1) from account
         <where>
-            <include refid="playerSql" />
+            <include refid="accountSql" />
         </where>
     </select>
-    <select id="selectAll" resultType="com.hsr.yxw.player.pojo.Player">
-        select * from player
+    <select id="selectAll" resultType="com.hsr.yxw.account.pojo.Account">
+        select * from account
     </select>
-    <select id="selectById" parameterType="long" resultType="com.hsr.yxw.player.pojo.Player">
-        select * from player where id = #{value}
+    <select id="selectById" parameterType="long" resultType="com.hsr.yxw.account.pojo.Account">
+        select * from account where id = #{value}
     </select>
-    <select id="selectByUsername" parameterType="String" resultType="com.hsr.yxw.player.pojo.Player">
-        select * from player where username = #{value}
+    <select id="selectByUsername" parameterType="String" resultType="com.hsr.yxw.account.pojo.Account">
+        select * from account where username = #{value}
     </select>
-    <select id="selectByVo" parameterType="com.hsr.yxw.player.common.PlayerQueryVo" resultType="com.hsr.yxw.player.pojo.Player">
-        select * from player
+    <select id="selectByVo" parameterType="com.hsr.yxw.account.common.AccountQueryVo" resultType="com.hsr.yxw.account.pojo.Account">
+        select * from account
         <where>
-            <include refid="playerSql" />
+            <include refid="accountSql" />
         </where>
         order by id asc
         <if test="firstResult!=null and maxResult!=null">
             OFFSET #{firstResult} ROWS FETCH NEXT #{maxResult} ROWS ONLY
         </if>
     </select>
-    <insert id="insert" parameterType="com.hsr.yxw.player.pojo.Player" useGeneratedKeys="true" keyProperty="id">
-        insert into player(username,password,admin,createTime)
+    <insert id="insert" parameterType="com.hsr.yxw.account.pojo.Account" useGeneratedKeys="true" keyProperty="id">
+        insert into account(username,password,admin,createTime)
         values(#{username}, #{password}, #{admin}, #{createTime})
     </insert>
     <delete id="deleteById">
-        delete from player where id = #{value}
+        delete from account where id = #{value}
     </delete>
     <delete id="delete">
-        delete from player where id in
+        delete from account where id in
         <foreach item='item' index='index' collection='ids' open='(' separator=',' close=')'>
             #{item}
         </foreach>
     </delete>
     <delete id="deleteAll">
-        delete from player
+        delete from account
     </delete>
-    <update id="update" parameterType="com.hsr.yxw.player.pojo.Player">
-        update player
+    <update id="update" parameterType="com.hsr.yxw.account.pojo.Account">
+        update account
         set username = #{username}, password = #{password}, lastLoginTime = #{lastLoginTime,jdbcType=BIGINT}, admin = #{admin}
         where id = #{id}
     </update>
-    <update id="updateForNotNull" parameterType="com.hsr.yxw.player.pojo.Player">
-        update player
+    <update id="updateForNotNull" parameterType="com.hsr.yxw.account.pojo.Account">
+        update account
         <set>
             <if test="username!=null"> username = #{username}, </if>
             <if test="password!=null"> password = #{password}, </if>

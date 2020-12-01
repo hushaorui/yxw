@@ -31,4 +31,4 @@ public class ChatMessageQueryVo extends CommonVo {
     public void setSendTimeEnd(Long sendTimeEnd) {
         this.sendTimeEnd = sendTimeEnd;
     }
-}
+}

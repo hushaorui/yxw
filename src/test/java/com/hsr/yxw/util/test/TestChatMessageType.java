@@ -14,4 +14,4 @@ public class TestChatMessageType {
         System.out.println("JsonArray: " + JSONArray.toJSONString(type));
         System.out.println("JsonArray: " + JSONArray.toJSONString(ChatMessageType.getMapping()));
     }
-}
+}

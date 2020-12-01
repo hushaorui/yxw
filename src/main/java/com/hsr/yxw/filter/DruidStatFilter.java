@@ -16,4 +16,4 @@ public class DruidStatFilter extends WebStatFilter {
 	public DruidStatFilter() {
 		log.info(this.getClass().getName() + " init ...");
 	}
-}
+}

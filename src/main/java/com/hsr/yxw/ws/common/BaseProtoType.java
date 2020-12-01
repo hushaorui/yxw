@@ -4,4 +4,4 @@ public enum BaseProtoType {
     BASE_HEART_BEAT, //心跳协议
     BASE_CHAT_HALL, //聊天大厅协议
     ;
-}
+}

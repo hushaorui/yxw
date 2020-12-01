@@ -12,7 +12,7 @@
     <script src="../../static/custom/js/common.js" th:src="@{/custom/js/common.js}"></script>
     <script src="../../static/custom/js/toastr.min.js" th:src="@{/custom/js/toastr.min.js}"></script>
     <style>
-        .player-tr:hover {
+        .account-tr:hover {
             background-color: #5bc0de;
         }
     </style>
@@ -24,62 +24,62 @@
         <li><a href="#">用户管理</a></li>
         <li class="active">用户列表</li>
     </ol>
-    <button class="btn btn-success" onclick="requestPlayerListPage();toastr.success('刷新成功！')">刷新</button>
-    <button class="btn btn-success" onclick="showAddPlayerModal()">添加玩家</button>
-    <button class="btn btn-danger" onclick="showBatchDeletePlayerModal()">批量删除</button>
-    <form id="player-list-form" action="/admin/player-list" method="post">
+    <button class="btn btn-success" onclick="requestAccountListPage();toastr.success('刷新成功！')">刷新</button>
+    <button class="btn btn-success" onclick="showAddAccountModal()">添加玩家</button>
+    <button class="btn btn-danger" onclick="showBatchDeleteAccountModal()">批量删除</button>
+    <form id="account-list-form" action="/admin/account-list" method="post">
         <!-- 该table内都是查询的条件 -->
         <table class="table" style="width: 80%;">
             <tr>
                 <td><span>筛选：</span></td>
                 <td>
-                    <label for="player-username-input">用户名：</label>
-                    <input id="player-username-input" name="player.username" th:value="${playerQueryVo.getPlayer() == null ? '':playerQueryVo.getPlayer().getUsername()}" />
+                    <label for="account-username-input">用户名：</label>
+                    <input id="account-username-input" name="account.username" th:value="${accountQueryVo.getAccount() == null ? '':accountQueryVo.getAccount().getUsername()}" />
                 </td>
                 <td>
-                    <label for="player-password-input">密码：</label>
-                    <input id="player-password-input" name="player.password" th:value="${playerQueryVo.getPlayer() == null ? '':playerQueryVo.getPlayer().getPassword()}" />
+                    <label for="account-password-input">密码：</label>
+                    <input id="account-password-input" name="account.password" th:value="${accountQueryVo.getAccount() == null ? '':accountQueryVo.getAccount().getPassword()}" />
                 </td>
                 <td>
-                    <a class="btn btn-primary btn-xs" onclick="clearPlayerCondition()">清空条件</a>
+                    <a class="btn btn-primary btn-xs" onclick="clearAccountCondition()">清空条件</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label for="player-admin-select">是否管理员：</label>
-                    <select id="player-admin-select" name="player.admin">
+                    <label for="account-admin-select">是否管理员：</label>
+                    <select id="account-admin-select" name="account.admin">
                         <option value="">请选择...</option>
-                        <option th:selected="${playerQueryVo.getPlayer() != null and true eq playerQueryVo.getPlayer().getAdmin()}" value="true">是</option>
-                        <option th:selected="${playerQueryVo.getPlayer() != null and false eq playerQueryVo.getPlayer().getAdmin()}" value="false">不是</option>
+                        <option th:selected="${accountQueryVo.getAccount() != null and true eq accountQueryVo.getAccount().getAdmin()}" value="true">是</option>
+                        <option th:selected="${accountQueryVo.getAccount() != null and false eq accountQueryVo.getAccount().getAdmin()}" value="false">不是</option>
                     </select>
                 </td>
                 <td>
-                    <label for="player-create-start-input">创建时间范围：</label>
-                    <input id="player-create-start-input" name="createTimeStart" th:value="${#dates.format(playerQueryVo.createTimeStart,'yyyy-MM-dd HH:mm:ss')}" />
-                    - <input id="player-create-end-input" name="createTimeEnd" th:value="${#dates.format(playerQueryVo.createTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
+                    <label for="account-create-start-input">创建时间范围：</label>
+                    <input id="account-create-start-input" name="createTimeStart" th:value="${#dates.format(accountQueryVo.createTimeStart,'yyyy-MM-dd HH:mm:ss')}" />
+                    - <input id="account-create-end-input" name="createTimeEnd" th:value="${#dates.format(accountQueryVo.createTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
                 </td>
                 <td>
-                    <label for="player-login-start-input">最后登录时间范围：</label>
-                    <input id="player-login-start-input" name="lastLoginTimeStart" th:value="${#dates.format(playerQueryVo.lastLoginTimeStart,'yyyy-MM-dd HH:mm:ss')}" />
-                    - <input id="player-login-end-input" name="lastLoginTimeEnd" th:value="${#dates.format(playerQueryVo.lastLoginTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
+                    <label for="account-login-start-input">最后登录时间范围：</label>
+                    <input id="account-login-start-input" name="lastLoginTimeStart" th:value="${#dates.format(accountQueryVo.lastLoginTimeStart,'yyyy-MM-dd HH:mm:ss')}" />
+                    - <input id="account-login-end-input" name="lastLoginTimeEnd" th:value="${#dates.format(accountQueryVo.lastLoginTimeEnd,'yyyy-MM-dd HH:mm:ss')}" />
                 </td>
                 <td>
-                    <a class="btn btn-primary btn-xs" onclick="checkAndRequestPlayerListPage()">搜索</a>
+                    <a class="btn btn-primary btn-xs" onclick="checkAndRequestAccountListPage()">搜索</a>
                 </td>
             </tr>
         </table>
         <table class="table">
             <caption>
-                用户列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="player-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
+                用户列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="account-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
                 每页显示数量：
-                <select id="player-page-select" class="form-select-button" name="pageSize">
+                <select id="account-page-select" class="form-select-button" name="pageSize">
                     <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
                 </select>
                 共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
-                <input type="hidden" name="pageNum" id="playerListPageNum" th:value="${pageBean.currentPage}" />
+                <input type="hidden" name="pageNum" id="accountListPageNum" th:value="${pageBean.currentPage}" />
             </caption>
             <thead>
-                <th><input type="checkbox" id="player-list-check-all" /></th>
+                <th><input type="checkbox" id="account-list-check-all" /></th>
                 <th>序号</th>
                 <th>ID</th>
                 <th>用户名</th>
@@ -89,27 +89,27 @@
                 <th>最后登录时间</th>
                 <th>操作</th>
             </thead>
-            <tbody th:each="player,stat:${pageBean.pageList}">
-            <tr class="player-tr">
-                <td><input type="checkbox" class="player-checkbox" th:idData="${player.id}" /></td>
+            <tbody th:each="account,stat:${pageBean.pageList}">
+            <tr class="account-tr">
+                <td><input type="checkbox" class="account-checkbox" th:idData="${account.id}" /></td>
                 <td th:text="${stat.count}"></td>
-                <td class="player-id-td" th:text="${player.id}"></td>
-                <td class="player-username-td" th:text="${player.username}"></td>
-                <td class="player-password-td" th:text="${player.password}"></td>
-                <td class="player-admin-td" th:text="${player.admin}"></td>
-                <td th:text="${#dates.format(player.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
-                <td th:text="${#dates.format(player.lastLoginTime,'yyyy-MM-dd HH:mm:ss')}"></td>
-                <td><a class="btn btn-success btn-xs" onclick="showEditPlayerModal(this)" >编辑</a></td>
-                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeletePlayerModal(' + ${player.id} + ')'">删除</a></td>
+                <td class="account-id-td" th:text="${account.id}"></td>
+                <td class="account-username-td" th:text="${account.username}"></td>
+                <td class="account-password-td" th:text="${account.password}"></td>
+                <td class="account-admin-td" th:text="${account.admin}"></td>
+                <td th:text="${#dates.format(account.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${#dates.format(account.lastLoginTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td><a class="btn btn-success btn-xs" onclick="showEditAccountModal(this)" >编辑</a></td>
+                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteAccountModal(' + ${account.id} + ')'">删除</a></td>
             </tr>
             </tbody>
         </table>
         <ul class="pagination">
             <li>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="player-list-go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                    <input type="text" class="form-control" id="account-list-go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="player-list-go-btn">GO!</button>
+                        <button class="btn btn-default" type="button" id="account-list-go-btn">GO!</button>
                     </span>
                 </div>
             </li>
@@ -117,13 +117,13 @@
                 th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
 
                 <a href="#" th:text="${otherPage.value2}"
-                   th:onclick="'requestPlayerListPage(' + ${otherPage.value1} + ')'"></a>
+                   th:onclick="'requestAccountListPage(' + ${otherPage.value1} + ')'"></a>
             </li>
         </ul>
     </form>
 
     <!-- 删除玩家模态框（Modal） -->
-    <div class="modal fade" id="deletePlayerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -136,21 +136,21 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="deletePlayer()" >确认</button>
+                    <button type="button" class="btn btn-primary" onclick="deleteAccount()" >确认</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
 
     <!-- 添加玩家模态框（Modal） -->
-    <div class="modal fade" id="addPlayerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addAccountModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">添加</h4>
                 </div>
-                <form id="player-add-form" class="form-horizontal" role="form">
+                <form id="account-add-form" class="form-horizontal" role="form">
                     <div class="form-group">
                         <label for="addUsername" class="col-sm-2 control-label">用户名</label>
                         <div class="col-sm-8">
@@ -181,26 +181,26 @@
                 </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="addPlayer()" >确认添加</button>
+                    <button type="button" class="btn btn-primary" onclick="addAccount()" >确认添加</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
 
     <!-- 编辑玩家模态框（Modal） -->
-    <div class="modal fade" id="editPlayerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editAccountModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="editModalLabel">编辑</h4>
                 </div>
-                <form id="player-update-form" class="form-horizontal" role="form">
+                <form id="account-update-form" class="form-horizontal" role="form">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">ID</label>
                         <div class="col-sm-8">
-                            <p id="player-id-p" class="form-control-static"></p>
-                            <input id="player-update-id-input" type="hidden" name="id" />
+                            <p id="account-id-p" class="form-control-static"></p>
+                            <input id="account-update-id-input" type="hidden" name="id" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -228,7 +228,7 @@
                 </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="updatePlayer()" >提交</button>
+                    <button type="button" class="btn btn-primary" onclick="updateAccount()" >提交</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -237,41 +237,41 @@
 </body>
 <script>
     // 删除玩家
-    function deletePlayer() {
-        var ids = $("#delete-id-span").html();
+    function deleteAccount() {
+        let ids = $("#delete-id-span").html();
         if ("" === ids) {
             return;
         }
-        $.get("/admin/player-delete", {"ids" : ids}, function (result) {
+        $.get("/admin/account-delete", {"ids" : ids}, function (result) {
             if ("success" === result.result) {
-                $("#deletePlayerModal").modal("hide");
+                $("#deleteAccountModal").modal("hide");
             }
             toastr[result.result](result.message);
         }, "json");
     }
     // 添加玩家
-    function addPlayer() {
-        var username = $("#addUsername").val();
-        var password = $("#addPassword").val();
-        var admin = $("#addAdmin").val();
+    function addAccount() {
+        let username = $("#addUsername").val();
+        let password = $("#addPassword").val();
+        let admin = $("#addAdmin").val();
         // 校验
-        var success = checkPlayerForm(username, password, admin);
+        let success = checkAccountForm(username, password, admin);
         if (! success) {
             return;
         }
-        var rePassword = $("#addRePassword").val();
+        let rePassword = $("#addRePassword").val();
         if (password !== rePassword) {
             toastr.warning("两次密码不一致！");
         }
         // 提交
-        $.post("/admin/player-add", $("#player-add-form").serialize(), function (result) {
+        $.post("/admin/account-add", $("#account-add-form").serialize(), function (result) {
             if ("success" === result.result) {
-                $("#addPlayerModal").modal("hide");
+                $("#addAccountModal").modal("hide");
             }
             toastr[result.result](result.message);
         }, "json");
     }
-    function checkPlayerForm(username, password, admin) {
+    function checkAccountForm(username, password, admin) {
         if (username === "") {
             toastr.warning("用户名不可为空！");
             return false;
@@ -295,55 +295,55 @@
         return true;
     }
     //提交玩家修改
-    function updatePlayer() {
-        var username = $("#updateUsername").val();
-        var password = $("#updatePassword").val();
-        var admin = $("#updateAdmin").val();
+    function updateAccount() {
+        let username = $("#updateUsername").val();
+        let password = $("#updatePassword").val();
+        let admin = $("#updateAdmin").val();
         // 校验
-        var success = checkPlayerForm(username, password, admin);
+        let success = checkAccountForm(username, password, admin);
         if (! success) {
             return;
         }
         // 提交
-        $.post("/admin/player-update", $("#player-update-form").serialize(), function (result) {
+        $.post("/admin/account-update", $("#account-update-form").serialize(), function (result) {
             if ("success" === result.result) {
-                $("#editPlayerModal").modal("hide");
+                $("#editAccountModal").modal("hide");
             }
             toastr[result.result](result.message);
         }, "json");
     }
     // 显示编辑玩家的确认框
-    function showEditPlayerModal(aElement) {
-        var id = $(aElement).parent().siblings(".player-id-td").html();
-        var username = $(aElement).parent().siblings(".player-username-td").html();
-        var password = $(aElement).parent().siblings(".player-password-td").html();
-        var admin = $(aElement).parent().siblings(".player-admin-td").html();
+    function showEditAccountModal(aElement) {
+        let id = $(aElement).parent().siblings(".account-id-td").html();
+        let username = $(aElement).parent().siblings(".account-username-td").html();
+        let password = $(aElement).parent().siblings(".account-password-td").html();
+        let admin = $(aElement).parent().siblings(".account-admin-td").html();
         //console.log(id + " " + username + " " + password + " " + admin);
-        $("#player-id-p").html(id);
-        $("#player-update-id-input").val(id);
+        $("#account-id-p").html(id);
+        $("#account-update-id-input").val(id);
         $("#updateUsername").val(username);
         $("#updatePassword").val(password);
         $("#updateAdmin").val(admin);
-        $("#editPlayerModal").modal("show");
+        $("#editAccountModal").modal("show");
     }
     // 显示删除玩家的确认框
-    function showDeletePlayerModal(id) {
+    function showDeleteAccountModal(id) {
         $("#delete-id-span").html(id);
-        $("#deletePlayerModal").modal("show");
+        $("#deleteAccountModal").modal("show");
     }
     // 显示添加玩家的确认框
-    function showAddPlayerModal() {
+    function showAddAccountModal() {
         $("#addUsername").val("");
         $("#addPassword").val("");
         $("#addRePassword").val("");
         $("#addAdmin").val("false");
-        $("#addPlayerModal").modal("show");
+        $("#addAccountModal").modal("show");
     }
     // 显示批量删除玩家的确认框
-    function showBatchDeletePlayerModal() {
-        var ids = "";
+    function showBatchDeleteAccountModal() {
+        let ids = "";
         // 遍历所有被选中的行
-        $.each($(".player-checkbox[type=checkbox]:checked"), function (index, item) {
+        $.each($(".account-checkbox[type=checkbox]:checked"), function (index, item) {
             ids += "," + $(this).attr("idData");
         });
         if (ids === "") {
@@ -353,64 +353,64 @@
             ids = ids.substring(1, ids.length);
         }
         $("#delete-id-span").html(ids);
-        $("#deletePlayerModal").modal("show");
+        $("#deleteAccountModal").modal("show");
     }
     // 清空筛选条件
-    function clearPlayerCondition() {
-        $("#player-username-input").val("");
-        $("#player-password-input").val("");
-        $("#player-admin-select").val("");
-        $("#player-create-start-input").val("");
-        $("#player-create-end-input").val("");
-        $("#player-login-start-input").val("");
-        $("#player-login-end-input").val("");
+    function clearAccountCondition() {
+        $("#account-username-input").val("");
+        $("#account-password-input").val("");
+        $("#account-admin-select").val("");
+        $("#account-create-start-input").val("");
+        $("#account-create-end-input").val("");
+        $("#account-login-start-input").val("");
+        $("#account-login-end-input").val("");
     }
     //校验时间格式，如果无误则查询
-    function checkAndRequestPlayerListPage() {
-        var regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-        var time1 = $("#player-create-start-input").val().trim();
+    function checkAndRequestAccountListPage() {
+        let regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+        let time1 = $("#account-create-start-input").val().trim();
         if (time1 !== "" && ! regex.test(time1)) {
             toastr.warning("创建时间：" + time1 + "格式错误，请参照当前时间格式：" + $("#current-time-span").html());
             return;
         }
-        var time2 = $("#player-create-end-input").val().trim();
+        let time2 = $("#account-create-end-input").val().trim();
         if (time2 !== "" && ! regex.test(time2)) {
             toastr.warning("创建时间：" + time2 + "格式错误，请参照当前时间格式：" + $("#current-time-span").html());
             return;
         }
-        var time3 = $("#player-login-start-input").val().trim();
+        let time3 = $("#account-login-start-input").val().trim();
         if (time3 !== "" && ! regex.test(time3)) {
             toastr.warning("最后登录时间：" + time3 + "格式错误，请参照当前时间格式：" + $("#current-time-span").html());
             return;
         }
-        var time4 = $("#player-login-end-input").val().trim();
+        let time4 = $("#account-login-end-input").val().trim();
         if (time4 !== "" && ! regex.test(time4)) {
             toastr.warning("最后登录时间：" + time4 + "格式错误，请参照当前时间格式：" + $("#current-time-span").html());
             return;
         }
-        requestPlayerListPage(1);
+        requestAccountListPage(1);
     }
 
     // 请求其他页的数据
-    function requestPlayerListPage(playerListPageNum) {
-        if (playerListPageNum) {
-            $("#playerListPageNum").val(playerListPageNum);
+    function requestAccountListPage(accountListPageNum) {
+        if (accountListPageNum) {
+            $("#accountListPageNum").val(accountListPageNum);
         }
-        var jsonData = $("#player-list-form").serialize();
-        getContentHtml('/admin/player-list', true, jsonData);
+        let jsonData = $("#account-list-form").serialize();
+        getContentHtml('/admin/account-list', true, jsonData);
     }
     $(function() {
         // 全选与全不选
-        $("#player-list-check-all").click(function() {
-            $(".player-checkbox").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
+        $("#account-list-check-all").click(function() {
+            $(".account-checkbox").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
         });
         // GO 直接请求某一页的数据
-        $("#player-list-go-btn").click(function() {
-            var playerListPageNum = $("#player-list-go-input").val();
-            if ("" === playerListPageNum) {
+        $("#account-list-go-btn").click(function() {
+            let accountListPageNum = $("#account-list-go-input").val();
+            if ("" === accountListPageNum) {
                 return;
             }
-            requestPlayerListPage(playerListPageNum);
+            requestAccountListPage(accountListPageNum);
         });
     })
 </script>
