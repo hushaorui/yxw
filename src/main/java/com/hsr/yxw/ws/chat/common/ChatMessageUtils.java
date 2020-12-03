@@ -1,7 +1,7 @@
 package com.hsr.yxw.ws.chat.common;
 
 import com.hsr.yxw.account.pojo.Account;
-import com.hsr.yxw.ws.chat.pojo.ChatMessage;
+import com.hsr.yxw.ws.chat.pojo.PublicChatMessage;
 
 public abstract class ChatMessageUtils {
 
@@ -11,33 +11,30 @@ public abstract class ChatMessageUtils {
      * @param content 内容
      * @return 对象
      */
-    public static ChatMessage createPublicChatMessage(Account sender, String content) {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setContent(content);
-        chatMessage.setSenderId(sender.getId());
-        chatMessage.setSenderName(sender.getUsername());
-        chatMessage.setSendTime(System.currentTimeMillis());
-        chatMessage.setMessageType(ChatMessageType.PUBLIC);
-        return chatMessage;
+    public static PublicChatMessage createPublicChatMessage(Account sender, String content) {
+        PublicChatMessage publicChatMessage = new PublicChatMessage();
+        publicChatMessage.setContent(content);
+        publicChatMessage.setSenderId(sender.getId());
+        publicChatMessage.setSenderName(sender.getUsername());
+        publicChatMessage.setSendTime(System.currentTimeMillis());
+        publicChatMessage.setMessageType(ChatMessageType.PUBLIC);
+        return publicChatMessage;
     }
 
     /**
-     * 创建私聊信息对象
+     * 创建系统公告信息对象
      * @param sender 发送者
-     * @param receiver 接收者
      * @param content 内容
      * @return 对象
      */
-    public static ChatMessage createPrivateChatMessage(Account sender, Account receiver, String content) {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setContent(content);
-        chatMessage.setSenderId(sender.getId());
-        chatMessage.setSenderName(sender.getUsername());
-        chatMessage.setSendTime(System.currentTimeMillis());
-        chatMessage.setMessageType(ChatMessageType.PRIVATE);
-        chatMessage.setReceiverId(receiver.getId());
-        chatMessage.setReceiverName(receiver.getUsername());
-        return chatMessage;
+    public static PublicChatMessage createSystemChatMessage(Account sender, String content) {
+        PublicChatMessage publicChatMessage = new PublicChatMessage();
+        publicChatMessage.setContent(content);
+        publicChatMessage.setSenderId(sender.getId());
+        publicChatMessage.setSenderName(sender.getUsername());
+        publicChatMessage.setSendTime(System.currentTimeMillis());
+        publicChatMessage.setMessageType(ChatMessageType.SYSTEM);
+        return publicChatMessage;
     }
 
     /**
@@ -59,4 +56,4 @@ public abstract class ChatMessageUtils {
         return content;
     }
 
-}
+}

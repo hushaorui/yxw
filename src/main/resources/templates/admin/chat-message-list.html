@@ -34,11 +34,11 @@
                 <td><span>筛选：</span></td>
                 <td>
                     <label for="chat-message-sender-id-input">发送者ID：</label>
-                    <input id="chat-message-sender-id-input" name="chatMessage.senderId" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getSenderId()}" />
+                    <input id="chat-message-sender-id-input" name="publicChatMessage.senderId" th:value="${chatMessageQueryVo.getPublicChatMessage() == null ? '':chatMessageQueryVo.getPublicChatMessage().getSenderId()}" />
                 </td>
                 <td>
                     <label for="chat-message-sender-name-input">发送者名称：</label>
-                    <input id="chat-message-sender-name-input" name="chatMessage.senderName" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getSenderName()}" />
+                    <input id="chat-message-sender-name-input" name="publicChatMessage.senderName" th:value="${chatMessageQueryVo.getPublicChatMessage() == null ? '':chatMessageQueryVo.getPublicChatMessage().getSenderName()}" />
                 </td>
                 <td>
                     <label for="chat-message-send-start-input">发送时间范围：</label>
@@ -52,23 +52,15 @@
             <tr>
                 <td>
                     <label for="message-type-select">类型：</label>
-                    <select id="message-type-select" name="chatMessage.messageType">
+                    <select id="message-type-select" name="publicChatMessage.messageType">
                         <option value="">请选择...</option>
                         <option th:each="item:${messageTypeMapping}" th:value="${item.key}" th:text="${item.key + '-' + item.value}"
-                                th:selected="${chatMessageQueryVo.getChatMessage() != null and chatMessageQueryVo.getChatMessage().getMessageType() != null and (item.key.toString() eq chatMessageQueryVo.getChatMessage().getMessageType().toString())}"></option>
+                                th:selected="${chatMessageQueryVo.getPublicChatMessage() != null and chatMessageQueryVo.getPublicChatMessage().getMessageType() != null and (item.key.toString() eq chatMessageQueryVo.getPublicChatMessage().getMessageType().toString())}"></option>
                     </select>
                 </td>
                 <td>
-                    <label for="chat-message-receiver-id-input">接收者ID：</label>
-                    <input id="chat-message-receiver-id-input" name="chatMessage.receiverId" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getReceiverId()}" />
-                </td>
-                <td>
-                    <label for="chat-message-receiver-name-input">接收者名称：</label>
-                    <input id="chat-message-receiver-name-input" name="chatMessage.receiverName" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getReceiverName()}" />
-                </td>
-                <td>
                     <label for="chat-message-content-input">聊天内容：</label>
-                    <input id="chat-message-content-input" name="chatMessage.content" th:value="${chatMessageQueryVo.getChatMessage() == null ? '':chatMessageQueryVo.getChatMessage().getContent()}" />
+                    <input id="chat-message-content-input" name="publicChatMessage.content" th:value="${chatMessageQueryVo.getPublicChatMessage() == null ? '':chatMessageQueryVo.getPublicChatMessage().getContent()}" />
                 </td>
                 <td>
                     <a class="btn btn-primary btn-xs" onclick="requestChatMessageListPage(1)">搜索</a>
@@ -94,24 +86,20 @@
             <th>发送者名称</th>
             <th>发送时间</th>
             <th>信息类型</th>
-            <th>接收者ID</th>
-            <th>接收者名称</th>
             <th>聊天内容</th>
             <th>操作</th>
             </thead>
-            <tbody th:each="chatMessage,stat:${pageBean.pageList}">
+            <tbody th:each="publicChatMessage,stat:${pageBean.pageList}">
             <tr class="chat-message-tr">
-                <td><input type="checkbox" class="chat-message-checkbox" th:idData="${chatMessage.id}" /></td>
+                <td><input type="checkbox" class="chat-message-checkbox" th:idData="${publicChatMessage.id}" /></td>
                 <td th:text="${stat.count}"></td>
-                <td th:text="${chatMessage.id}"></td>
-                <td th:text="${chatMessage.senderId}"></td>
-                <td th:text="${chatMessage.senderName}"></td>
-                <td th:text="${#dates.format(chatMessage.sendTime,'yyyy-MM-dd HH:mm:ss')}"></td>
-                <td th:text="${chatMessage.messageType}"></td>
-                <td th:text="${chatMessage.receiverId}"></td>
-                <td th:text="${chatMessage.receiverName}"></td>
-                <td><a class="btn btn-primary btn-xs" th:onclick="'showChatMessageDetailModal(' + ${chatMessage.id} + ')'">详情</a></td>
-                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteChatMessageModal(' + ${chatMessage.id} + ')'">删除</a></td>
+                <td th:text="${publicChatMessage.id}"></td>
+                <td th:text="${publicChatMessage.senderId}"></td>
+                <td th:text="${publicChatMessage.senderName}"></td>
+                <td th:text="${#dates.format(publicChatMessage.sendTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${publicChatMessage.messageType}"></td>
+                <td><a class="btn btn-primary btn-xs" th:onclick="'showChatMessageDetailModal(' + ${publicChatMessage.id} + ')'">详情</a></td>
+                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteChatMessageModal(' + ${publicChatMessage.id} + ')'">删除</a></td>
             </tr>
             </tbody>
         </table>

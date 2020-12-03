@@ -10,7 +10,7 @@ import com.hsr.yxw.account.pojo.Account;
 import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 import com.hsr.yxw.ws.chat.common.ChatMessageUtils;
-import com.hsr.yxw.ws.chat.pojo.ChatMessage;
+import com.hsr.yxw.ws.chat.pojo.PublicChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +19,17 @@ import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-    @Autowired
     private AccountMapper accountMapper;
-    @Autowired
     private SystemConfigMapper systemConfigMapper;
-    @Autowired
     private ChatMessageMapper chatMessageMapper;
+
+    @Autowired
+    public AdminServiceImpl(AccountMapper accountMapper, SystemConfigMapper systemConfigMapper, ChatMessageMapper chatMessageMapper) {
+        this.accountMapper = accountMapper;
+        this.systemConfigMapper = systemConfigMapper;
+        this.chatMessageMapper = chatMessageMapper;
+    }
+
     @Override
     public void initDB(boolean reset) throws ServiceException {
         try {
@@ -66,15 +71,12 @@ public class AdminServiceImpl implements AdminService {
         Account sender = new Account();
         sender.setId(900L);
         sender.setUsername("TestSendMessage");
-        Account receiver = new Account();
-        receiver.setId(901L);
-        receiver.setUsername("TestReceiveMessage");
-        ChatMessage chatMessage;
+        PublicChatMessage publicChatMessage;
         for (int i = 1; i <= 20; i++) {
-            chatMessage = ChatMessageUtils.createPublicChatMessage(sender, "公共聊天室聊天内容" + i);
-            chatMessageMapper.insert(chatMessage);
-            chatMessage = ChatMessageUtils.createPrivateChatMessage(sender, receiver, "私聊聊天内容" + i);
-            chatMessageMapper.insert(chatMessage);
+            publicChatMessage = ChatMessageUtils.createPublicChatMessage(sender, "公共聊天室聊天内容" + i);
+            chatMessageMapper.insert(publicChatMessage);
+            publicChatMessage = ChatMessageUtils.createSystemChatMessage(sender, "系统公告内容" + i);
+            chatMessageMapper.insert(publicChatMessage);
         }
     }
 
@@ -119,4 +121,4 @@ public class AdminServiceImpl implements AdminService {
             }
         }
     }
-}
+}

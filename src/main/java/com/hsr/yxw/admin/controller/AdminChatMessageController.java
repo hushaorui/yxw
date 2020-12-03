@@ -4,9 +4,9 @@ import com.alibaba.druid.util.StringUtils;
 import com.hsr.yxw.common.CommonResult;
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.ws.chat.common.ChatMessageType;
-import com.hsr.yxw.ws.chat.pojo.ChatMessage;
+import com.hsr.yxw.ws.chat.pojo.PublicChatMessage;
 import com.hsr.yxw.ws.chat.service.ChatMessageService;
-import com.hsr.yxw.ws.chat.common.ChatMessageQueryVo;
+import com.hsr.yxw.ws.chat.common.PublicChatMessageQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,8 +20,8 @@ public class AdminChatMessageController {
     private ChatMessageService chatMessageService;
 
     @RequestMapping(value="admin/chat-message-list")
-    public String accountList(Integer pageNum, Integer pageSize, ChatMessageQueryVo vo, Model model) throws Exception {
-        PageBean<ChatMessage> pageBean = chatMessageService.getChatMessagePageBean(pageNum, pageSize, vo);
+    public String accountList(Integer pageNum, Integer pageSize, PublicChatMessageQueryVo vo, Model model) throws Exception {
+        PageBean<PublicChatMessage> pageBean = chatMessageService.getChatMessagePageBean(pageNum, pageSize, vo);
         model.addAttribute("pageBean", pageBean);
         model.addAttribute("chatMessageQueryVo", vo);
         model.addAttribute("pageSizes", PageBean.pageSizes);
@@ -50,4 +50,4 @@ public class AdminChatMessageController {
     public String selectContentById(Long id) {
         return chatMessageService.selectContentById(id);
     }
-}
+}

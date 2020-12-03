@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public enum ChatMessageType {
     PUBLIC(0, "公共聊天"), // 公共聊天
-    PRIVATE(1, "私聊"), // 私聊
+    SYSTEM(1, "系统通告"), // 系统通告
     ;
     private int id;
     private String desc;
@@ -27,4 +27,4 @@ public enum ChatMessageType {
         this.id = id;
         this.desc = desc;
     }
-}
+}

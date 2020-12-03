@@ -96,9 +96,9 @@ public class WsCommonService {
     public void sendMessageToAll(IResponseProtocol responseProtocol, WsAccountFilter wsAccountFilter){
         final String message = BaseProtocol.buildResponse(responseProtocol).toJsonString();
         AccountWebSocketPool.getAllAccountMap().forEach((username, wsAccount) -> {
-            if (wsAccountFilter != null && wsAccountFilter.doFilter(wsAccount)) {
+            if (wsAccountFilter == null || wsAccountFilter.doFilter(wsAccount)) {
                 sendMessageToAccount(wsAccount, message);
             }
         });
     }
-}
+}

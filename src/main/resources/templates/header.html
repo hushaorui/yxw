@@ -72,9 +72,9 @@
             <button type="button" class="btn btn-default">
                 <span class="glyphicon glyphicon-user"></span>
                 <span id="user-name-label" th:text="${session.sessionAccount.username}">[...]</span>
-                <input type="hidden" id="account-user-id-hidden-input" th:value="${session.sessionAccount.id}"/>
+                <input type="hidden" id="account-id-hidden-input" th:value="${session.sessionAccount.id}"/>
             </button>
-            <button type="button" class="btn btn-default" id="show-ping-btn">ping: 0</button>
+            <button type="button" class="btn btn-default" id="show-ping-btn">ping: 000</button>
             <button type="button" class="btn btn-default" onclick="window.location.href = '/logout';">注销</button>
         </div>
     </div>
@@ -89,7 +89,6 @@
         </button>
     </div>
     <div id="chat-hall-body">
-fsdf
     </div>
     <div id="chat-hall-bottom">
         <select class="btn btn-primary" id="chat-hall-bottom-select">
@@ -102,7 +101,7 @@ fsdf
 </body>
 <script>
     // 玩家id
-    let userId = $("#account-user-id-hidden-input").val();
+    let userId = Number.parseInt($("#account-id-hidden-input").val());
     // websocket对象
     let ws;
     // ws是否已经连接
@@ -155,7 +154,10 @@ fsdf
             let currentTime = new Date().getTime();
             let serverInfo = JSON.parse(subProtoData[message]);
             let serverTime = serverInfo["serverTime"];
-            let ping = serverInfo["ping"];
+            let ping = serverInfo["ping"] + "";
+            while (ping.length < 2) {
+                ping = "0" + ping;
+            }
             let accountCount = serverInfo["accountCount"];
             // 总延迟 = 客户端到服务端的时间 + 服务端到客户端的时间
             ping += (currentTime - serverTime);
@@ -165,7 +167,37 @@ fsdf
         registerWSHandler("BASE_HEART_BEAT", "CONNECT_SUCCESS", function (subProtoData) {
             let msg = subProtoData[message];
             console.log("连接成功后服务端发送过来的响应信息： " + msg);
-        })
+        });
+
+        // 发送成功的返回信息
+        registerWSHandler("BASE_CHAT_HALL", "SEND_SUCCESS", function (subProtoData) {
+            // 清空输入框
+            $("#chat-hall-bottom-input").val("");
+        });
+        // 接收公共聊天信息
+        registerWSHandler("BASE_CHAT_HALL", "RECEIVE_PUBLIC_CHAT_MESSAGE", function (subProtoData) {
+            let publicChatMessage = subProtoData["publicChatMessage"];
+            /*let senderName = (userId === publicChatMessage["senderId"] ? "我" : publicChatMessage["senderName"]);
+            let content = publicChatMessage["content"];
+            let messageType = publicChatMessage["messageType"];
+            let sendTime = timestampToDate(publicChatMessage["sendTime"]);
+            let chatString = "[" + messageType + "][" + sendTime + "][" + senderName + "]:" + content;
+            $("#chat-hall-body").append("<p>" + chatString + "</p>");*/
+            addShowingChatMessage(userId, publicChatMessage["senderId"], publicChatMessage["messageType"], publicChatMessage["senderName"], publicChatMessage["content"], publicChatMessage["sendTime"]);
+            //console.log("接收公共聊天信息： " + JSON.stringify(publicChatMessage));
+        });
+    }
+
+    function addShowingChatMessage(userId, senderId, messageType, senderName, content, sendTime) {
+        senderName = (userId === senderId ? "我" : senderName);
+        sendTime = timestampToDate(sendTime);
+        if ("PUBLIC" === messageType) {
+            messageType = "公共";
+        } else if ("SYSTEM" === messageType) {
+            messageType = "系统";
+        }
+        let chatString = "[" + messageType + "][" + sendTime + "][" + senderName + "]:" + content;
+        $("#chat-hall-body").append("<p>" + chatString + "</p>");
     }
 
     // 发送心跳协议请求
@@ -182,9 +214,9 @@ fsdf
     }
 
     // 发送公共聊天请求
-    function sendPublicChatRequest(ws, chatMessage) {
+    function sendPublicChatRequest(ws, publicChatMessage) {
         let protoType = "SEND_PUBLIC_CHAT_MESSAGE";
-        let messageJson = {reqType: protoType, "message": chatMessage};
+        let messageJson = {reqType: protoType, "message": publicChatMessage};
         sendRequest(ws, "BASE_CHAT_HALL", protoType, messageJson);
     }
 

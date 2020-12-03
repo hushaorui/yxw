@@ -31,11 +31,13 @@ public class ChatHallHandler implements IHandler<ChatHallRequestProtocol, ChatHa
             return HeartBeatResponseProtocol.unknownProto(requestProtocol.getReqType());
         }
         log.info(String.format("成功处理请求，玩家名称：%s，请求结构：%s", wsAccount.getAccount().getUsername(), JSONArray.toJSONString(requestProtocol)));
-        return null;
+        ChatHallResponseProtocol response = new ChatHallResponseProtocol();
+        response.setResType(ChatHallResponseProtocol.SEND_SUCCESS);
+        return response;
     }
 
     @Override
     public ChatHallRequestProtocol parseRequest(String message) {
         return JSONArray.parseObject(message, ChatHallRequestProtocol.class);
     }
-}
+}

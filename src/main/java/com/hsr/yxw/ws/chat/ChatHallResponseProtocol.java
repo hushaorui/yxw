@@ -1,6 +1,7 @@
 package com.hsr.yxw.ws.chat;
 
-import com.hsr.yxw.ws.chat.pojo.ChatMessage;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.hsr.yxw.ws.chat.pojo.PublicChatMessage;
 import com.hsr.yxw.ws.common.BaseProtoType;
 import com.hsr.yxw.ws.common.IResponseProtocol;
 
@@ -9,21 +10,24 @@ import com.hsr.yxw.ws.common.IResponseProtocol;
  */
 public class ChatHallResponseProtocol extends IResponseProtocol {
 
+    /** 发送聊天内容成功 */
+    public static final String SEND_SUCCESS = "SEND_SUCCESS";
     /** 接收公共聊天内容 */
     public static final String RECEIVE_PUBLIC_CHAT_MESSAGE = "RECEIVE_PUBLIC_CHAT_MESSAGE";
 
-    private ChatMessage chatMessage;
-    public ChatMessage getChatMessage() {
-        return chatMessage;
+    private PublicChatMessage publicChatMessage;
+    public PublicChatMessage getPublicChatMessage() {
+        return publicChatMessage;
     }
-    public void setChatMessage(ChatMessage chatMessage) {
-        this.chatMessage = chatMessage;
+    public void setPublicChatMessage(PublicChatMessage publicChatMessage) {
+        this.publicChatMessage = publicChatMessage;
     }
 
     public ChatHallResponseProtocol() {}
 
     @Override
+    @JSONField(serialize = false)
     public BaseProtoType getBaseType() {
         return BaseProtoType.BASE_CHAT_HALL;
     }
-}
+}

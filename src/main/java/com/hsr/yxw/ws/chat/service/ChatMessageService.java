@@ -4,8 +4,8 @@ import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.mapper.ChatMessageMapper;
 import com.hsr.yxw.util.YxwStringUtils;
 import com.hsr.yxw.ws.chat.common.ChatMessageType;
-import com.hsr.yxw.ws.chat.pojo.ChatMessage;
-import com.hsr.yxw.ws.chat.common.ChatMessageQueryVo;
+import com.hsr.yxw.ws.chat.pojo.PublicChatMessage;
+import com.hsr.yxw.ws.chat.common.PublicChatMessageQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,36 +22,34 @@ public class ChatMessageService {
         this.chatMessageMapper = chatMessageMapper;
     }
 
-    public ChatMessage save(ChatMessageType messageType, long senderId, String senderName, Long sendTime, Long receiverId, String receiverName, String content) {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setSenderId(senderId);
-        chatMessage.setSenderName(senderName);
+    public PublicChatMessage save(ChatMessageType messageType, long senderId, String senderName, Long sendTime, Long receiverId, String receiverName, String content) {
+        PublicChatMessage publicChatMessage = new PublicChatMessage();
+        publicChatMessage.setSenderId(senderId);
+        publicChatMessage.setSenderName(senderName);
         if (sendTime == null || sendTime <= 0) {
             sendTime = System.currentTimeMillis();
         }
-        chatMessage.setSendTime(sendTime);
+        publicChatMessage.setSendTime(sendTime);
         if (messageType == null) {
             messageType = ChatMessageType.PUBLIC;
         }
-        chatMessage.setMessageType(messageType);
-        chatMessage.setReceiverId(receiverId);
-        chatMessage.setReceiverName(receiverName);
-        chatMessage.setContent(content);
-        chatMessageMapper.insert(chatMessage);
-        return chatMessage;
+        publicChatMessage.setMessageType(messageType);
+        publicChatMessage.setContent(content);
+        chatMessageMapper.insert(publicChatMessage);
+        return publicChatMessage;
     }
 
-    public PageBean<ChatMessage> getChatMessagePageBean(Integer pageNum, Integer pageSize, ChatMessageQueryVo vo) {
+    public PageBean<PublicChatMessage> getChatMessagePageBean(Integer pageNum, Integer pageSize, PublicChatMessageQueryVo vo) {
         int count = chatMessageMapper.count(vo);
-        PageBean<ChatMessage> pageBean = new PageBean<ChatMessage>(count, pageSize, pageNum);
+        PageBean<PublicChatMessage> pageBean = new PageBean<PublicChatMessage>(count, pageSize, pageNum);
         if (vo == null) {
-            vo = new ChatMessageQueryVo();
+            vo = new PublicChatMessageQueryVo();
         }
         vo.setFirstResult(pageBean.getFirstResult());
         vo.setMaxResult(pageBean.getPageSize());
-        List<ChatMessage> chatMessages = chatMessageMapper.selectByVo(vo);
+        List<PublicChatMessage> publicChatMessages = chatMessageMapper.selectByVo(vo);
         pageBean.setOtherPage();
-        pageBean.setPageList(chatMessages);
+        pageBean.setPageList(publicChatMessages);
         return pageBean;
     }
 
@@ -61,7 +59,7 @@ public class ChatMessageService {
      * @param vo
      * @return
      */
-    public List<ChatMessage> getLastChatMessage(Integer lastSize, ChatMessageQueryVo vo) {
+    public List<PublicChatMessage> getLastChatMessage(Integer lastSize, PublicChatMessageQueryVo vo) {
         int totalCount = chatMessageMapper.count(vo);
         int firstResult;
         if (lastSize >= totalCount) {
@@ -71,7 +69,7 @@ public class ChatMessageService {
             firstResult = totalCount - lastSize;
         }
         if (vo == null) {
-            vo = new ChatMessageQueryVo();
+            vo = new PublicChatMessageQueryVo();
         }
         vo.setFirstResult(firstResult);
         vo.setMaxResult(lastSize);
@@ -89,4 +87,4 @@ public class ChatMessageService {
     public String selectContentById(long id) {
         return chatMessageMapper.selectContentById(id);
     }
-}
+}
