@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>DIY作品</title>
+
+    <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/custom/css/toastr.css" th:href="@{/custom/css/toastr.css}">
+    <link rel="stylesheet" href="../../static/custom/css/common.css" th:href="@{/custom/css/common.css}">
+    <script src="../../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../../static/custom/js/common.js" th:src="@{/custom/js/common.js}"></script>
+    <script src="../../static/custom/js/toastr.min.js" th:src="@{/custom/js/toastr.min.js}"></script>
+    <style>
+        .yxw-card-tr:hover {
+            background-color: #5bc0de;
+        }
+    </style>
+</head>
+<body>
+<div style="margin:10px;">
+    <ol class="breadcrumb">
+        <li><a href="#" onclick="getContentHtml('/admin/admin-content')">主页</a></li>
+        <li><a href="#">yxw卡牌管理</a></li>
+        <li class="active">yxw卡牌信息列表</li>
+    </ol>
+    <button class="btn btn-success" onclick="requestYxwCardListPage();toastr.success('刷新成功！')">刷新</button>
+    <button class="btn btn-danger" onclick="showBatchDeleteYxwCardModal()">批量删除</button>
+    <form id="yxw-card-list-form" action="/admin/yxw-card-list" method="post">
+
+        <!-- 该table内都是查询的条件 -->
+        <table class="table" style="width: 80%;">
+            <tr>
+                <td><span>筛选：</span></td>
+                <td>
+                    <label for="yxw-card-name-input">名称：</label>
+                    <input id="yxw-card-name-input" name="yxwCard.cardName" th:value="${yxwCardQueryVo.getYxwCard() == null ? '':yxwCardQueryVo.getYxwCard().getCardName()}" />
+                </td>
+                <td>
+                    <label for="yxw-card-local-url-input">本地图片地址：</label>
+                    <input id="yxw-card-local-url-input" name="yxwCard.localImgUrl" th:value="${yxwCardQueryVo.getYxwCard() == null ? '':yxwCardQueryVo.getYxwCard().getLocalImgUrl()}" />
+                </td>
+                <td>
+                    <label for="yxw-card-remote-url-input">网络图片地址：</label>
+                    <input id="yxw-card-remote-url-input" name="yxwCard.remoteImgUrl" th:value="${yxwCardQueryVo.getYxwCard() == null ? '':yxwCardQueryVo.getYxwCard().getRemoteImgUrl()}" />
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-xs" onclick="clearYxwCardCondition()">清空条件</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="card-type-select">类型：</label>
+                    <select id="card-type-select" name="yxwCard.cardType">
+                        <option value="">请选择...</option>
+                        <option th:each="item:${yxwCardTypeMapping}" th:value="${item.key}" th:text="${item.key + '-' + item.value}"
+                                th:selected="${yxwCardQueryVo.getYxwCard() != null and yxwCardQueryVo.getYxwCard().getCardType() != null and (item.key.toString() eq yxwCardQueryVo.getYxwCard().getCardType().toString())}"></option>
+                    </select>
+                </td>
+                <td>
+                    <label for="yxw-card-description-input">描述：</label>
+                    <input id="yxw-card-description-input" name="yxwCard.content" th:value="${yxwCardQueryVo.getYxwCard() == null ? '':yxwCardQueryVo.getYxwCard().getDescription()}" />
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-xs" onclick="requestYxwCardListPage(1)">搜索</a>
+                </td>
+            </tr>
+        </table>
+
+        <table class="table">
+            <caption>
+                yxw卡牌记录列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="yxw-card-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
+                每页显示数量：
+                <select id="yxw-card-page-select" class="form-select-button" name="pageSize">
+                    <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
+                </select>
+                共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
+                <input type="hidden" name="pageNum" id="yxwCardPageNum" th:value="${pageBean.currentPage}" />
+            </caption>
+            <thead>
+            <th><input type="checkbox" id="yxw-card-check-all" /></th>
+            <th>序号</th>
+            <th>ID</th>
+            <th>名称</th>
+            <th>本地图片地址</th>
+            <th>网络图片地址</th>
+            <th>描述</th>
+            <th>卡片类型</th>
+            <th>操作</th>
+            </thead>
+            <tbody th:each="yxwCard,stat:${pageBean.pageList}">
+            <tr class="yxw-card-tr">
+                <td><input type="checkbox" class="yxw-card-checkbox" th:idData="${yxwCard.id}" /></td>
+                <td th:text="${stat.count}"></td>
+                <td th:text="${yxwCard.id}"></td>
+                <td th:text="${yxwCard.cardName}"></td>
+                <td th:text="${yxwCard.localImgUrl}"></td>
+                <td th:text="${yxwCard.remoteImgUrl}"></td>
+                <td th:text="${yxwCard.cardType}"></td>
+                <td><a class="btn btn-primary btn-xs" th:onclick="'showYxwCardDetailModal(' + ${yxwCard.id} + ')'">详情</a></td>
+                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteYxwCardModal(' + ${yxwCard.id} + ')'">删除</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <ul class="pagination">
+            <li>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="yxw-card-go-input"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="yxw-card-go-btn">GO!</button>
+                    </span>
+                </div>
+            </li>
+            <li th:each="otherPage,stat:${pageBean.otherPages}"
+                th:class="${otherPage.value1 == pageBean.currentPage and otherPage.value1+'' eq otherPage.value2}? 'active' : ''" >
+
+                <a href="#" th:text="${otherPage.value2}"
+                   th:onclick="'requestYxwCardListPage(' + ${otherPage.value1} + ')'"></a>
+            </li>
+        </ul>
+    </form>
+
+    <!-- 删除yxw卡牌记录模态框（Modal） -->
+    <div class="modal fade" id="deleteYxwCardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">请确认</h4>
+                </div>
+                <div class="modal-body">是否删除ID为 <span id="yxw-card-delete-id-span"></span> 的yxw卡牌记录？</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="deleteYxwCard()" >确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 查看yxw卡牌内容模态框（Modal） -->
+    <div class="modal fade" id="yxwCardDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">查看yxw卡牌内容</h4>
+                </div>
+                <div class="modal-body" id="yxw-card-content-detail"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+</body>
+<script>
+    // 删除yxw卡牌记录
+    function deleteYxwCard() {
+        let ids = $("#yxw-card-delete-id-span").html();
+        if ("" === ids) {
+            return;
+        }
+        $.get("/admin/yxw-card-delete", {"ids" : ids}, function (result) {
+            if ("success" === result.result) {
+                $("#deleteYxwCardModal").modal("hide");
+            }
+            toastr[result.result](result.message);
+        }, "json");
+    }
+    // 显示确认删除yxw卡牌记录的模态框
+    function showDeleteYxwCardModal(id) {
+        $("#yxw-card-delete-id-span").html(id);
+        $("#deleteYxwCardModal").modal("show");
+    }
+    // 根据id查询yxw卡牌内容并显示
+    function showYxwCardDetailModal(id) {
+        $.get("/admin/yxw-card-select-content", {"id": id}, function (data) {
+            $("#yxw-card-content-detail").html(data);
+            $("#yxwCardDetailModal").modal("show");
+        }, "text");
+    }
+    // 显示批量删除yxw卡牌记录的模态框
+    function showBatchDeleteYxwCardModal() {
+        let ids = "";
+        // 遍历所有被选中的行
+        $.each($(".yxw-card-checkbox[type=checkbox]:checked"), function (index, item) {
+            ids += "," + $(this).attr("idData");
+        });
+        if (ids === "") {
+            toastr.warning("您还未勾选任何yxw卡牌记录！");
+            return;
+        } else {
+            ids = ids.substring(1, ids.length);
+        }
+        $("#yxw-card-delete-id-span").html(ids);
+        $("#deleteYxwCardModal").modal("show");
+    }
+
+    // 请求其他页的数据
+    function requestYxwCardListPage(yxwCardPageNum) {
+        if (yxwCardPageNum) {
+            $("#yxwCardPageNum").val(yxwCardPageNum);
+        }
+        let jsonData = $("#yxw-card-list-form").serialize();
+        getContentHtml('/admin/yxw-card-list', true, jsonData);
+    }
+    // 清空查询条件
+    function clearYxwCardCondition() {
+        $("#yxw-card-name-input").val("");
+        $("#yxw-card-local-url-input").val("");
+        $("#yxw-card-remote-url-input").val("");
+        $("#card-type-select").val("");
+        $("#yxw-card-description-input").val("");
+    }
+
+    $(function() {
+        // 全选与全不选
+        $("#yxw-card-check-all").click(function() {
+            $(".yxw-card-checkbox").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
+        });
+        // GO 直接请求某一页的数据
+        $("#yxw-card-go-btn").click(function() {
+            let yxwCardPageNum = $("#yxw-card-go-input").val();
+            if ("" === yxwCardPageNum) {
+                return;
+            }
+            requestYxwCardListPage(yxwCardPageNum);
+        });
+    })
+</script>
+</html>

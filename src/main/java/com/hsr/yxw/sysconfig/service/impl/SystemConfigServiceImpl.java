@@ -6,6 +6,7 @@ import com.hsr.yxw.mapper.SystemConfigMapper;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 import com.hsr.yxw.sysconfig.service.SystemConfigService;
 import com.hsr.yxw.sysconfig.common.SystemConfigQueryVo;
+import com.hsr.yxw.util.YxwStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,12 @@ import java.util.List;
 
 @Service
 public class SystemConfigServiceImpl implements SystemConfigService {
-    @Autowired
     private SystemConfigMapper systemConfigMapper;
+
+    @Autowired
+    public SystemConfigServiceImpl(SystemConfigMapper systemConfigMapper) {
+        this.systemConfigMapper = systemConfigMapper;
+    }
 
     @Override
     public PageBean<SystemConfig> getSystemConfigPageBean(Integer pageNum, Integer pageSize, SystemConfigQueryVo vo) throws ServiceException {
@@ -24,25 +29,18 @@ public class SystemConfigServiceImpl implements SystemConfigService {
         if (vo == null) {
             vo = new SystemConfigQueryVo();
         }
-        vo.setFirstResult(pageBean.getFirstResult());
-        vo.setMaxResult(pageBean.getPageSize());
+        vo.setPagingResult(pageBean.getFirstResult(), pageBean.getPageSize());
         List<SystemConfig> list = systemConfigMapper.selectByVo(vo);
-        pageBean.setPageList(list);
-        pageBean.setOtherPage();
+        pageBean.setPageList(list, true);
         return pageBean;
     }
 
     @Override
     public void deleteSystemConfigs(String ids) throws ServiceException {
-        String[] idArray = ids.split("\\s*,\\s*");
-        ArrayList<Long> idList = new ArrayList<>(idArray.length);
-        for (String idString : idArray) {
-            try {
-                idList.add(Long.parseLong(idString));
-            } catch (NumberFormatException ignore) {
-            }
+        ArrayList<Long> idList = YxwStringUtils.idStringToList(ids);
+        if (idList.size() > 0) {
+            systemConfigMapper.delete(idList);
         }
-        systemConfigMapper.delete(idList);
     }
 
     @Override
@@ -276,4 +274,4 @@ public class SystemConfigServiceImpl implements SystemConfigService {
         }
         systemConfigMapper.insert(systemConfig);
     }
-}
+}

@@ -1,0 +1,39 @@
+package com.hsr.yxw.card.common;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public enum YxwCardType {
+    EMPTY(0, "空白"),
+    ;
+
+    private int id;
+    private String desc;
+    private static Map<String, String> mapping;
+    static {
+        YxwCardType[] values = YxwCardType.values();
+        HashMap<String, String> tempMap = new HashMap<>(values.length, 1.5f);
+        for (YxwCardType type : values) {
+            tempMap.put(type.toString(), type.getDesc());
+        }
+        mapping = Collections.unmodifiableMap(tempMap);
+    }
+
+    YxwCardType(int id, String desc) {
+        this.id = id;
+        this.desc = desc;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public static Map<String, String> getMapping() {
+        return mapping;
+    }
+}

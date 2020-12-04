@@ -21,10 +21,14 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class IndexController {
-    @Autowired
     private AccountService accountService;
-    @Autowired
     private SystemConfigService systemConfigService;
+
+    @Autowired
+    public IndexController(AccountService accountService, SystemConfigService systemConfigService) {
+        this.accountService = accountService;
+        this.systemConfigService = systemConfigService;
+    }
 
     @RequestMapping(value = "index")
     public String index() {
@@ -43,11 +47,6 @@ public class IndexController {
 
     /**
      * 登录
-     * @param username
-     * @param password
-     * @param remember
-     * @param session
-     * @return
      */
     @RequestMapping(value = "toLogin", method = RequestMethod.POST)
     @ResponseBody
@@ -89,8 +88,6 @@ public class IndexController {
     }
     /**
      * 注销
-     * @param session
-     * @return
      */
     @RequestMapping(value = "logout")
     public String logout(HttpSession session) {
@@ -100,7 +97,6 @@ public class IndexController {
 
     /**
      * 获取websocket路径前缀
-     * @return
      */
     @RequestMapping(value="getWsUrlPrefix")
     @ResponseBody
@@ -109,7 +105,6 @@ public class IndexController {
         if (ip == null) {
             ip = IpUtils.getLocalIp();
         }
-        String prefix = "ws://" + ip + ":" + SpringBootUtil.getServerPort() + "/ws/";
-        return prefix;
+        return "ws://" + ip + ":" + SpringBootUtil.getServerPort() + "/ws/";
     }
-}
+}

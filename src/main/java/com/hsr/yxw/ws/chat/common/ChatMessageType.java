@@ -1,6 +1,8 @@
 package com.hsr.yxw.ws.chat.common;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public enum ChatMessageType {
     PUBLIC(0, "公共聊天"), // 公共聊天
@@ -8,13 +10,17 @@ public enum ChatMessageType {
     ;
     private int id;
     private String desc;
-    private static HashMap<String, String> mapping = new HashMap<>();
+    private static Map<String, String> mapping;
     static {
-        for (ChatMessageType type : ChatMessageType.values()) {
-            mapping.put(type.toString(), type.getDesc());
+        mapping = new HashMap<>();
+        ChatMessageType[] values = ChatMessageType.values();
+        Map<String, String> tempMap = new HashMap<>(values.length, 1.5f);
+        for (ChatMessageType type : values) {
+            tempMap.put(type.toString(), type.getDesc());
         }
+        mapping = Collections.unmodifiableMap(tempMap);
     }
-    public static HashMap<String, String> getMapping() {
+    public static Map<String, String> getMapping() {
         return mapping;
     }
     public int getId() {

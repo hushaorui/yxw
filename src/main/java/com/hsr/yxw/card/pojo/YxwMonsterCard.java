@@ -1,9 +1,9 @@
 package com.hsr.yxw.card.pojo;
 
-import com.hsr.yxw.em.card.DLRareLevel;
-import com.hsr.yxw.em.card.MonsterElement;
-import com.hsr.yxw.em.card.MonsterRace;
-import com.hsr.yxw.em.card.MonsterType;
+import com.hsr.yxw.card.common.em.card.DLRareLevel;
+import com.hsr.yxw.card.common.em.card.MonsterElement;
+import com.hsr.yxw.card.common.em.card.MonsterRace;
+import com.hsr.yxw.card.common.em.card.MonsterType;
 
 public class YxwMonsterCard extends YxwCard {
     private static final long serialVersionUID = 0L;
@@ -78,4 +78,4 @@ public class YxwMonsterCard extends YxwCard {
     public void setMonsterType(MonsterType monsterType) {
         this.monsterType = monsterType;
     }
-}
+}

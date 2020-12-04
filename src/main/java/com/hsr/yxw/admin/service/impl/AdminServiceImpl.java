@@ -7,6 +7,7 @@ import com.hsr.yxw.mapper.ChatMessageMapper;
 import com.hsr.yxw.mapper.AccountMapper;
 import com.hsr.yxw.mapper.SystemConfigMapper;
 import com.hsr.yxw.account.pojo.Account;
+import com.hsr.yxw.mapper.YxwCardMapper;
 import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 import com.hsr.yxw.ws.chat.common.ChatMessageUtils;
@@ -22,12 +23,15 @@ public class AdminServiceImpl implements AdminService {
     private AccountMapper accountMapper;
     private SystemConfigMapper systemConfigMapper;
     private ChatMessageMapper chatMessageMapper;
+    private YxwCardMapper yxwCardMapper;
 
     @Autowired
-    public AdminServiceImpl(AccountMapper accountMapper, SystemConfigMapper systemConfigMapper, ChatMessageMapper chatMessageMapper) {
+    public AdminServiceImpl(AccountMapper accountMapper, SystemConfigMapper systemConfigMapper, ChatMessageMapper chatMessageMapper,
+                            YxwCardMapper yxwCardMapper) {
         this.accountMapper = accountMapper;
         this.systemConfigMapper = systemConfigMapper;
         this.chatMessageMapper = chatMessageMapper;
+        this.yxwCardMapper = yxwCardMapper;
     }
 
     @Override
@@ -45,6 +49,9 @@ public class AdminServiceImpl implements AdminService {
                 try {
                     chatMessageMapper.dropTable();
                 } catch (Exception ignore) {}
+                try {
+                    yxwCardMapper.dropTable();
+                } catch (Exception ignore) {}
             }
             // 创建表格
             try {
@@ -55,6 +62,9 @@ public class AdminServiceImpl implements AdminService {
             } catch (Exception ignore) {}
             try {
                 chatMessageMapper.createTable();
+            } catch (Exception ignore) {}
+            try {
+                yxwCardMapper.createTable();
             } catch (Exception ignore) {}
 
             initSystemConfigTable();

@@ -1,6 +1,6 @@
 package com.hsr.yxw.pojo;
 
-import com.hsr.yxw.em.skill.GameSkill;
+import com.hsr.yxw.card.common.em.skill.GameSkill;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,4 +19,4 @@ public class GameFigure implements Serializable {
     /** 人物技能 */
     private List<GameSkill> gameSkills;
 
-}
+}

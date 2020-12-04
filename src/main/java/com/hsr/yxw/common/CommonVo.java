@@ -1,5 +1,7 @@
 package com.hsr.yxw.common;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 public class CommonVo {
     private Integer firstResult;
     private Integer maxResult;
@@ -19,4 +21,10 @@ public class CommonVo {
     public void setMaxResult(Integer maxResult) {
         this.maxResult = maxResult;
     }
-}
+
+    @JSONField(serialize = false)
+    public void setPagingResult(Integer firstResult, Integer maxResult) {
+        this.firstResult = firstResult;
+        this.maxResult = maxResult;
+    }
+}
