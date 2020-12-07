@@ -3,7 +3,7 @@ package com.hsr.yxw.card.common.em.skill;
 /**
  * 游戏内的技能
  */
-public enum GameSkill {
+public enum YxwGameSkill {
     NULL(0, "未设置技能"),
     LP_A(1, "LP增强阿尔法"),
     LP_B(2, "LP增强贝塔"),
@@ -16,7 +16,7 @@ public enum GameSkill {
     public String getName() {
         return name;
     }
-    GameSkill(int id, String name) {
+    YxwGameSkill(int id, String name) {
         this.id = id;
         this.name = name;
     }

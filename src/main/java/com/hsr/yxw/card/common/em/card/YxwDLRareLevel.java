@@ -3,7 +3,7 @@ package com.hsr.yxw.card.common.em.card;
 /**
  * 在决斗链接的稀有度
  */
-public enum DLRareLevel {
+public enum YxwDLRareLevel {
     UR(0, "UR"),
     SR(1, "SR"),
     R(2, "R"),
@@ -17,7 +17,7 @@ public enum DLRareLevel {
     public String getName() {
         return name;
     }
-    DLRareLevel(int id, String name) {
+    YxwDLRareLevel(int id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -1,6 +1,7 @@
 package com.hsr.yxw.card.pojo;
 
 import com.hsr.yxw.card.common.YxwCardType;
+import com.hsr.yxw.card.common.em.card.YxwDLRareLevel;
 
 /**
  * 游戏王卡牌，基本信息
@@ -12,6 +13,8 @@ public class YxwCard {
     private String remoteImgUrl; //网络图片地址
     private String description; // 描述
     private YxwCardType cardType; // 卡片类型
+    /** 在决斗链接的稀有度 */
+    private YxwDLRareLevel dlRareLevel;
 
     public Long getId() {
         return id;

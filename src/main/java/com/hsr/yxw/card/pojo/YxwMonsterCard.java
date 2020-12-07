@@ -1,6 +1,5 @@
 package com.hsr.yxw.card.pojo;
 
-import com.hsr.yxw.card.common.em.card.DLRareLevel;
 import com.hsr.yxw.card.common.em.card.MonsterElement;
 import com.hsr.yxw.card.common.em.card.MonsterRace;
 import com.hsr.yxw.card.common.em.card.MonsterType;
@@ -16,8 +15,6 @@ public class YxwMonsterCard extends YxwCard {
     private MonsterType monsterType;
     /** 等级 */
     private Byte level;
-    /** 在决斗链接的稀有度 */
-    private DLRareLevel dlRareLevel;
     /** 攻击力 */
     private Integer atk;
     /** 防御力 */
@@ -45,14 +42,6 @@ public class YxwMonsterCard extends YxwCard {
 
     public void setLevel(Byte level) {
         this.level = level;
-    }
-
-    public DLRareLevel getDlRareLevel() {
-        return dlRareLevel;
-    }
-
-    public void setDlRareLevel(DLRareLevel dlRareLevel) {
-        this.dlRareLevel = dlRareLevel;
     }
 
     public Integer getAtk() {
