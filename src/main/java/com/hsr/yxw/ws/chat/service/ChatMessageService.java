@@ -73,7 +73,7 @@ public class ChatMessageService {
         }
         vo.setFirstResult(firstResult);
         vo.setMaxResult(lastSize);
-        return chatMessageMapper.selectByVo(vo);
+        return chatMessageMapper.selectByVoWithContent(vo);
     }
 
     public void deleteChatMessages(String ids) {

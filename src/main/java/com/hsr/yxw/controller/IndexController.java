@@ -9,6 +9,8 @@ import com.hsr.yxw.run.SpringBootUtil;
 import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.service.SystemConfigService;
 import com.hsr.yxw.util.IpUtils;
+import com.hsr.yxw.ws.chat.pojo.PublicChatMessage;
+import com.hsr.yxw.ws.chat.service.ChatMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,20 +20,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class IndexController {
     private AccountService accountService;
     private SystemConfigService systemConfigService;
+    private ChatMessageService chatMessageService;
 
     @Autowired
-    public IndexController(AccountService accountService, SystemConfigService systemConfigService) {
+    public IndexController(AccountService accountService, SystemConfigService systemConfigService, ChatMessageService chatMessageService) {
         this.accountService = accountService;
         this.systemConfigService = systemConfigService;
+        this.chatMessageService = chatMessageService;
     }
 
     @RequestMapping(value = "index")
-    public String index() {
+    public String index(Model model) {
+        List<PublicChatMessage> lastChatMessages = chatMessageService.getLastChatMessage(20, null);
+        model.addAttribute("lastChatMessages", lastChatMessages);
         return "index";
     }
     @RequestMapping(value = "register")

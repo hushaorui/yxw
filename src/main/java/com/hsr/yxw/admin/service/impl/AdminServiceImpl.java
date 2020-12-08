@@ -1,6 +1,8 @@
 package com.hsr.yxw.admin.service.impl;
 
 import com.hsr.yxw.admin.service.AdminService;
+import com.hsr.yxw.card.common.YxwCardType;
+import com.hsr.yxw.card.pojo.YxwCard;
 import com.hsr.yxw.common.WebConstants;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.mapper.ChatMessageMapper;
@@ -70,10 +72,22 @@ public class AdminServiceImpl implements AdminService {
             initSystemConfigTable();
             initAccountTable();
             initChatMessageTable();
+
+            initYxwCardTable();
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException(e);
         }
+    }
+
+    private void initYxwCardTable() {
+        YxwCard yxwCard = new YxwCard();
+        yxwCard.setCardName("斧王");
+        yxwCard.setCardType(YxwCardType.MONSTER);
+        yxwCard.setDescription("攻击力高的战士");
+        yxwCard.setLocalImgUrl("");
+        yxwCard.setRemoteImgUrl("https://baike.baidu.com/pic/%E5%88%80%E6%96%A7%E6%88%98%E5%A3%AB/3730906/0/91ae68c69804f6089c163d5b#aid=0&pic=91ae68c69804f6089c163d5b");
+        yxwCardMapper.insert(yxwCard);
     }
 
     private void initChatMessageTable() {

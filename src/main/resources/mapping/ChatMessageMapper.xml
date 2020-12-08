@@ -68,6 +68,17 @@
             OFFSET #{firstResult} ROWS FETCH NEXT #{maxResult} ROWS ONLY
         </if>
     </select>
+    <select id="selectByVoWithContent" parameterType="com.hsr.yxw.ws.chat.common.PublicChatMessageQueryVo" resultType="com.hsr.yxw.ws.chat.pojo.PublicChatMessage">
+        select id, senderId, senderName, sendTime, messageType, content
+        from chat_message
+        <where>
+            <include refid="chatMessageSql" />
+        </where>
+        order by id asc
+        <if test="firstResult!=null and maxResult!=null">
+            OFFSET #{firstResult} ROWS FETCH NEXT #{maxResult} ROWS ONLY
+        </if>
+    </select>
     <insert id="insert" parameterType="com.hsr.yxw.ws.chat.pojo.PublicChatMessage" useGeneratedKeys="true" keyProperty="id">
         insert into chat_message(senderId,senderName,sendTime,messageType,content)
         values(#{senderId}, #{senderName}, #{sendTime}, #{messageType},#{content})
