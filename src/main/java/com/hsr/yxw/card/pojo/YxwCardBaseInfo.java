@@ -6,7 +6,7 @@ import com.hsr.yxw.card.common.em.card.YxwDLRareLevel;
 /**
  * 游戏王卡牌，基本信息
  */
-public class YxwCard {
+public class YxwCardBaseInfo {
     private Long id;
     private String cardName; //名称
     private String localImgUrl; //本地图片地址
@@ -62,5 +62,13 @@ public class YxwCard {
 
     public void setCardType(YxwCardType cardType) {
         this.cardType = cardType;
+    }
+
+    public YxwDLRareLevel getDlRareLevel() {
+        return dlRareLevel;
+    }
+
+    public void setDlRareLevel(YxwDLRareLevel dlRareLevel) {
+        this.dlRareLevel = dlRareLevel;
     }
 }

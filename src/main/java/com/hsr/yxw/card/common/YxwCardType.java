@@ -7,7 +7,7 @@ import java.util.Map;
 public enum YxwCardType {
     EMPTY(0, "空白"),
     MONSTER(1, "怪兽"),
-    MAGIC_OR_TRAP(2, "魔陷");
+    MAGIC_OR_TRAP(2, "魔陷"),
     ;
 
     private int id;

@@ -34,15 +34,15 @@
                 <td><span>筛选：</span></td>
                 <td>
                     <label for="yxw-card-name-input">名称：</label>
-                    <input id="yxw-card-name-input" name="yxwCard.cardName" th:value="${yxwCardQueryVo.getYxwCard() == null ? '':yxwCardQueryVo.getYxwCard().getCardName()}" />
+                    <input id="yxw-card-name-input" name="yxwCardBaseInfo.cardName" th:value="${yxwCardQueryVo.getYxwCardBaseInfo() == null ? '':yxwCardQueryVo.getYxwCardBaseInfo().getCardName()}" />
                 </td>
                 <td>
                     <label for="yxw-card-local-url-input">本地图片地址：</label>
-                    <input id="yxw-card-local-url-input" name="yxwCard.localImgUrl" th:value="${yxwCardQueryVo.getYxwCard() == null ? '':yxwCardQueryVo.getYxwCard().getLocalImgUrl()}" />
+                    <input id="yxw-card-local-url-input" name="yxwCardBaseInfo.localImgUrl" th:value="${yxwCardQueryVo.getYxwCardBaseInfo() == null ? '':yxwCardQueryVo.getYxwCardBaseInfo().getLocalImgUrl()}" />
                 </td>
                 <td>
                     <label for="yxw-card-remote-url-input">网络图片地址：</label>
-                    <input id="yxw-card-remote-url-input" name="yxwCard.remoteImgUrl" th:value="${yxwCardQueryVo.getYxwCard() == null ? '':yxwCardQueryVo.getYxwCard().getRemoteImgUrl()}" />
+                    <input id="yxw-card-remote-url-input" name="yxwCardBaseInfo.remoteImgUrl" th:value="${yxwCardQueryVo.getYxwCardBaseInfo() == null ? '':yxwCardQueryVo.getYxwCardBaseInfo().getRemoteImgUrl()}" />
                 </td>
                 <td>
                     <a class="btn btn-primary btn-xs" onclick="clearYxwCardCondition()">清空条件</a>
@@ -51,15 +51,15 @@
             <tr>
                 <td>
                     <label for="card-type-select">类型：</label>
-                    <select id="card-type-select" name="yxwCard.cardType">
+                    <select id="card-type-select" name="yxwCardBaseInfo.cardType">
                         <option value="">请选择...</option>
                         <option th:each="item:${yxwCardTypeMapping}" th:value="${item.key}" th:text="${item.key + '-' + item.value}"
-                                th:selected="${yxwCardQueryVo.getYxwCard() != null and yxwCardQueryVo.getYxwCard().getCardType() != null and (item.key.toString() eq yxwCardQueryVo.getYxwCard().getCardType().toString())}"></option>
+                                th:selected="${yxwCardQueryVo.getYxwCardBaseInfo() != null and yxwCardQueryVo.getYxwCardBaseInfo().getCardType() != null and (item.key.toString() eq yxwCardQueryVo.getYxwCardBaseInfo().getCardType().toString())}"></option>
                     </select>
                 </td>
                 <td>
                     <label for="yxw-card-description-input">描述：</label>
-                    <input id="yxw-card-description-input" name="yxwCard.content" th:value="${yxwCardQueryVo.getYxwCard() == null ? '':yxwCardQueryVo.getYxwCard().getDescription()}" />
+                    <input id="yxw-card-description-input" name="yxwCardBaseInfo.content" th:value="${yxwCardQueryVo.getYxwCardBaseInfo() == null ? '':yxwCardQueryVo.getYxwCardBaseInfo().getDescription()}" />
                 </td>
                 <td>
                     <a class="btn btn-primary btn-xs" onclick="requestYxwCardListPage(1)">搜索</a>
@@ -88,17 +88,17 @@
             <th>卡片类型</th>
             <th>操作</th>
             </thead>
-            <tbody th:each="yxwCard,stat:${pageBean.pageList}">
+            <tbody th:each="yxwCardBaseInfo,stat:${pageBean.pageList}">
             <tr class="yxw-card-tr">
-                <td><input type="checkbox" class="yxw-card-checkbox" th:idData="${yxwCard.id}" /></td>
+                <td><input type="checkbox" class="yxw-card-checkbox" th:idData="${yxwCardBaseInfo.id}" /></td>
                 <td th:text="${stat.count}"></td>
-                <td th:text="${yxwCard.id}"></td>
-                <td th:text="${yxwCard.cardName}"></td>
-                <td th:text="${yxwCard.localImgUrl}"></td>
-                <td th:text="${yxwCard.remoteImgUrl}"></td>
-                <td th:text="${yxwCard.cardType}"></td>
-                <td><a class="btn btn-primary btn-xs" th:onclick="'showYxwCardDetailModal(' + ${yxwCard.id} + ')'">详情</a></td>
-                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteYxwCardModal(' + ${yxwCard.id} + ')'">删除</a></td>
+                <td th:text="${yxwCardBaseInfo.id}"></td>
+                <td th:text="${yxwCardBaseInfo.cardName}"></td>
+                <td th:text="${yxwCardBaseInfo.localImgUrl}"></td>
+                <td th:text="${yxwCardBaseInfo.remoteImgUrl}"></td>
+                <td th:text="${yxwCardBaseInfo.cardType}"></td>
+                <td><a class="btn btn-primary btn-xs" th:onclick="'showYxwCardDetailModal(' + ${yxwCardBaseInfo.id} + ')'">详情</a></td>
+                <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteYxwCardModal(' + ${yxwCardBaseInfo.id} + ')'">删除</a></td>
             </tr>
             </tbody>
         </table>

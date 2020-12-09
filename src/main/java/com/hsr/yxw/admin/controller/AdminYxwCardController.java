@@ -3,7 +3,7 @@ package com.hsr.yxw.admin.controller;
 import com.alibaba.druid.util.StringUtils;
 import com.hsr.yxw.card.common.YxwCardQueryVo;
 import com.hsr.yxw.card.common.YxwCardType;
-import com.hsr.yxw.card.pojo.YxwCard;
+import com.hsr.yxw.card.pojo.YxwCardBaseInfo;
 import com.hsr.yxw.card.service.YxwCardService;
 import com.hsr.yxw.common.CommonResult;
 import com.hsr.yxw.common.PageBean;
@@ -23,7 +23,7 @@ public class AdminYxwCardController {
     }
     @RequestMapping(value="admin/yxw-card-list")
     public String accountList(Integer pageNum, Integer pageSize, YxwCardQueryVo vo, Model model) throws Exception {
-        PageBean<YxwCard> pageBean = yxwCardService.getYxwCardPageBean(pageNum, pageSize, vo);
+        PageBean<YxwCardBaseInfo> pageBean = yxwCardService.getYxwCardPageBean(pageNum, pageSize, vo);
         model.addAttribute("pageBean", pageBean);
         model.addAttribute("yxwCardQueryVo", vo);
         model.addAttribute("pageSizes", PageBean.pageSizes);

@@ -1,16 +1,16 @@
 package com.hsr.yxw.card.common;
 
-import com.hsr.yxw.card.pojo.YxwCard;
+import com.hsr.yxw.card.pojo.YxwCardBaseInfo;
 import com.hsr.yxw.common.CommonVo;
 
 public class YxwCardQueryVo extends CommonVo {
-    private YxwCard yxwCard;
+    private YxwCardBaseInfo yxwCardBaseInfo;
 
-    public YxwCard getYxwCard() {
-        return yxwCard;
+    public YxwCardBaseInfo getYxwCardBaseInfo() {
+        return yxwCardBaseInfo;
     }
 
-    public void setYxwCard(YxwCard yxwCard) {
-        this.yxwCard = yxwCard;
+    public void setYxwCardBaseInfo(YxwCardBaseInfo yxwCardBaseInfo) {
+        this.yxwCardBaseInfo = yxwCardBaseInfo;
     }
 }

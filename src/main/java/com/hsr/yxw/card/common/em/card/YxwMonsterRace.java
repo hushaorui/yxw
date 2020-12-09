@@ -3,7 +3,7 @@ package com.hsr.yxw.card.common.em.card;
 /**
  * 怪兽种族
  */
-public enum MonsterRace {
+public enum YxwMonsterRace {
     DRAGON(0, "龙族"),
     UNDEAD(1, "不死族"),
     DEMON(2, "恶魔族"),
@@ -37,7 +37,7 @@ public enum MonsterRace {
     public String getName() {
         return name;
     }
-    MonsterRace(int id, String name) {
+    YxwMonsterRace(int id, String name) {
         this.id = id;
         this.name = name;
     }

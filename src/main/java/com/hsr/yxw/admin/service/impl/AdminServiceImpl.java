@@ -2,14 +2,13 @@ package com.hsr.yxw.admin.service.impl;
 
 import com.hsr.yxw.admin.service.AdminService;
 import com.hsr.yxw.card.common.YxwCardType;
-import com.hsr.yxw.card.pojo.YxwCard;
+import com.hsr.yxw.card.pojo.YxwCardBaseInfo;
 import com.hsr.yxw.common.WebConstants;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.mapper.ChatMessageMapper;
 import com.hsr.yxw.mapper.AccountMapper;
 import com.hsr.yxw.mapper.SystemConfigMapper;
 import com.hsr.yxw.account.pojo.Account;
-import com.hsr.yxw.mapper.YxwCardMapper;
 import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.pojo.SystemConfig;
 import com.hsr.yxw.ws.chat.common.ChatMessageUtils;
@@ -25,15 +24,12 @@ public class AdminServiceImpl implements AdminService {
     private AccountMapper accountMapper;
     private SystemConfigMapper systemConfigMapper;
     private ChatMessageMapper chatMessageMapper;
-    private YxwCardMapper yxwCardMapper;
 
     @Autowired
-    public AdminServiceImpl(AccountMapper accountMapper, SystemConfigMapper systemConfigMapper, ChatMessageMapper chatMessageMapper,
-                            YxwCardMapper yxwCardMapper) {
+    public AdminServiceImpl(AccountMapper accountMapper, SystemConfigMapper systemConfigMapper, ChatMessageMapper chatMessageMapper) {
         this.accountMapper = accountMapper;
         this.systemConfigMapper = systemConfigMapper;
         this.chatMessageMapper = chatMessageMapper;
-        this.yxwCardMapper = yxwCardMapper;
     }
 
     @Override
@@ -51,9 +47,6 @@ public class AdminServiceImpl implements AdminService {
                 try {
                     chatMessageMapper.dropTable();
                 } catch (Exception ignore) {}
-                try {
-                    yxwCardMapper.dropTable();
-                } catch (Exception ignore) {}
             }
             // 创建表格
             try {
@@ -64,9 +57,6 @@ public class AdminServiceImpl implements AdminService {
             } catch (Exception ignore) {}
             try {
                 chatMessageMapper.createTable();
-            } catch (Exception ignore) {}
-            try {
-                yxwCardMapper.createTable();
             } catch (Exception ignore) {}
 
             initSystemConfigTable();
@@ -81,13 +71,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void initYxwCardTable() {
-        YxwCard yxwCard = new YxwCard();
-        yxwCard.setCardName("斧王");
-        yxwCard.setCardType(YxwCardType.MONSTER);
-        yxwCard.setDescription("攻击力高的战士");
-        yxwCard.setLocalImgUrl("");
-        yxwCard.setRemoteImgUrl("https://baike.baidu.com/pic/%E5%88%80%E6%96%A7%E6%88%98%E5%A3%AB/3730906/0/91ae68c69804f6089c163d5b#aid=0&pic=91ae68c69804f6089c163d5b");
-        yxwCardMapper.insert(yxwCard);
+        YxwCardBaseInfo yxwCardBaseInfo = new YxwCardBaseInfo();
+        yxwCardBaseInfo.setCardName("斧王");
+        yxwCardBaseInfo.setCardType(YxwCardType.MONSTER);
+        yxwCardBaseInfo.setDescription("攻击力高的战士");
+        yxwCardBaseInfo.setLocalImgUrl("");
+        yxwCardBaseInfo.setRemoteImgUrl("https://baike.baidu.com/pic/%E5%88%80%E6%96%A7%E6%88%98%E5%A3%AB/3730906/0/91ae68c69804f6089c163d5b#aid=0&pic=91ae68c69804f6089c163d5b");
+        //yxwCardMapper.insert(yxwCardBaseInfo);
+        // TODO
     }
 
     private void initChatMessageTable() {

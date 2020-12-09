@@ -146,7 +146,7 @@
                 <a href="#" class="menu-a">卡牌管理</a>
                 <ul id="list3" class="menu-ul">
                     <li class="active">
-                        <a href="#" onclick="getContentHtml('/admin/card-list')">
+                        <a href="#" onclick="getContentHtml('/admin/yxw-card-list')">
                             卡牌列表
                         </a>
                     </li>
@@ -162,7 +162,7 @@
 </body>
 <script>
     function getContentHtml(url, isPost, jsonData) {
-        var hasLoad = false;
+        let hasLoad = false;
         // 500毫秒以上未得到服务器返回，则显示加载界面
         setTimeout(function () {
             if (! hasLoad) {
@@ -183,7 +183,7 @@
     }
     $(function () {
         // 显示当前时间，并不断更新时间
-        var timeSpan = $("#current-time-span");
+        let timeSpan = $("#current-time-span");
         timeSpan.html(dateToString(new Date()));
         setInterval(function () {
             timeSpan.html(dateToString(new Date()));

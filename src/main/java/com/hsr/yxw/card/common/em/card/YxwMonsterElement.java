@@ -3,7 +3,7 @@ package com.hsr.yxw.card.common.em.card;
 /**
  * 怪兽卡属性，如：暗
  */
-public enum MonsterElement {
+public enum YxwMonsterElement {
     LIGHT(0, "光"),
     DARK(1, "暗"),
     WATER(2, "水"),
@@ -20,7 +20,7 @@ public enum MonsterElement {
     public String getName() {
         return name;
     }
-    MonsterElement(int id, String name) {
+    YxwMonsterElement(int id, String name) {
         this.id = id;
         this.name = name;
     }
