@@ -1,7 +1,7 @@
 package com.hsr.yxw.listener;
 
 import com.hsr.yxw.admin.service.AdminService;
-import com.hsr.yxw.card.config.YxwCardManager;
+import com.hsr.yxw.game.service.YxwGameInfoManager;
 import com.hsr.yxw.exception.ServiceException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,12 +18,12 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
 	private static final Log log = LogFactory.getLog(ApplicationReadyEventListener.class);
 
 	private AdminService adminService;
-	private YxwCardManager yxwCardManager;
+	private YxwGameInfoManager yxwGameInfoManager;
 
 	@Autowired
-	public ApplicationReadyEventListener(AdminService adminService, YxwCardManager yxwCardManager) {
+	public ApplicationReadyEventListener(AdminService adminService, YxwGameInfoManager yxwGameInfoManager) {
 		this.adminService = adminService;
-		this.yxwCardManager = yxwCardManager;
+		this.yxwGameInfoManager = yxwGameInfoManager;
 	}
 
  
@@ -32,7 +32,7 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
 		try {
 			adminService.initDB(true);
 			log.info("初始化数据库完成");
-			yxwCardManager.initYxwCard();
+			yxwGameInfoManager.initYxwCard();
 			log.info("初始化yxw卡牌完成");
 		} catch (ServiceException e) {
 			e.printStackTrace();

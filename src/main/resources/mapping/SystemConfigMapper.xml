@@ -67,7 +67,7 @@
         select * from system_config where classify = #{value}
     </select>
 
-    <select id="selectAll" parameterType="com.hsr.yxw.sysconfig.common.SystemConfigQueryVo" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+    <select id="selectAll" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
         select * from system_config
     </select>
     <select id="selectByVo" parameterType="com.hsr.yxw.sysconfig.common.SystemConfigQueryVo" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
@@ -92,7 +92,7 @@
             #{item}
         </foreach>
     </delete>
-    <delete id="deleteById">
+    <delete id="deleteById" parameterType="long">
         delete from system_config where id = #{value}
     </delete>
 

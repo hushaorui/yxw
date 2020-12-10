@@ -5,12 +5,20 @@ import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.account.pojo.Account;
 import com.hsr.yxw.account.service.AccountService;
 import com.hsr.yxw.account.common.AccountUtil;
+import com.hsr.yxw.game.data.YxwGameDataContainer;
+import com.hsr.yxw.game.data.YxwGameDataType;
+import com.hsr.yxw.game.info.YxwGameFigure;
+import com.hsr.yxw.game.info.YxwGameFigureInfo;
+import com.hsr.yxw.game.service.YxwGameDataManager;
+import com.hsr.yxw.game.service.YxwGameInfoManager;
 import com.hsr.yxw.run.SpringBootUtil;
 import com.hsr.yxw.sysconfig.common.SystemSwitch;
 import com.hsr.yxw.sysconfig.service.SystemConfigService;
 import com.hsr.yxw.util.IpUtils;
 import com.hsr.yxw.ws.chat.pojo.PublicChatMessage;
 import com.hsr.yxw.ws.chat.service.ChatMessageService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,25 +28,48 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
 public class IndexController {
+    private static final Log log = LogFactory.getLog(IndexController.class);
     private AccountService accountService;
     private SystemConfigService systemConfigService;
     private ChatMessageService chatMessageService;
+    private YxwGameDataManager yxwGameDataManager;
+    private YxwGameInfoManager yxwGameInfoManager;
 
     @Autowired
-    public IndexController(AccountService accountService, SystemConfigService systemConfigService, ChatMessageService chatMessageService) {
+    public IndexController(AccountService accountService, SystemConfigService systemConfigService, ChatMessageService chatMessageService,
+                           YxwGameDataManager yxwGameDataManager, YxwGameInfoManager yxwGameInfoManager) {
         this.accountService = accountService;
         this.systemConfigService = systemConfigService;
         this.chatMessageService = chatMessageService;
+        this.yxwGameDataManager = yxwGameDataManager;
+        this.yxwGameInfoManager = yxwGameInfoManager;
     }
 
     @RequestMapping(value = "index")
-    public String index(Model model) {
+    public String index(Model model, HttpSession session) {
         List<PublicChatMessage> lastChatMessages = chatMessageService.getLastChatMessage(20, null);
         model.addAttribute("lastChatMessages", lastChatMessages);
+        Account account = (Account) session.getAttribute("sessionAccount");
+        long userId = account.getId();
+        YxwGameDataContainer yxwGameDataContainer = yxwGameDataManager.getYxwGameDataContainer(userId);
+        // 获取人物列表
+        Collection<Long> figureIdList = yxwGameDataContainer.getDataByType(YxwGameDataType.Figure);
+        ArrayList<YxwGameFigure> figures = new ArrayList<>(figureIdList.size());
+        for (Long figureId : figureIdList) {
+            YxwGameFigure yxwGameFigure = yxwGameInfoManager.findFigureById(figureId);
+            if (yxwGameFigure == null) {
+                log.error(String.format("未找到yxw人物，id：%s", figureId));
+                continue;
+            }
+            figures.add(yxwGameFigure);
+        }
+        model.addAttribute("figures", figures);
         return "index";
     }
     @RequestMapping(value = "register")

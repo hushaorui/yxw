@@ -1,10 +1,10 @@
 package com.hsr.yxw.admin.controller;
 
 import com.alibaba.druid.util.StringUtils;
-import com.hsr.yxw.card.common.YxwCardQueryVo;
-import com.hsr.yxw.card.common.YxwCardType;
-import com.hsr.yxw.card.pojo.YxwCardBaseInfo;
-import com.hsr.yxw.card.service.YxwCardService;
+import com.hsr.yxw.game.common.YxwCardQueryVo;
+import com.hsr.yxw.game.common.em.card.YxwCardType;
+import com.hsr.yxw.game.info.YxwCardBaseInfo;
+import com.hsr.yxw.game.service.YxwCardService;
 import com.hsr.yxw.common.CommonResult;
 import com.hsr.yxw.common.PageBean;
 import org.springframework.beans.factory.annotation.Autowired;
