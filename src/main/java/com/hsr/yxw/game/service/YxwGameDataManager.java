@@ -24,12 +24,14 @@ public class YxwGameDataManager {
     private static final Log log = LogFactory.getLog(YxwGameDataManager.class);
 
     private final YxwGameDataItemService yxwGameDataItemService;
+    private final YxwGameInfoManager yxwGameInfoManager;
     /** 保存所有玩家数据缓存的集合，key为玩家id */
     private ConcurrentHashMap<Long, YxwGameDataContainer> gameDataMap = new ConcurrentHashMap<>();
 
     @Autowired
-    public YxwGameDataManager(YxwGameDataItemService yxwGameDataItemService) {
+    public YxwGameDataManager(YxwGameDataItemService yxwGameDataItemService, YxwGameInfoManager yxwGameInfoManager) {
         this.yxwGameDataItemService = yxwGameDataItemService;
+        this.yxwGameInfoManager = yxwGameInfoManager;
     }
 
     /**
@@ -91,7 +93,6 @@ public class YxwGameDataManager {
             for (YxwGameDataItem yxwGameDataItem : yxwGameDataItems) {
                 // 数据的类型
                 YxwGameDataType dataType = yxwGameDataItem.getDataType();
-                // 数据的类镜像
                 // 数据的值
                 String dateJsonString = yxwGameDataItem.getDateValue();
                 // 将json数据转换为对象
@@ -110,6 +111,8 @@ public class YxwGameDataManager {
                 }
                 personalDataMap.put(dataType, objects);
             }
+            // 初始化缓存数据
+            //yxwGameDataContainer.
             // 将该玩家数据放入缓存集合
             gameDataMap.put(userId, yxwGameDataContainer);
             return yxwGameDataContainer;

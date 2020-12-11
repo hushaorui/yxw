@@ -31,6 +31,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class IndexController {
@@ -58,18 +59,8 @@ public class IndexController {
         Account account = (Account) session.getAttribute("sessionAccount");
         long userId = account.getId();
         YxwGameDataContainer yxwGameDataContainer = yxwGameDataManager.getYxwGameDataContainer(userId);
-        // 获取人物列表
-        Collection<Long> figureIdList = yxwGameDataContainer.getDataByType(YxwGameDataType.Figure);
-        ArrayList<YxwGameFigure> figures = new ArrayList<>(figureIdList.size());
-        for (Long figureId : figureIdList) {
-            YxwGameFigure yxwGameFigure = yxwGameInfoManager.findFigureById(figureId);
-            if (yxwGameFigure == null) {
-                log.error(String.format("未找到yxw人物，id：%s", figureId));
-                continue;
-            }
-            figures.add(yxwGameFigure);
-        }
-        model.addAttribute("figures", figures);
+        Map<Long, YxwGameFigure> figureMap = yxwGameDataContainer.getFigureMap();
+        model.addAttribute("figures", figureMap.values());
         return "index";
     }
     @RequestMapping(value = "register")
