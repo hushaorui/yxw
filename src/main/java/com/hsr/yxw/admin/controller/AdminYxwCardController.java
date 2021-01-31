@@ -35,7 +35,7 @@ public class AdminYxwCardController {
 
     @RequestMapping(value = "admin/yxw-card-delete")
     @ResponseBody
-    public CommonResult deleteAccount(String ids) {
+    public CommonResult deleteYxwCards(String ids) {
         if (StringUtils.isEmpty(ids)) {
             return CommonResult.error("ID不可为空！");
         }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="referrer" content="no-referrer">
     <meta charset="UTF-8">
     <title>DIY作品</title>
 
@@ -69,13 +70,13 @@
 
         <table class="table">
             <caption>
-                yxw卡牌记录列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="yxw-card-total-count" class="font-blue" th:text="${pageBean.totalCount}"></span>]
+                yxw卡牌记录列表&nbsp;&nbsp;&nbsp;&nbsp; 总数：[<span id="yxw-card-total-count" class="font-blue" th:text="${pageBean == null ? 0 : pageBean.totalCount}"></span>]
                 每页显示数量：
                 <select id="yxw-card-page-select" class="form-select-button" name="pageSize">
-                    <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key eq pageBean.pageSize}"></option>
+                    <option th:each="item:${pageSizes}" th:value="${item.key}" th:text="${item.value}" th:selected="${pageBean != null and item.key eq pageBean.pageSize}"></option>
                 </select>
-                共 <span class="font-blue" th:text="${pageBean.totalPage}"></span> 页
-                <input type="hidden" name="pageNum" id="yxwCardPageNum" th:value="${pageBean.currentPage}" />
+                共 <span class="font-blue" th:text="${pageBean == null ? 0 : pageBean.totalPage}"></span> 页
+                <input type="hidden" name="pageNum" id="yxwCardPageNum" th:value="${pageBean == null ? '' : pageBean.currentPage}" />
             </caption>
             <thead>
             <th><input type="checkbox" id="yxw-card-check-all" /></th>
@@ -95,8 +96,9 @@
                 <td th:text="${yxwCardBaseInfo.id}"></td>
                 <td th:text="${yxwCardBaseInfo.cardName}"></td>
                 <td th:text="${yxwCardBaseInfo.localImgUrl}"></td>
-                <td th:text="${yxwCardBaseInfo.remoteImgUrl}"></td>
-                <td th:text="${yxwCardBaseInfo.cardType}"></td>
+                <td><img alt="图片缺失" th:src="@{(${yxwCardBaseInfo.remoteImgUrl})}" width="60px" height="90px" /></td>
+                <td th:text="${yxwCardBaseInfo.getDescription()}"></td>
+                <td th:text="${yxwCardBaseInfo.cardType.getDesc()}"></td>
                 <td><a class="btn btn-primary btn-xs" th:onclick="'showYxwCardDetailModal(' + ${yxwCardBaseInfo.id} + ')'">详情</a></td>
                 <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteYxwCardModal(' + ${yxwCardBaseInfo.id} + ')'">删除</a></td>
             </tr>

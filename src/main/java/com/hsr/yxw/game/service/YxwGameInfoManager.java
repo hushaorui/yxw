@@ -46,6 +46,10 @@ public class YxwGameInfoManager {
         printAllConfig();
     }
 
+    public YxwCardBaseInfoConfig getYxwCardBaseInfoConfig() {
+        return yxwCardBaseInfoConfig;
+    }
+
     private void initConfig() {
         for (Map.Entry<Long, YxwCardBaseInfo> entry : yxwCardBaseInfoConfig.getBaseInfoMap().entrySet()) {
             YxwGameCard yxwGameCard = new YxwGameCard();
@@ -55,9 +59,11 @@ public class YxwGameInfoManager {
             if (YxwCardType.MONSTER.equals(baseInfo.getCardType())) {
                 YxwMonsterCardInfo monsterCardInfo = yxwMonsterCardInfoConfig.getMonsterInfoMap().get(id);
                 if (monsterCardInfo == null) {
-                    throw new RuntimeException(String.format("怪兽卡没有对应的怪兽数据，id：%s", id));
+                    //throw new RuntimeException(String.format("怪兽卡没有对应的怪兽数据，id：%s", id));
+                    log.error(String.format("怪兽卡没有对应的怪兽数据，id：%s", id));
+                } else {
+                    yxwGameCard.setMonsterCardInfo(monsterCardInfo);
                 }
-                yxwGameCard.setMonsterCardInfo(monsterCardInfo);
             } else if (YxwCardType.MAGIC_OR_TRAP.equals(baseInfo.getCardType())) {
                 // TODO
             } else {
