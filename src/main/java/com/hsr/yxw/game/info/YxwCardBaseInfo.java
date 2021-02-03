@@ -13,8 +13,10 @@ public class YxwCardBaseInfo {
     private String remoteImgUrl; //网络图片地址
     private String description; // 描述
     private YxwCardType cardType; // 卡片类型
-    /** 在决斗链接的稀有度 */
+    /** 在决斗链接国际服的稀有度 */
     private YxwDLRareLevel dlRareLevel;
+    /** 在决斗链接国服的稀有度 */
+    private YxwDLRareLevel dlCNRareLevel;
 
     public Long getId() {
         return id;
@@ -70,5 +72,13 @@ public class YxwCardBaseInfo {
 
     public void setDlRareLevel(YxwDLRareLevel dlRareLevel) {
         this.dlRareLevel = dlRareLevel;
+    }
+
+    public YxwDLRareLevel getDlCNRareLevel() {
+        return dlCNRareLevel;
+    }
+
+    public void setDlCNRareLevel(YxwDLRareLevel dlCNRareLevel) {
+        this.dlCNRareLevel = dlCNRareLevel;
     }
 }

@@ -67,6 +67,7 @@ public class YxwCardBaseInfoConfig implements InitializedConfig {
         yxwCardBaseInfo.setLocalImgUrl("");
         yxwCardBaseInfo.setRemoteImgUrl("https://p.ocgsoft.cn/493.jpg");
         yxwCardBaseInfo.setDlRareLevel(YxwDLRareLevel.UR);
+        yxwCardBaseInfo.setDlCNRareLevel(YxwDLRareLevel.R);
         baseInfoMap.put(sequence, yxwCardBaseInfo);
 
 

@@ -87,6 +87,8 @@
             <th>网络图片地址</th>
             <th>描述</th>
             <th>卡片类型</th>
+            <th>国际服稀有度</th>
+            <th>国服稀有度</th>
             <th>操作</th>
             </thead>
             <tbody th:each="yxwCardBaseInfo,stat:${pageBean.pageList}">
@@ -99,6 +101,9 @@
                 <td><img alt="图片缺失" th:src="@{(${yxwCardBaseInfo.remoteImgUrl})}" width="60px" height="90px" /></td>
                 <td th:text="${yxwCardBaseInfo.getDescription()}"></td>
                 <td th:text="${yxwCardBaseInfo.cardType.getDesc()}"></td>
+                <td th:text="${yxwCardBaseInfo.dlRareLevel}"></td>
+                <!--/*@thymesVar id="dlCNRareLevel" type=""*/-->
+                <td th:text="${yxwCardBaseInfo.dlCNRareLevel}"></td>
                 <td><a class="btn btn-primary btn-xs" th:onclick="'showYxwCardDetailModal(' + ${yxwCardBaseInfo.id} + ')'">详情</a></td>
                 <td><a class="btn btn-danger btn-xs" th:onclick="'showDeleteYxwCardModal(' + ${yxwCardBaseInfo.id} + ')'">删除</a></td>
             </tr>
