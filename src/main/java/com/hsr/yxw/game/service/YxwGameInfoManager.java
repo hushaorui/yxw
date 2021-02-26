@@ -2,9 +2,9 @@ package com.hsr.yxw.game.service;
 
 import com.hsr.yxw.common.InitializedConfig;
 import com.hsr.yxw.game.common.em.card.YxwCardType;
-import com.hsr.yxw.game.config.YxwCardBaseInfoConfig;
-import com.hsr.yxw.game.config.YxwGameFigureInfoConfig;
-import com.hsr.yxw.game.config.YxwMonsterCardInfoConfig;
+import com.hsr.yxw.game.config.card.YxwCardBaseInfoConfig;
+import com.hsr.yxw.game.config.figure.YxwGameFigureInfoConfig;
+import com.hsr.yxw.game.config.card.YxwMonsterCardInfoConfig;
 import com.hsr.yxw.game.info.YxwCardBaseInfo;
 import com.hsr.yxw.game.info.YxwGameCard;
 import com.hsr.yxw.game.info.YxwGameFigure;
@@ -42,7 +42,7 @@ public class YxwGameInfoManager {
         loadAllFromYamlFile();
         // 调度所有的配置，使得
         initConfig();
-        // 打印以下所有配置
+        // 打印一下所有配置，调试使用
         printAllConfig();
     }
 

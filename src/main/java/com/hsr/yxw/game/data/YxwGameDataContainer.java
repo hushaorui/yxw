@@ -15,13 +15,13 @@ public class YxwGameDataContainer {
     private static final Log log = LogFactory.getLog(YxwGameDataContainer.class);
 
     /** 个人的所有数据，只存储了id的集合 */
-    private Map<YxwGameDataType, Collection<Long>> personalDataMap = new ConcurrentHashMap<>();
+    private Map<YxwGameDataType, Collection<?>> personalDataMap = new ConcurrentHashMap<>();
     /** 缓存数据是否已经初始化的集合 */
     private Set<YxwGameDataType> cacheInitSet = Collections.synchronizedSet(new HashSet<>());
     /** 人物数据缓存 */
     private Map<Long, YxwGameFigure> figureMap = new ConcurrentHashMap<>();
 
-    public Map<YxwGameDataType, Collection<Long>> getPersonalDataMap() {
+    public Map<YxwGameDataType, Collection<?>> getPersonalDataMap() {
         return personalDataMap;
     }
 
@@ -29,7 +29,7 @@ public class YxwGameDataContainer {
      * 获取非null数据
      * @param dataType 数据的类型
      */
-    public Collection<Long> getDataByType(YxwGameDataType dataType) {
+    public Collection<?> getDataByType(YxwGameDataType dataType) {
         return personalDataMap.computeIfAbsent(dataType, key -> new ArrayList<>());
     }
 
@@ -37,7 +37,12 @@ public class YxwGameDataContainer {
         return figureMap;
     }
 
-    public void initFigure(YxwGameInfoManager yxwGameInfoManager) {
+    /**
+     * 初始化玩家所拥有的人物数据
+     * @param yxwGameInfoManager
+     * @param customFigureId
+     */
+    public void initFigure(YxwGameInfoManager yxwGameInfoManager, long customFigureId) {
         YxwGameDataType figureType = YxwGameDataType.Figure;
         if (cacheInitSet.contains(figureType)) {
             return;
@@ -45,12 +50,13 @@ public class YxwGameDataContainer {
             cacheInitSet.add(figureType);
         }
         // 获取人物列表
-        Collection<Long> figureIdList = getDataByType(figureType);
+        Collection<?> figureIdList = getDataByType(figureType);
         Map<Long, YxwGameFigure> figures = new ConcurrentHashMap<>();
-        for (Long figureId : figureIdList) {
+        for (Object figureIdObj : figureIdList) {
+            Long figureId = (Long) figureIdObj;
             YxwGameFigure yxwGameFigure = yxwGameInfoManager.findFigureById(figureId);
             if (yxwGameFigure == null) {
-                log.error(String.format("未找到yxw人物，id：%s", figureId));
+                log.error(String.format("未找到yxw人物配置，id：%s", figureId));
                 continue;
             }
             figures.put(figureId, yxwGameFigure);

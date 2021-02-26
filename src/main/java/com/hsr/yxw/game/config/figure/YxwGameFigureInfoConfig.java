@@ -1,4 +1,4 @@
-package com.hsr.yxw.game.config;
+package com.hsr.yxw.game.config.figure;
 
 import com.hsr.yxw.common.InitializedConfig;
 import com.hsr.yxw.game.info.YxwGameFigureInfo;

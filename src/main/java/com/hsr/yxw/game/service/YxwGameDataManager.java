@@ -96,7 +96,7 @@ public class YxwGameDataManager {
                 // 数据的值
                 String dateJsonString = yxwGameDataItem.getDateValue();
                 // 将json数据转换为对象
-                List<Long> objects;
+                List<?> objects;
                 try {
                     objects = JSONArray.parseArray(dateJsonString, Long.class);
                 } catch (Exception e) {
@@ -104,7 +104,7 @@ public class YxwGameDataManager {
                     objects = Collections.emptyList();
                 }
                 // 获取容器中的map
-                Map<YxwGameDataType, Collection<Long>> personalDataMap = yxwGameDataContainer.getPersonalDataMap();
+                Map<YxwGameDataType, Collection<?>> personalDataMap = yxwGameDataContainer.getPersonalDataMap();
                 // 将转化成功的对象放入到容器类中
                 if (personalDataMap.containsKey(dataType)) {
                     log.error(String.format("一个玩家同时拥有两份数据类型相同的数据，玩家id：%s，数据类型：%s", userId, dataType));

@@ -2,7 +2,7 @@ package com.hsr.yxw.game.service.impl;
 
 import com.hsr.yxw.common.PageBean;
 import com.hsr.yxw.game.common.YxwCardQueryVo;
-import com.hsr.yxw.game.config.YxwCardBaseInfoConfig;
+import com.hsr.yxw.game.config.card.YxwCardBaseInfoConfig;
 import com.hsr.yxw.game.info.YxwCardBaseInfo;
 import com.hsr.yxw.game.service.YxwCardService;
 import com.hsr.yxw.game.service.YxwGameInfoManager;
