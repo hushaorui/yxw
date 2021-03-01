@@ -5,8 +5,8 @@ import com.hsr.yxw.ws.chat.common.ChatMessageType;
 import com.hsr.yxw.ws.chat.common.ChatMessageUtils;
 import com.hsr.yxw.ws.chat.pojo.PublicChatMessage;
 import com.hsr.yxw.ws.chat.service.ChatMessageService;
-import com.hsr.yxw.ws.common.WsCommonService;
 import com.hsr.yxw.ws.common.WsAccount;
+import com.hsr.yxw.ws.common.WsCommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,18 @@ import org.springframework.stereotype.Service;
 public class ChatHallService {
     private WsCommonService wsCommonService = WsCommonService.getInstance();
 
-    @Autowired
     private ChatMessageService chatMessageService;
+
+    @Autowired
+    public ChatHallService(ChatMessageService chatMessageService) {
+        this.chatMessageService = chatMessageService;
+    }
+
     /**
      * 在公共聊天室发送全体信息
+     *
      * @param wsAccount 发送者
-     * @param message
+     * @param message   信息内容
      */
     public void sendPublicChatMessage(WsAccount wsAccount, String message) {
         if (message == null || message.trim().length() <= 0) {

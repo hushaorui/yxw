@@ -1,6 +1,7 @@
 package com.hsr.yxw.common;
 
 public interface WebConstants {
+
     String SYSTEM = "system";
 
     String WARNING = "warning";
@@ -8,8 +9,10 @@ public interface WebConstants {
     String ERROR = "error";
     String SUCCESS = "success";
 
+    String NOT_FOUND = "not found";
+
     String DEFAULT_ENCODING = "UTF-8";
 
     /** 中文、大小写字母、数字 正则表达式 */
     String CHINESE_ENGLISH_NUMBER_REGEX = "[0-9a-zA-Z\u4e00-\u9fa5]+";
-}
+}

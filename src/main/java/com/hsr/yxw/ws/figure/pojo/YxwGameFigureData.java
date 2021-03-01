@@ -1,11 +1,12 @@
-package com.hsr.yxw.game.info;
+package com.hsr.yxw.ws.figure.pojo;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.hsr.yxw.game.info.YxwGameFigureInfo;
 
 /**
  * 对应一个人物的所有数据
  */
-public class YxwGameFigure {
+public class YxwGameFigureData {
     @JSONField(serialize = false)
     private YxwGameFigureInfo figureInfo;
     /** 配置中的id */

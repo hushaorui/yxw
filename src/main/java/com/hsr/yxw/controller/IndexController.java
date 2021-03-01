@@ -5,10 +5,8 @@ import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.account.pojo.Account;
 import com.hsr.yxw.account.service.AccountService;
 import com.hsr.yxw.account.common.AccountUtil;
-import com.hsr.yxw.game.data.YxwGameDataContainer;
-import com.hsr.yxw.game.data.YxwGameDataType;
-import com.hsr.yxw.game.info.YxwGameFigure;
-import com.hsr.yxw.game.info.YxwGameFigureInfo;
+import com.hsr.yxw.game.service.YxwGameDataContainer;
+import com.hsr.yxw.ws.figure.pojo.YxwGameFigureData;
 import com.hsr.yxw.game.service.YxwGameDataManager;
 import com.hsr.yxw.game.service.YxwGameInfoManager;
 import com.hsr.yxw.run.SpringBootUtil;
@@ -28,8 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +55,7 @@ public class IndexController {
         Account account = (Account) session.getAttribute("sessionAccount");
         long userId = account.getId();
         YxwGameDataContainer yxwGameDataContainer = yxwGameDataManager.getYxwGameDataContainer(userId);
-        Map<Long, YxwGameFigure> figureMap = yxwGameDataContainer.getFigureMap();
+        Map<Long, YxwGameFigureData> figureMap = yxwGameDataContainer.getFigureMap();
         model.addAttribute("figures", figureMap.values());
         return "index";
     }

@@ -19,6 +19,16 @@ public class YxwGameFigureInfo implements Serializable {
     /** 人物技能id */
     private List<YxwGameSkill> gameSkills;
 
+    public YxwGameFigureInfo() {}
+
+    public YxwGameFigureInfo(Long id, String name, String description, String appearanceImgUrl, List<YxwGameSkill> gameSkills) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.appearanceImgUrl = appearanceImgUrl;
+        this.gameSkills = gameSkills;
+    }
+
     public Long getId() {
         return id;
     }
