@@ -15,8 +15,11 @@ import javax.websocket.Session;
 @Component
 public class ChatHallHandler implements IHandler<ChatHallRequestProtocol, ChatHallResponseProtocol> {
     private static final Log log = LogFactory.getLog(ChatHallHandler.class);
-    @Autowired
     private ChatHallService chatHallService;
+    @Autowired
+    public ChatHallHandler(ChatHallService chatHallService) {
+        this.chatHallService = chatHallService;
+    }
 
     @Override
     public IResponseProtocol handle(WsAccount wsAccount, Session session, ChatHallRequestProtocol requestProtocol) {

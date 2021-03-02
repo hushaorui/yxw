@@ -6,7 +6,7 @@ import com.hsr.yxw.account.pojo.Account;
 import com.hsr.yxw.account.service.AccountService;
 import com.hsr.yxw.account.common.AccountUtil;
 import com.hsr.yxw.game.service.YxwGameDataContainer;
-import com.hsr.yxw.ws.figure.pojo.YxwGameFigureData;
+import com.hsr.yxw.ws.game.figure.pojo.YxwGameFigureData;
 import com.hsr.yxw.game.service.YxwGameDataManager;
 import com.hsr.yxw.game.service.YxwGameInfoManager;
 import com.hsr.yxw.run.SpringBootUtil;

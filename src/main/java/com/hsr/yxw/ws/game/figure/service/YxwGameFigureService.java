@@ -1,15 +1,16 @@
-package com.hsr.yxw.ws.figure.service;
+package com.hsr.yxw.ws.game.figure.service;
 
 import com.hsr.yxw.game.service.YxwGameDataContainer;
 import com.hsr.yxw.game.info.YxwGameFigureInfo;
 import com.hsr.yxw.game.service.YxwGameDataManager;
 import com.hsr.yxw.game.service.YxwGameInfoManager;
-import com.hsr.yxw.ws.figure.pojo.YxwGameFigureData;
+import com.hsr.yxw.ws.game.figure.pojo.YxwGameFigureData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Map;
 
 @Service
@@ -49,5 +50,15 @@ public class YxwGameFigureService {
         figureData.setLevel(0L);
         figureData.setExp(0L);
         return yxwGameDataManager.addYxwGameFigureData(userId, figureData);
+    }
+
+    /**
+     * 获取玩家所有的人物集合
+     * @param userId 玩家id
+     * @return 集合
+     */
+    public Collection<YxwGameFigureData> getAllFigures(long userId) {
+        YxwGameDataContainer dataContainer = yxwGameDataManager.getYxwGameDataContainer(userId);
+        return dataContainer.getFigureMap().values();
     }
 }

@@ -1,6 +1,7 @@
 package com.hsr.yxw.game.data;
 
 import com.hsr.yxw.common.TwinsValue;
+import com.hsr.yxw.ws.game.base.pojo.YxwGameMainData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,8 @@ public enum YxwGameDataType {
     Card(Long.class),
     /** 拥有的物品以及对应数量数据 */
     Goods(TwinsValue.class, Long.class, Long.class),
+    /** 基础数据 */
+    Main(YxwGameMainData.class);
     ;
     /** 数据类型对应的类镜像 */
     private final Class<?> dataClass;

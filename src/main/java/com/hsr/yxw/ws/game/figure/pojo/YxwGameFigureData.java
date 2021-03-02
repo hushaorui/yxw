@@ -1,4 +1,4 @@
-package com.hsr.yxw.ws.figure.pojo;
+package com.hsr.yxw.ws.game.figure.pojo;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.hsr.yxw.game.info.YxwGameFigureInfo;

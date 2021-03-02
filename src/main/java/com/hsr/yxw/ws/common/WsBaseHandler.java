@@ -1,6 +1,7 @@
 package com.hsr.yxw.ws.common;
 
 import com.hsr.yxw.ws.chat.ChatHallHandler;
+import com.hsr.yxw.ws.game.figure.service.YxwGameFigureHandler;
 import com.hsr.yxw.ws.heartbeat.HeartBeatHandler;
 import com.hsr.yxw.ws.heartbeat.HeartBeatResponseProtocol;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ public class WsBaseHandler {
     private ChatHallHandler chatHallHandler;
     @Autowired
     private HeartBeatHandler heartBeatHandler;
+    @Autowired
+    private YxwGameFigureHandler yxwGameFigureHandler;
 
     private Map<BaseProtoType, IHandler> handlers;
     public WsBaseHandler() {
@@ -28,6 +31,7 @@ public class WsBaseHandler {
         // 每一个处理类都需要在这里注册
         handlers.put(BaseProtoType.BASE_CHAT_HALL, chatHallHandler);
         handlers.put(BaseProtoType.BASE_HEART_BEAT, heartBeatHandler);
+        handlers.put(BaseProtoType.YXW_GAME_FIGURE, yxwGameFigureHandler);
     }
     private IHandler getHandler(BaseProtoType baseProtoType) {
         if (handlers.isEmpty()) {
@@ -61,4 +65,4 @@ public class WsBaseHandler {
         return handlers.containsKey(baseProtoType);
     }
 
-}
+}

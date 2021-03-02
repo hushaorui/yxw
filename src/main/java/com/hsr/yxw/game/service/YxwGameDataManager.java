@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.game.data.YxwGameDataItem;
 import com.hsr.yxw.game.data.YxwGameDataType;
-import com.hsr.yxw.ws.figure.pojo.YxwGameFigureData;
+import com.hsr.yxw.ws.game.figure.pojo.YxwGameFigureData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class YxwGameDataManager {
      * @param dataType 数据的类型
      */
     public boolean update(YxwGameDataContainer yxwGameDataContainer, YxwGameDataType dataType) {
-        Collection<Object> dataCollectionValue = yxwGameDataContainer.getDataByType(dataType);
+        Collection<Object> dataCollectionValue = yxwGameDataContainer.getDataByTypeDefaultEmptyList(dataType);
         return update(yxwGameDataContainer, dataType, dataCollectionValue);
     }
 
@@ -135,7 +135,7 @@ public class YxwGameDataManager {
             return yxwGameInfoManager.getLanguageString(1L);
         }
         YxwGameDataType dataType = YxwGameDataType.Figure;
-        Collection<Object> dataCollectionValue = dataContainer.getDataByType(dataType);
+        Collection<Object> dataCollectionValue = dataContainer.getDataByTypeDefaultEmptyList(dataType);
         dataCollectionValue.add(figureData);
         boolean result = update(dataContainer, dataType, dataCollectionValue);
         if (result) {
