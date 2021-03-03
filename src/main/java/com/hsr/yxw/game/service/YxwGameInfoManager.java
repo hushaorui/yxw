@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 游戏静态数据管理类（数据来源于配置和代码）
@@ -144,6 +145,13 @@ public class YxwGameInfoManager {
         return yxwGameFigureInfoConfig.getFigureMap().get(figureId);
     }
 
+    /**
+     * 查找初始可供选择的人物id集合
+     */
+    public Set<Long> getFirstFigureList() {
+        return yxwGameFigureInfoConfig.getFirstList();
+    }
+
     public YxwGoodsInfo getYxwGoodsInfoById(Long goodsId) {
         return yxwGoodsInfoConfig.getGoodsMap().get(goodsId);
     }
@@ -178,4 +186,5 @@ public class YxwGameInfoManager {
             return "未知的语言：" + locale.toString();
         }
     }
+
 }

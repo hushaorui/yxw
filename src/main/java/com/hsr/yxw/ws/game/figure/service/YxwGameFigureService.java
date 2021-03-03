@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class YxwGameFigureService {
@@ -37,6 +38,13 @@ public class YxwGameFigureService {
             // 已有人物数据，则此次选择失败
             log.error(String.format("已有人物数据，选择失败，userId:%s,figureId:%s", userId, customFigureId));
             return yxwGameInfoManager.getLanguageString(100001L);
+        }
+        // 校验
+        Set<Long> firstFigureList = yxwGameInfoManager.getFirstFigureList();
+        if (! firstFigureList.contains(customFigureId)) {
+            // 不允许解锁初始列表以外的人物
+            log.error(String.format("不允许选择初始列表以外的人物，选择失败，userId:%s,figureId:%s", userId, customFigureId));
+            return yxwGameInfoManager.getLanguageString(100002L);
         }
         YxwGameFigureInfo figureInfo = yxwGameInfoManager.getFigureInfoCfgById(customFigureId);
         if (figureInfo == null) {

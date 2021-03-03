@@ -42,6 +42,24 @@ public class YxwGameDataManager {
     }
 
     /**
+     * 更新单个的数据
+     * @param yxwGameDataContainer 玩家数据容器
+     * @param singleObject 单个数据对象
+     * @return 更新成功返回true
+     */
+    public boolean update(YxwGameDataContainer yxwGameDataContainer, Object singleObject) {
+        if (singleObject == null) {
+            return false;
+        }
+        YxwGameDataType dataType = YxwGameDataType.getBySingleDataClass(singleObject.getClass());
+        if (dataType == null) {
+            log.error(String.format("更新数据失败，未知的类型：%s", singleObject.getClass().getName()));
+            return false;
+        }
+        return update(yxwGameDataContainer, dataType, Collections.singleton(dataType));
+    }
+
+    /**
      * 更新数据
      * @param yxwGameDataContainer 玩家数据缓存
      * @param dataType 数据的类型

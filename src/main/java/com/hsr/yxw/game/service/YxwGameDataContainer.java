@@ -42,7 +42,7 @@ public class YxwGameDataContainer {
         return personalDataMap.computeIfAbsent(dataType, key -> new ArrayList<>());
     }
 
-    Collection<Object> getDataByType(YxwGameDataType dataType) {
+    private Collection<Object> getDataByType(YxwGameDataType dataType) {
         return personalDataMap.get(dataType);
     }
 

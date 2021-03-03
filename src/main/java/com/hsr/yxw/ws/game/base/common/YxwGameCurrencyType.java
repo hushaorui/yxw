@@ -21,12 +21,22 @@ public enum YxwGameCurrencyType {
         mapping = Collections.unmodifiableMap(temp);
     }
     private final int id;
+    private final long upperLimit; // 存放上限
     YxwGameCurrencyType(int id) {
         this.id = id;
+        this.upperLimit = Integer.MAX_VALUE;
+    }
+    YxwGameCurrencyType(int id, long upperLimit) {
+        this.id = id;
+        this.upperLimit = upperLimit;
     }
 
     public int getId() {
         return id;
+    }
+
+    public long getUpperLimit() {
+        return upperLimit;
     }
 
     public static YxwGameCurrencyType getById(int id) {

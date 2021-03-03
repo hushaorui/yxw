@@ -21,6 +21,7 @@ public abstract class ConfigUtils {
     private static final ConcurrentHashMap<Class<?>, AtomicLong> sequenceMapByClass = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Class<?>, Yaml> yamlObjByClass = new ConcurrentHashMap<>();
 
+    private static final boolean forceReset = true;
     /**
      * 根据不同的类镜像获取Yaml对象
      */
@@ -71,6 +72,9 @@ public abstract class ConfigUtils {
 
             return (T) initYxwConfig(file, clazz, useBase64);
         } else {
+            if (forceReset) {
+                return (T) initYxwConfig(file, clazz, useBase64);
+            }
             String sourceString = FileUtils.readFileToString(file, WebConstants.DEFAULT_ENCODING);
             if (useBase64) {
                 byte[] decode = Base64.getDecoder().decode(sourceString);

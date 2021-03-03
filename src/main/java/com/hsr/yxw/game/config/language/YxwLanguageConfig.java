@@ -25,7 +25,9 @@ public class YxwLanguageConfig implements InitializedConfig {
         }
         languageMap.put(1L, new YxwLanguageInfo(1L, "数据错误"));
         languageMap.put(2L, new YxwLanguageInfo(2L, "找不到配置，id：%s"));
+        languageMap.put(3L, new YxwLanguageInfo(3L, "未知货币类型，id：%s"));
 
         languageMap.put(100001L, new YxwLanguageInfo(100001L, "选择初始人物失败，已存在人物"));
+        languageMap.put(100002L, new YxwLanguageInfo(100002L, "选择初始人物失败，该人物目前不可解锁"));
     }
 }
