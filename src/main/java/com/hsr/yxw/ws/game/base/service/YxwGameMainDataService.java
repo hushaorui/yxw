@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class YxwGameMainDataService {
+
     private static final Log log = LogFactory.getLog(YxwGameMainDataService.class);
 
     private YxwGameInfoManager yxwGameInfoManager;
