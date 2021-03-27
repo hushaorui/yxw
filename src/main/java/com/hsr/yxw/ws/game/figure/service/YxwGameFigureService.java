@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,8 +41,15 @@ public class YxwGameFigureService {
             return yxwGameInfoManager.getLanguageString(100001L);
         }
         // 校验
-        Set<Long> firstFigureList = yxwGameInfoManager.getFirstFigureList();
-        if (! firstFigureList.contains(customFigureId)) {
+        List<YxwGameFigureInfo> firstFigureList = yxwGameInfoManager.getFirstFigureList();
+        boolean contains = false;
+        for (YxwGameFigureInfo figureInfo : firstFigureList) {
+            if (customFigureId == figureInfo.getId()) {
+                contains = true;
+                break;
+            }
+        }
+        if (! contains) {
             // 不允许解锁初始列表以外的人物
             log.error(String.format("不允许选择初始列表以外的人物，选择失败，userId:%s,figureId:%s", userId, customFigureId));
             return yxwGameInfoManager.getLanguageString(100002L);
@@ -68,5 +76,9 @@ public class YxwGameFigureService {
     public Collection<YxwGameFigureData> getAllFigures(long userId) {
         YxwGameDataContainer dataContainer = yxwGameDataManager.getYxwGameDataContainer(userId);
         return dataContainer.getFigureMap().values();
+    }
+
+    public List<YxwGameFigureInfo> getFirstFigures() {
+        return yxwGameInfoManager.getFirstFigureList();
     }
 }

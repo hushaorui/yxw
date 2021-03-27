@@ -156,7 +156,7 @@
 
     // 注册所有ws相关接收处理器
     function registerAllResponseHandler() {
-        registerWSHandler("BASE_HEART_BEAT", "SERVER_INFO", function (subProtoData) {
+        registerWSHandler("BASE_HEART_BEAT", "server_info", function (subProtoData) {
             let currentTime = new Date().getTime();
             let serverInfo = JSON.parse(subProtoData[message]);
             let serverTime = serverInfo["serverTime"];
@@ -170,18 +170,18 @@
             //console.log("总在线人数：" + accountCount + "，ping：" + ping);
             $("#show-ping-btn").html("ping: " + ping);
         });
-        registerWSHandler("BASE_HEART_BEAT", "CONNECT_SUCCESS", function (subProtoData) {
+        registerWSHandler("BASE_HEART_BEAT", "connect_success", function (subProtoData) {
             let msg = subProtoData[message];
             console.log("连接成功后服务端发送过来的响应信息： " + msg);
         });
 
         // 发送成功的返回信息
-        registerWSHandler("BASE_CHAT_HALL", "SEND_SUCCESS", function (subProtoData) {
+        registerWSHandler("BASE_CHAT_HALL", "send_success", function (subProtoData) {
             // 清空输入框
             $("#chat-hall-bottom-input").val("");
         });
         // 接收公共聊天信息
-        registerWSHandler("BASE_CHAT_HALL", "RECEIVE_PUBLIC_CHAT_MESSAGE", function (subProtoData) {
+        registerWSHandler("BASE_CHAT_HALL", "receive_public_chat_message", function (subProtoData) {
             let publicChatMessage = subProtoData["publicChatMessage"];
             addShowingChatMessage(userId, publicChatMessage["senderId"], publicChatMessage["messageType"], publicChatMessage["senderName"], publicChatMessage["content"], publicChatMessage["sendTime"]);
             //console.log("接收公共聊天信息： " + JSON.stringify(publicChatMessage));
@@ -205,7 +205,7 @@
         // 基础协议类型
         let baseProtoType = "BASE_HEART_BEAT";
         // 子协议类型
-        let protoType = "SUB_HEART_BEAT";
+        let protoType = "sub_heart_beat";
         // 当前时间的毫秒值
         let currentTime = new Date().getTime();
         // 需要发送的json数据
@@ -215,7 +215,7 @@
 
     // 发送公共聊天请求
     function sendPublicChatRequest(ws, publicChatMessage) {
-        let protoType = "SEND_PUBLIC_CHAT_MESSAGE";
+        let protoType = "send_public_chat_message";
         let messageJson = {reqType: protoType, "message": publicChatMessage};
         sendRequest(ws, "BASE_CHAT_HALL", protoType, messageJson);
     }

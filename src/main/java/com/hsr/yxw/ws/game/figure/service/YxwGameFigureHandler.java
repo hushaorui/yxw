@@ -2,6 +2,7 @@ package com.hsr.yxw.ws.game.figure.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.hsr.yxw.common.WebConstants;
+import com.hsr.yxw.game.info.YxwGameFigureInfo;
 import com.hsr.yxw.ws.common.IHandler;
 import com.hsr.yxw.ws.common.IResponseProtocol;
 import com.hsr.yxw.ws.common.WsAccount;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.websocket.Session;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 public class YxwGameFigureHandler implements IHandler<YxwGameFigureRequestProtocol, YxwGameFigureResponseProtocol> {
@@ -26,7 +28,11 @@ public class YxwGameFigureHandler implements IHandler<YxwGameFigureRequestProtoc
         }
         long userId = wsAccount.getAccount().getId();
         YxwGameFigureResponseProtocol response = new YxwGameFigureResponseProtocol();
-        if (YxwGameFigureRequestProtocol.CHOOSE_FIRST_FIGURE.equals(request.getReqType())) {
+        if (YxwGameFigureRequestProtocol.SHOW_FIRST_FIGURES.equals(request.getReqType())) {
+            List<YxwGameFigureInfo> firstFigureList = yxwGameFigureService.getFirstFigures();
+            response.setResType(YxwGameFigureRequestProtocol.SHOW_FIRST_FIGURES);
+            response.setInfos(firstFigureList);
+        } else if (YxwGameFigureRequestProtocol.CHOOSE_FIRST_FIGURE.equals(request.getReqType())) {
             Long figureId = request.getFigureId();
             if (figureId == null) {
                 response.setResType(WebConstants.ERROR);
@@ -43,14 +49,14 @@ public class YxwGameFigureHandler implements IHandler<YxwGameFigureRequestProtoc
             // 选择成功，获取最新的人物数据，发送给客户端
             Collection<YxwGameFigureData> allFigures = yxwGameFigureService.getAllFigures(userId);
             response.setAllFigures(allFigures);
-
+            response.setResType(YxwGameFigureRequestProtocol.CHOOSE_FIRST_FIGURE);
         } else if (YxwGameFigureRequestProtocol.GET_ALL_FIGURE_DATA.equals(request.getReqType())) {
             Collection<YxwGameFigureData> allFigures = yxwGameFigureService.getAllFigures(userId);
             response.setAllFigures(allFigures);
+            response.setResType(YxwGameFigureRequestProtocol.GET_ALL_FIGURE_DATA);
         } else {
 
         }
-        response.setResType(YxwGameFigureResponseProtocol.CHOOSE_SUCCESS);
         return response;
     }
 

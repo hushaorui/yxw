@@ -9,7 +9,7 @@ import com.hsr.yxw.ws.common.IResponseProtocol;
  */
 public class HeartBeatResponseProtocol extends IResponseProtocol {
     /** 连接成功 */
-    public static final String CONNECT_SUCCESS = "CONNECT_SUCCESS";
+    public static final String CONNECT_SUCCESS = "connect_success";
     /** 连接失败 */
     public static final String CONNECT_FAILED = "CONNECT_FAILED";
     /** 不符合格式 */
@@ -19,7 +19,7 @@ public class HeartBeatResponseProtocol extends IResponseProtocol {
     /** 未知的协议 */
     public static final String UNKNOWN_PROTO = "UNKNOWN_PROTO";
     /** 服务器信息 */
-    public static final String SERVER_INFO = "SERVER_INFO";
+    public static final String SERVER_INFO = "server_info";
     /** 账号已经被登录了，无法顶号 */
     private static final String ALREADY_LOGIN = "ALREADY_LOGIN";
 
@@ -69,4 +69,4 @@ public class HeartBeatResponseProtocol extends IResponseProtocol {
     public BaseProtoType getBaseType() {
         return BaseProtoType.BASE_HEART_BEAT;
     }
-}
+}

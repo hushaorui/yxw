@@ -8,7 +8,7 @@ import com.hsr.yxw.ws.common.IRequestProtocol;
  */
 public class HeartBeatRequestProtocol extends IRequestProtocol {
     /** 心跳 */
-    static final String SUB_HEART_BEAT = "SUB_HEART_BEAT";
+    static final String SUB_HEART_BEAT = "sub_heart_beat";
 
     // 客户端当前时间
     private long clientTime;
@@ -24,4 +24,4 @@ public class HeartBeatRequestProtocol extends IRequestProtocol {
     public BaseProtoType getBaseType() {
         return BaseProtoType.BASE_HEART_BEAT;
     }
-}
+}

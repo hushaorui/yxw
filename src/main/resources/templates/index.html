@@ -20,6 +20,12 @@
             <caption>待开发功能</caption>
             <tbody>
             <tr class="active">
+                <td>
+                    <button class="btn-primary btn" id="to-choose-first-figure-btn">点击选择初始人物</button>
+                </td>
+                <td>待开发</td>
+            </tr>
+            <tr class="active">
                 <td><a href="card/list">卡牌一览</a></td>
                 <td>待开发</td>
             </tr>
@@ -43,6 +49,52 @@
         </table>
     </div>
 
+    <!-- 选择初始人物模态框（Modal） -->
+    <div class="modal fade" id="chooseFirstFigureModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">请确认</h4>
+                </div>
+                <div class="modal-body" id="first-figure-div"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="chooseFirstFigure()" >确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 </body>
+<script th:inline="javascript">
+    $(function() {
+        $("#to-choose-first-figure-btn").click(function () {
+            showChooseFirstFigure();
+        });
+        registerWSHandler("YXW_GAME_FIGURE", "show_first_figures", function (subProtoData) {
+            let msg = subProtoData["infos"];
+            //alert("初始人物信息： " + JSON.stringify(msg));
+            // TODO 初始化模态框内的数据
+            let div = $("#first-figure-div");
 
+            // 显示模态框
+            $("#chooseFirstFigureModal").modal("show");
+        });
+    });
+    // 显示选择初始人物的界面
+    function showChooseFirstFigure() {
+        // 基础协议类型
+        let baseProtoType = "YXW_GAME_FIGURE";
+        // 子协议类型
+        let protoType = "show_first_figures";
+        // 需要发送的json数据
+        let messageJson = {reqType: protoType};
+        sendRequest(ws, baseProtoType, protoType, messageJson);
+    }
+    // 选择初始人物
+    function chooseFirstFigure() {
+        let figureId = $(".xxx").html();
+        alert("选择人物id为：" + figureId);
+    }
+</script>
 </html>

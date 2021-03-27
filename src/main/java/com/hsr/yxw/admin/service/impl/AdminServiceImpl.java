@@ -56,16 +56,24 @@ public class AdminServiceImpl implements AdminService {
             // 创建表格
             try {
                 systemConfigMapper.createTable();
-            } catch (Exception ignore) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             try {
                 accountMapper.createTable();
-            } catch (Exception ignore) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             try {
                 chatMessageMapper.createTable();
-            } catch (Exception ignore) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             try {
                 yxwGameDataItemMapper.createTable();
-            } catch (Exception ignore) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             initSystemConfigTable();
             initAccountTable();

@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 游戏静态数据管理类（数据来源于配置和代码）
@@ -148,7 +145,7 @@ public class YxwGameInfoManager {
     /**
      * 查找初始可供选择的人物id集合
      */
-    public Set<Long> getFirstFigureList() {
+    public List<YxwGameFigureInfo> getFirstFigureList() {
         return yxwGameFigureInfoConfig.getFirstList();
     }
 

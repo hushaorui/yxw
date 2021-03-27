@@ -11,9 +11,9 @@ import com.hsr.yxw.ws.common.IResponseProtocol;
 public class ChatHallResponseProtocol extends IResponseProtocol {
 
     /** 发送聊天内容成功 */
-    public static final String SEND_SUCCESS = "SEND_SUCCESS";
+    public static final String SEND_SUCCESS = "send_success";
     /** 接收公共聊天内容 */
-    public static final String RECEIVE_PUBLIC_CHAT_MESSAGE = "RECEIVE_PUBLIC_CHAT_MESSAGE";
+    public static final String RECEIVE_PUBLIC_CHAT_MESSAGE = "receive_public_chat_message";
 
     private PublicChatMessage publicChatMessage;
     public PublicChatMessage getPublicChatMessage() {

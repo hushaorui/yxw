@@ -9,7 +9,7 @@ import com.hsr.yxw.ws.common.IRequestProtocol;
 public class ChatHallRequestProtocol extends IRequestProtocol {
 
     /** 发送公共聊天内容 */
-    public static final String SEND_PUBLIC_CHAT_MESSAGE = "SEND_PUBLIC_CHAT_MESSAGE";
+    public static final String SEND_PUBLIC_CHAT_MESSAGE = "send_public_chat_message";
 
     private String message;
     public String getMessage() {
@@ -25,4 +25,4 @@ public class ChatHallRequestProtocol extends IRequestProtocol {
     public BaseProtoType getBaseType() {
         return BaseProtoType.BASE_CHAT_HALL;
     }
-}
+}

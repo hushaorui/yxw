@@ -8,7 +8,7 @@ import java.util.*;
 
 public class YxwGameFigureInfoConfig implements InitializedConfig {
     /** 初始供玩家选择的人物id列表 */
-    private Set<Long> firstList;
+    private List<YxwGameFigureInfo> firstList;
 
     private Map<Long, YxwGameFigureInfo> figureMap;
 
@@ -20,11 +20,11 @@ public class YxwGameFigureInfoConfig implements InitializedConfig {
         this.figureMap = figureMap;
     }
 
-    public Set<Long> getFirstList() {
+    public List<YxwGameFigureInfo> getFirstList() {
         return firstList;
     }
 
-    public void setFirstList(Set<Long> firstList) {
+    public void setFirstList(List<YxwGameFigureInfo> firstList) {
         this.firstList = firstList;
     }
 
@@ -51,10 +51,10 @@ public class YxwGameFigureInfoConfig implements InitializedConfig {
         ));
 
         if (firstList == null) {
-            firstList = new HashSet<>();
+            firstList = new ArrayList<>();
         }
         // 设置默认的初始人物列表
-        firstList.add(sequence);
-        firstList.add(sequence2);
+        firstList.add(figureMap.get(sequence));
+        firstList.add(figureMap.get(sequence2));
     }
 }
