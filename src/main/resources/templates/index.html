@@ -57,7 +57,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">请确认</h4>
                 </div>
-                <div class="modal-body" id="first-figure-div"></div>
+                <div class="modal-body" id="first-figure-div">
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" onclick="chooseFirstFigure()" >确认</button>
@@ -74,9 +75,15 @@
         registerWSHandler("YXW_GAME_FIGURE", "show_first_figures", function (subProtoData) {
             let msg = subProtoData["infos"];
             //alert("初始人物信息： " + JSON.stringify(msg));
-            // TODO 初始化模态框内的数据
+            // 初始化模态框内的数据
             let div = $("#first-figure-div");
-
+            let divHtml = "";
+            $.each(msg, function (index, item) {
+                divHtml += "<div><img src='"+item['appearanceImgUrl']+"'  alt='NULL'/> <input type='hidden' value='"+item['id']+"' />" +
+                    "<span>"+item['name']+"</span><br/> <span>"+item['description']+"</span>" +
+                    "<button onclick='chooseFirstFigure()'>选择</button></div>";
+            });
+            div.html(divHtml);
             // 显示模态框
             $("#chooseFirstFigureModal").modal("show");
         });
