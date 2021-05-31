@@ -74,4 +74,9 @@ public class YxwCardBaseInfoConfig implements InitializedConfig {
         baseInfoList = new ArrayList<>();
         baseInfoList.addAll(baseInfoMap.values());
     }
+
+    @Override
+    public List<YxwCardBaseInfo> getAllCfg() {
+        return getBaseInfoList();
+    }
 }

@@ -3,6 +3,7 @@ package com.hsr.yxw.ws.common;
 import com.hsr.yxw.exception.ServiceException;
 import com.hsr.yxw.account.pojo.Account;
 import com.hsr.yxw.account.service.AccountService;
+import com.hsr.yxw.game.service.YxwGameInfoManager;
 import com.hsr.yxw.ws.heartbeat.HeartBeatResponseProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,15 +21,25 @@ public class BaseEndPoint {
 
 
     private static AccountService accountService;
+    private static YxwGameInfoManager yxwGameInfoManager;
+
     @Autowired
-    public void setUserService(AccountService accountService){
+    public void setUserService(AccountService accountService) {
         BaseEndPoint.accountService = accountService;
     }
-    private static WsBaseHandler wsBaseHandler;
+
     @Autowired
-    public void setUserService(WsBaseHandler wsBaseHandler){
+    public void setYxwGameInfoManager(YxwGameInfoManager yxwGameInfoManager) {
+        BaseEndPoint.yxwGameInfoManager = yxwGameInfoManager;
+    }
+
+    private static WsBaseHandler wsBaseHandler;
+
+    @Autowired
+    public void setUserService(WsBaseHandler wsBaseHandler) {
         BaseEndPoint.wsBaseHandler = wsBaseHandler;
     }
+
     private static WsCommonService wsCommonService = WsCommonService.getInstance();
 
     @OnOpen
@@ -46,6 +57,7 @@ public class BaseEndPoint {
         }
         AccountWebSocketPool.addToOnline(account, session);
         heartBeatResponseProtocol = HeartBeatResponseProtocol.connectSuccess();
+        heartBeatResponseProtocol.setAllCfg(yxwGameInfoManager.getAllCfg());
         // 给连接的用户发送信息
         wsCommonService.sendMessage(session, heartBeatResponseProtocol);
         System.out.println("在线人数" + AccountWebSocketPool.count());
@@ -53,9 +65,9 @@ public class BaseEndPoint {
     }
 
     @OnMessage
-    public void onMessage(@PathParam("id") Long id, Session session, String message){
+    public void onMessage(@PathParam("id") Long id, Session session, String message) {
 
-        if (! StringUtils.isEmpty(message)) {
+        if (!StringUtils.isEmpty(message)) {
             WsAccount wsAccount = AccountWebSocketPool.getWsAccount(id);
             if (wsAccount == null) {
                 return;
@@ -68,7 +80,7 @@ public class BaseEndPoint {
                     return;
                 }
                 // 能够正确解析 {"":type, "message": "{"type":type, "message":msg....}"}
-                if (! wsBaseHandler.containSubProtocol(baseProtocol.getBaseType())) {
+                if (!wsBaseHandler.containSubProtocol(baseProtocol.getBaseType())) {
                     responseProtocol = new HeartBeatResponseProtocol(HeartBeatResponseProtocol.UNKNOWN_PROTO,
                             "未知的基础协议名称：" + baseProtocol.getBaseType());
                     wsCommonService.sendMessage(session, responseProtocol);
@@ -92,20 +104,20 @@ public class BaseEndPoint {
     }
 
     @OnClose
-    public void onClose(@PathParam("id") Long id, Session session){
+    public void onClose(@PathParam("id") Long id, Session session) {
         System.out.println("玩家id：" + id + "，sessionId：" + session.getId() + " 连接关闭");
         boolean isOffLine = AccountWebSocketPool.offLine(id, session);
         if (isOffLine) {
             System.out.println("在线人数：" + AccountWebSocketPool.count());
             AccountWebSocketPool.getAllAccountMap().keySet().forEach(item -> System.out.println("当前所有在线用户：" + item));
-            for (Map.Entry<Long, WsAccount> item : AccountWebSocketPool.getAllAccountMap().entrySet()){
+            for (Map.Entry<Long, WsAccount> item : AccountWebSocketPool.getAllAccountMap().entrySet()) {
                 System.out.println("剩余用户id: " + item.getKey());
             }
         }
     }
 
     @OnError
-    public void onError(Session session, Throwable throwable){
+    public void onError(Session session, Throwable throwable) {
         try {
             session.close();
         } catch (IOException e) {
@@ -114,4 +126,4 @@ public class BaseEndPoint {
         System.out.println(String.format("连接出现异常： %s", throwable));
     }
 
-}
+}

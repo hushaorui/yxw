@@ -72,6 +72,7 @@
         $("#to-choose-first-figure-btn").click(function () {
             showChooseFirstFigure();
         });
+        // 显示可选的初始人物
         registerWSHandler("YXW_GAME_FIGURE", "show_first_figures", function (subProtoData) {
             let msg = subProtoData["infos"];
             //alert("初始人物信息： " + JSON.stringify(msg));
@@ -79,13 +80,18 @@
             let div = $("#first-figure-div");
             let divHtml = "";
             $.each(msg, function (index, item) {
-                divHtml += "<div><img src='"+item['appearanceImgUrl']+"'  alt='NULL'/> <input type='hidden' value='"+item['id']+"' />" +
+                divHtml += "<div><img width='300' height='200' src='"+item['appearanceImgUrl']+"'  alt='NULL'/> <input type='hidden' value='"+item['id']+"' />" +
                     "<span>"+item['name']+"</span><br/> <span>"+item['description']+"</span>" +
-                    "<button onclick='chooseFirstFigure()'>选择</button></div>";
+                    "<button onclick='chooseFirstFigure("+item['id']+")'>选择</button></div>";
             });
             div.html(divHtml);
             // 显示模态框
             $("#chooseFirstFigureModal").modal("show");
+        });
+
+        // 显示选择初始人物的返回结果
+        registerWSHandler("YXW_GAME_FIGURE", "choose_first_figure", function (subProtoData) {
+
         });
     });
     // 显示选择初始人物的界面
@@ -99,9 +105,15 @@
         sendRequest(ws, baseProtoType, protoType, messageJson);
     }
     // 选择初始人物
-    function chooseFirstFigure() {
-        let figureId = $(".xxx").html();
-        alert("选择人物id为：" + figureId);
+    function chooseFirstFigure(figureId) {
+        //alert("选择人物id为：" + figureId);
+        // 基础协议类型
+        let baseProtoType = "YXW_GAME_FIGURE";
+        // 子协议类型
+        let protoType = "choose_first_figure";
+        // 需要发送的json数据
+        let messageJson = {reqType: protoType, "figureId" : figureId};
+        sendRequest(ws, baseProtoType, protoType, messageJson);
     }
 </script>
 </html>

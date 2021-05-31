@@ -2,6 +2,7 @@ package com.hsr.yxw.game.service;
 
 import com.hsr.yxw.common.InitializedConfig;
 import com.hsr.yxw.common.WebConstants;
+import com.hsr.yxw.game.common.anno.SynToClientConfig;
 import com.hsr.yxw.game.common.em.card.YxwCardType;
 import com.hsr.yxw.game.config.card.YxwCardBaseInfoConfig;
 import com.hsr.yxw.game.config.card.YxwMonsterCardInfoConfig;
@@ -26,18 +27,25 @@ public class YxwGameInfoManager {
     private static final Log log = LogFactory.getLog(YxwGameInfoManager.class);
 
     /** 卡面信息配置 */
+    @SynToClientConfig
     private YxwCardBaseInfoConfig yxwCardBaseInfoConfig;
     /** 怪兽卡特有信息配置 */
+    @SynToClientConfig
     private YxwMonsterCardInfoConfig yxwMonsterCardInfoConfig;
     /** 可操作的人物配置 */
+    @SynToClientConfig
     private YxwGameFigureInfoConfig yxwGameFigureInfoConfig;
     /** 语言数据 */
     private YxwLanguageConfig yxwLanguageConfig;
     /** 物品数据 */
+    @SynToClientConfig
     private YxwGoodsInfoConfig yxwGoodsInfoConfig;
 
     /** 经过整合的一张完整的卡的信息 */
     private Map<Long, YxwGameCard> allCards = new HashMap<>();
+
+    /** 所有需要发送给客户端的配置 */
+    private Map<String, List<? extends Object>> allCfgMap;
 
     /**
      * 读取yml配置，初始化所有卡牌，在spring容器初始化完成后调用
@@ -45,10 +53,14 @@ public class YxwGameInfoManager {
     public void initYxwCard() {
         // 从配置文件中加载所有配置
         loadAllFromYamlFile();
-        // 调度所有的配置，使得
+        // 调度所有的配置，拼凑出完整数据
         initConfig();
         // 打印一下所有配置，调试使用
         printAllConfig();
+    }
+
+    public Map<String, List<? extends Object>> getAllCfg() {
+        return allCfgMap;
     }
 
     public YxwCardBaseInfoConfig getYxwCardBaseInfoConfig() {
@@ -70,7 +82,7 @@ public class YxwGameInfoManager {
                     yxwGameCard.setMonsterCardInfo(monsterCardInfo);
                 }
             } else if (YxwCardType.MAGIC_OR_TRAP.equals(baseInfo.getCardType())) {
-                // TODO
+                // TODO 魔法陷阱卡
             } else {
 
             }
@@ -83,6 +95,7 @@ public class YxwGameInfoManager {
      */
     private void loadAllFromYamlFile() {
         Field[] fields = this.getClass().getDeclaredFields();
+        Map<String, List<? extends Object>> allCfgMap = new HashMap<>();
         for (Field field : fields) {
             field.setAccessible(true);
             Class<?> fieldType = field.getType();
@@ -92,6 +105,14 @@ public class YxwGameInfoManager {
                 // 是配置类
                 try {
                     configInstance = ConfigUtils.getYxwConfig(fieldType, false);
+                    SynToClientConfig synToClientConfig = field.getDeclaredAnnotation(SynToClientConfig.class);
+                    if (synToClientConfig != null) {
+                        String name = synToClientConfig.name();
+                        if ("".equals(name)) {
+                            name = fieldType.getSimpleName();
+                        }
+                        allCfgMap.put(name, ((InitializedConfig) configInstance).getAllCfg());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     try {
@@ -111,6 +132,7 @@ public class YxwGameInfoManager {
                 }
             }
         }
+        this.allCfgMap = allCfgMap;
     }
 
     /**

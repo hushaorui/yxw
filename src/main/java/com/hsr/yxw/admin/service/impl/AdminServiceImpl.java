@@ -99,11 +99,16 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * 获取系统默认的一些开关设置
+     */
     @Override
     public List<SystemConfig> getDefaultSystemConfigList() {
         List<SystemConfig> list = new ArrayList<>();
         SystemConfig openRegisterSwitchConfig = new SystemConfig(SystemSwitch.OPEN_REGISTER_SWITCH, WebConstants.SYSTEM, true, Boolean.class);
+        SystemConfig openPublicChatGMSwitchConfig = new SystemConfig(SystemSwitch.OPEN_PUBLIC_CHAT_GM_SWITCH, WebConstants.SYSTEM, true, Boolean.class);
         list.add(openRegisterSwitchConfig);
+        list.add(openPublicChatGMSwitchConfig);
         return list;
     }
 

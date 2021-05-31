@@ -12,6 +12,9 @@ public class YxwGameFigureInfoConfig implements InitializedConfig {
 
     private Map<Long, YxwGameFigureInfo> figureMap;
 
+    /** 所有配置 */
+    private List<YxwGameFigureInfo> allCfg;
+
     public Map<Long, YxwGameFigureInfo> getFigureMap() {
         return figureMap;
     }
@@ -38,7 +41,7 @@ public class YxwGameFigureInfoConfig implements InitializedConfig {
                 sequence,
                 "人物1",
                 "这里是描述2",
-                "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607583627119&di=fc4044c018df7abb0a692d21253482a6&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fforum%2Fw%3D580%2Fsign%3D3cbb1e9dddca7bcb7d7bc7278e086b3f%2Fc9319025bc315c607a1d4cb187b1cb1348547736.jpg",
+                "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3454488484,806353070&fm=26&gp=0.jpg",
                 Collections.emptyList()
         ));
         long sequence2 = ConfigUtils.getSequenceByClass(YxwGameFigureInfo.class);
@@ -46,7 +49,7 @@ public class YxwGameFigureInfoConfig implements InitializedConfig {
                 sequence2,
                 "人物2",
                 "这里是描述2",
-                "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607583627119&di=fc4044c018df7abb0a692d21253482a6&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fforum%2Fw%3D580%2Fsign%3D3cbb1e9dddca7bcb7d7bc7278e086b3f%2Fc9319025bc315c607a1d4cb187b1cb1348547736.jpg",
+                "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1286265097,4029036494&fm=26&gp=0.jpg",
                 Collections.emptyList()
         ));
 
@@ -56,5 +59,13 @@ public class YxwGameFigureInfoConfig implements InitializedConfig {
         // 设置默认的初始人物列表
         firstList.add(figureMap.get(sequence));
         firstList.add(figureMap.get(sequence2));
+
+
+        this.allCfg = new ArrayList<>(figureMap.values());
+    }
+
+    @Override
+    public List<YxwGameFigureInfo> getAllCfg() {
+        return allCfg;
     }
 }

@@ -10,6 +10,8 @@ public class ChatHallRequestProtocol extends IRequestProtocol {
 
     /** 发送公共聊天内容 */
     public static final String SEND_PUBLIC_CHAT_MESSAGE = "send_public_chat_message";
+    /** 发送命令行游戏内容 */
+    public static final String SEND_CMD_GAME_MESSAGE = "send_cmd_game_message";
 
     private String message;
     public String getMessage() {

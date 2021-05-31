@@ -3,7 +3,9 @@ package com.hsr.yxw.game.config.card;
 import com.hsr.yxw.common.InitializedConfig;
 import com.hsr.yxw.game.info.YxwMonsterCardInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class YxwMonsterCardInfoConfig implements InitializedConfig {
@@ -17,6 +19,7 @@ public class YxwMonsterCardInfoConfig implements InitializedConfig {
     public void setMonsterInfoMap(Map<Long, YxwMonsterCardInfo> monsterInfoMap) {
         this.monsterInfoMap = monsterInfoMap;
     }
+    private List<YxwMonsterCardInfo> allCfg;
 
     @Override
     public void init() {
@@ -24,5 +27,12 @@ public class YxwMonsterCardInfoConfig implements InitializedConfig {
             monsterInfoMap = new HashMap<>();
         }
 
+
+        this.allCfg = new ArrayList<>(monsterInfoMap.values());
+    }
+
+    @Override
+    public List<YxwMonsterCardInfo> getAllCfg() {
+        return allCfg;
     }
 }

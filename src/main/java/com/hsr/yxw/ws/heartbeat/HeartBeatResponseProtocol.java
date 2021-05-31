@@ -1,8 +1,12 @@
 package com.hsr.yxw.ws.heartbeat;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.hsr.yxw.common.InitializedConfig;
 import com.hsr.yxw.ws.common.BaseProtoType;
 import com.hsr.yxw.ws.common.IResponseProtocol;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 心跳响应协议，其他协议不满足条件时，都可以返回心跳响应协议
@@ -24,6 +28,8 @@ public class HeartBeatResponseProtocol extends IResponseProtocol {
     private static final String ALREADY_LOGIN = "ALREADY_LOGIN";
 
     private String message;
+
+    private Map<String, List<?>> allCfg; // 所有的配置列表
 
     public HeartBeatResponseProtocol() {}
 
@@ -68,5 +74,13 @@ public class HeartBeatResponseProtocol extends IResponseProtocol {
     @Override
     public BaseProtoType getBaseType() {
         return BaseProtoType.BASE_HEART_BEAT;
+    }
+
+    public Map<String, List<?>> getAllCfg() {
+        return allCfg;
+    }
+
+    public void setAllCfg(Map<String, List<?>> allCfg) {
+        this.allCfg = allCfg;
     }
 }

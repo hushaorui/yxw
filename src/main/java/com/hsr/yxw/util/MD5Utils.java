@@ -1,5 +1,9 @@
 package com.hsr.yxw.util;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -47,4 +51,116 @@ public abstract class MD5Utils {
         return result;
     }
 
-}
+
+    //0的ASCII
+    private static final int ASCII_0 = 48;
+    //9的ASCII
+    private static final int ASCII_9 = 57;
+    //A的ASCII
+    private static final int ASCII_A = 65;
+    //F的ASCII
+    private static final int ASCII_F = 70;
+    //a的ASCII
+    private static final int ASCII_a = 97;
+    //f的ASCII
+    private static final int ASCII_f = 102;
+
+
+    //可表示16进制数字的字符
+    private static final char[] hexChar = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final String HASH_MD5 = "MD5";
+
+    /**
+     * 获取字节数组MD5
+     */
+    public static String encoding(byte[] bs) {
+
+        String encodingStr = null;
+        try {
+            MessageDigest mdTemp = MessageDigest.getInstance(HASH_MD5);
+            mdTemp.update(bs);
+
+            return toHexString(mdTemp.digest());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return encodingStr;
+    }
+
+    /**
+     * 获取字符串MD5
+     */
+    public static String encoding(String text) {
+        if (text == null) {
+            return null;
+        }
+        return encoding(text.getBytes(StandardCharsets.UTF_8));
+    }
+
+
+    public static String encodeTwice(String text) {
+        if (text == null) {
+            return null;
+        }
+        String md5Once = encoding(text.getBytes(StandardCharsets.UTF_8));
+        return encoding(md5Once.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * 获取文件内容MD5
+     */
+    public static String encodingFile(String filePath) {
+        try (InputStream fis = new FileInputStream(filePath)) {
+            return encoding(fis);
+        } catch (Exception ee) {
+            return null;
+        }
+    }
+
+    /**
+     * 获取输入流MD5
+     */
+    public static String encoding(InputStream fis) throws Exception {
+        byte[] buffer = new byte[1024];
+        MessageDigest md5 = MessageDigest.getInstance(HASH_MD5);
+        int numRead = 0;
+        while ((numRead = fis.read(buffer)) > 0) {
+            md5.update(buffer, 0, numRead);
+        }
+        return toHexString(md5.digest());
+    }
+
+    /**
+     * 转换为用16进制字符表示的MD5
+     */
+    public static String toHexString(byte[] b) {
+        StringBuilder sb = new StringBuilder(b.length * 2);
+        for (byte value : b) {
+            sb.append(hexChar[(value & 0xf0) >>> 4]);
+            sb.append(hexChar[value & 0x0f]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 是否是合法的MD5
+     */
+    public static boolean validate(String md5Str) {
+        if (md5Str == null || md5Str.length() != 32) {
+            return false;
+        }
+        byte[] by = md5Str.getBytes();
+        for (byte b : by) {
+            if ((int) b < ASCII_0
+                    || ((int) b > ASCII_9 && (int) b < ASCII_A)
+                    || ((int) b > ASCII_F && (int) b < ASCII_a)
+                    || (int) b > ASCII_f) {
+                return false;
+            }
+        }
+        return true;
+    }
+}

@@ -73,7 +73,7 @@ public class YxwGameDataManager {
         if (yxwGameDataItem == null) {
             // 该数据不存在于数据库，直接更新
             yxwGameDataItem = new YxwGameDataItem();
-            yxwGameDataItem.setId(userId);
+            yxwGameDataItem.setUserId(userId);
             yxwGameDataItem.setDataType(dataType);
             yxwGameDataItem.setDateValue(dataValue);
             // 保存进数据库
