@@ -150,7 +150,6 @@ function Map() {
     }
 }
 
-
 /**
  * 判断obj是否为json对象
  * @param obj 对象
