@@ -1,7 +1,7 @@
 package com.hsr.yxw.util.test;
 
 import com.alibaba.fastjson.JSONArray;
-import com.hsr.yxw.common.CommonResult;
+import com.hsr.game.common.CommonResult;
 import org.junit.Test;
 
 public class TestCommonResult {
@@ -12,4 +12,4 @@ public class TestCommonResult {
         String jsonString = JSONArray.toJSONString(commonResult);
         System.out.println(jsonString);
     }
-}
+}

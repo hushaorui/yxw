@@ -176,7 +176,16 @@
             let msg = subProtoData[message];
             let allCfg = subProtoData["allCfg"];
             for (let key in allCfg) {
-                allCfgMap.put(key, allCfg[key]);
+                // 这里的key为配置名称，默认为简单类名
+                let cfgList = allCfg[key];
+                let cfgMapInJS = allCfgMap.get(key);
+                if (cfgMapInJS == null) {
+                    cfgMapInJS = new Map();
+                    allCfgMap.put(key, cfgMapInJS);
+                }
+                $.each(cfgList, function (index, item) {
+                    cfgMapInJS.put(item["id"], item);
+                });
             }
             console.log("连接成功后服务端发送过来的响应信息： " + msg);
             console.log("所有配置： " + JSON.stringify(subProtoData["allCfg"]));

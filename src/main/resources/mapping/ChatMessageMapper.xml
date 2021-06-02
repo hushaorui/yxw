@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hsr.yxw.mapper.ChatMessageMapper">
+<mapper namespace="com.hsr.game.mapper.ChatMessageMapper">
     <update id="createTable">
         create table chat_message(
            id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)primary key,
@@ -45,19 +45,19 @@
         delete from chat_message where id = #{value}
     </delete>
 
-    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.ws.chat.common.PublicChatMessageQueryVo">
+    <select id="count" resultType="Integer" parameterType="com.hsr.game.ws.chat.common.PublicChatMessageQueryVo">
         select count(1) from chat_message
         <where>
             <include refid="chatMessageSql" />
         </where>
     </select>
-    <select id="selectAll" resultType="com.hsr.yxw.ws.chat.pojo.PublicChatMessage">
+    <select id="selectAll" resultType="com.hsr.game.ws.chat.pojo.PublicChatMessage">
         select * from chat_message
     </select>
-    <select id="selectById" parameterType="long" resultType="com.hsr.yxw.ws.chat.pojo.PublicChatMessage">
+    <select id="selectById" parameterType="long" resultType="com.hsr.game.ws.chat.pojo.PublicChatMessage">
         select * from chat_message where id = #{value}
     </select>
-    <select id="selectByVo" parameterType="com.hsr.yxw.ws.chat.common.PublicChatMessageQueryVo" resultType="com.hsr.yxw.ws.chat.pojo.PublicChatMessage">
+    <select id="selectByVo" parameterType="com.hsr.game.ws.chat.common.PublicChatMessageQueryVo" resultType="com.hsr.game.ws.chat.pojo.PublicChatMessage">
         select id, senderId, senderName, sendTime, messageType
         from chat_message
         <where>
@@ -68,7 +68,7 @@
             OFFSET #{firstResult} ROWS FETCH NEXT #{maxResult} ROWS ONLY
         </if>
     </select>
-    <select id="selectByVoWithContent" parameterType="com.hsr.yxw.ws.chat.common.PublicChatMessageQueryVo" resultType="com.hsr.yxw.ws.chat.pojo.PublicChatMessage">
+    <select id="selectByVoWithContent" parameterType="com.hsr.game.ws.chat.common.PublicChatMessageQueryVo" resultType="com.hsr.game.ws.chat.pojo.PublicChatMessage">
         select id, senderId, senderName, sendTime, messageType, content
         from chat_message
         <where>
@@ -79,7 +79,7 @@
             OFFSET #{firstResult} ROWS FETCH NEXT #{maxResult} ROWS ONLY
         </if>
     </select>
-    <insert id="insert" parameterType="com.hsr.yxw.ws.chat.pojo.PublicChatMessage" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.hsr.game.ws.chat.pojo.PublicChatMessage" useGeneratedKeys="true" keyProperty="id">
         insert into chat_message(senderId,senderName,sendTime,messageType,content)
         values(#{senderId}, #{senderName}, #{sendTime}, #{messageType},#{content})
     </insert>

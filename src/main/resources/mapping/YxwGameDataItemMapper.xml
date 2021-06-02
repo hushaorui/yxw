@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hsr.yxw.mapper.YxwGameDataItemMapper">
+<mapper namespace="com.hsr.game.mapper.YxwGameDataItemMapper">
 
     <update id="createTable">
         create table yxw_game_data_item (
@@ -24,21 +24,21 @@
             <if test="yxwGameDataItem.dataType!=null"> and dataType = #{yxwGameDataItem.dataType} </if>
         </if>
     </sql>
-    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.game.data.YxwGameDataItemQueryVo">
+    <select id="count" resultType="Integer" parameterType="com.hsr.game.yxw.data.YxwGameDataItemQueryVo">
         select count(1) from yxw_game_data_item
         <where>
             <include refid="yxwGameDataItemSql" />
         </where>
     </select>
-    <select id="selectById" parameterType="long" resultType="com.hsr.yxw.game.data.YxwGameDataItem">
+    <select id="selectById" parameterType="long" resultType="com.hsr.game.yxw.data.YxwGameDataItem">
         select * from yxw_game_data_item where id = #{value}
     </select>
 
-    <select id="selectByDataType" parameterType="com.hsr.yxw.game.data.YxwGameDataType" resultType="com.hsr.yxw.game.data.YxwGameDataItem">
+    <select id="selectByDataType" parameterType="com.hsr.game.yxw.data.YxwGameDataType" resultType="com.hsr.game.yxw.data.YxwGameDataItem">
         select * from yxw_game_data_item where dataType = #{dataType}
     </select>
 
-    <select id="selectByUserIdAndType" resultType="com.hsr.yxw.game.data.YxwGameDataItem">
+    <select id="selectByUserIdAndType" resultType="com.hsr.game.yxw.data.YxwGameDataItem">
         select * from yxw_game_data_item where userId = #{param1} and dataType = #{param2}
     </select>
     <select id="countByUserIdAndType" resultType="int">
@@ -46,14 +46,14 @@
     </select>
 
 
-    <select id="selectByUserId" parameterType="long" resultType="com.hsr.yxw.game.data.YxwGameDataItem">
+    <select id="selectByUserId" parameterType="long" resultType="com.hsr.game.yxw.data.YxwGameDataItem">
         select * from yxw_game_data_item where userId = #{userId}
     </select>
 
-    <select id="selectAll" resultType="com.hsr.yxw.game.data.YxwGameDataItem">
+    <select id="selectAll" resultType="com.hsr.game.yxw.data.YxwGameDataItem">
         select * from yxw_game_data_item
     </select>
-    <select id="selectByVo" parameterType="com.hsr.yxw.game.data.YxwGameDataItemQueryVo" resultType="com.hsr.yxw.game.data.YxwGameDataItem">
+    <select id="selectByVo" parameterType="com.hsr.game.yxw.data.YxwGameDataItemQueryVo" resultType="com.hsr.game.yxw.data.YxwGameDataItem">
         select * from yxw_game_data_item
         <where>
             <include refid="yxwGameDataItemSql" />
@@ -63,7 +63,7 @@
             OFFSET #{firstResult} ROWS FETCH NEXT #{maxResult} ROWS ONLY
         </if>
     </select>
-    <insert id="insert" parameterType="com.hsr.yxw.game.data.YxwGameDataItem" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.hsr.game.yxw.data.YxwGameDataItem" useGeneratedKeys="true" keyProperty="id">
         insert into yxw_game_data_item(userId, dataType, dateValue)
         values(#{userId},#{dataType},#{dateValue})
     </insert>
@@ -80,12 +80,12 @@
         delete from yxw_game_data_item where userId = #{value}
     </delete>
 
-    <update id="update" parameterType="com.hsr.yxw.game.data.YxwGameDataItem">
+    <update id="update" parameterType="com.hsr.game.yxw.data.YxwGameDataItem">
         update yxw_game_data_item
         set dateValue = #{dateValue}
         where id = #{id}
     </update>
-    <update id="updateForNotNull" parameterType="com.hsr.yxw.game.data.YxwGameDataItem">
+    <update id="updateForNotNull" parameterType="com.hsr.game.yxw.data.YxwGameDataItem">
         update yxw_game_data_item
         <set>
             <if test="userId!=null"> userId = #{userId}, </if>

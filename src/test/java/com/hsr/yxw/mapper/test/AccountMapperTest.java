@@ -1,10 +1,10 @@
 package com.hsr.yxw.mapper.test;
 
 import com.alibaba.fastjson.JSONArray;
-import com.hsr.yxw.mapper.AccountMapper;
-import com.hsr.yxw.account.pojo.Account;
-import com.hsr.yxw.account.common.AccountQueryVo;
-import com.hsr.yxw.run.YxwApplication;
+import com.hsr.game.mapper.AccountMapper;
+import com.hsr.game.account.pojo.Account;
+import com.hsr.game.account.common.AccountQueryVo;
+import com.hsr.game.run.YxwApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,4 +127,4 @@ public class AccountMapperTest {
             System.out.println(JSONArray.toJSONString(object));
         }
     }
-}
+}

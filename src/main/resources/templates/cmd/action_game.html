@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8" name="viewport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0,
+                                     user-scalable=no">
+    <title>DIY作品</title>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"
+          th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script src="../static/bootstrap/js/jquery.min.2.1.1.js" th:src="@{/bootstrap/js/jquery.min.2.1.1.js}"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <style>
+        #cmd-action-game {
+            position: absolute;
+            background-color: #f6f6f6;
+            height: 80%;
+            width: 40%;
+            right: 0;
+            top: 40px;
+            display: none;
+            border: #888 solid 1px;
+        }
+
+        #cmd-action-game-close-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        #cmd-action-game-body {
+            border: #0f0f0f solid 1px;
+        }
+
+        #cmd-action-game-bottom {
+            /*border: #0f0f0f solid 1px;*/
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            margin: 0;
+            padding: 0;
+        }
+
+        #cmd-action-game-bottom-select {
+            height: 100%;
+            width: 10%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #cmd-action-game-bottom-input {
+            height: 100%;
+            width: 80%;
+            margin: 0;
+        }
+
+        #cmd-action-game-bottom-btn {
+            height: 100%;
+            width: 8%;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="header :: html"></div>
+<div id="container">
+    <div class="panel panel-default" id="cmd-action-game">
+        <div class="panel-heading">
+        <span class="panel-title">
+            xxx游戏
+        </span>
+        </div>
+        <div id="cmd-action-game-body">
+        </div>
+        <div id="cmd-action-game-bottom">
+            <select class="btn btn-primary" id="cmd-action-game-bottom-select">
+                <option>公共</option>
+            </select>
+            <input id="cmd-action-game-bottom-input"/>
+            <button id="cmd-action-game-bottom-btn">发送</button>
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+
+    $(function () {
+        $("#cmd-action-game-bottom-btn").click(function () {
+            let inputString = $("#cmd-action-game-bottom-input").val();
+            if (inputString.length <= 0) {
+                return;
+            }
+            // 发送cmd命令信息
+            sendCmdActionGameRequest(ws, inputString);
+        });
+    });
+
+    // 发送cmd命令信息
+    function sendCmdActionGameRequest(ws, cmdMessage) {
+        let protoType = "send_cmd_message";
+        let messageJson = {reqType: protoType, "cmdString": cmdMessage};
+        sendRequest(ws, "BASE_CMD_ACTION_GAME", protoType, messageJson);
+    }
+</script>
+</html>

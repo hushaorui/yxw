@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hsr.yxw.mapper.SystemConfigMapper">
+<mapper namespace="com.hsr.game.mapper.SystemConfigMapper">
 
     <update id="createTable">
         create table system_config (
@@ -48,29 +48,29 @@
         </if>
     </sql>
 
-    <select id="count" resultType="Integer" parameterType="com.hsr.yxw.sysconfig.common.SystemConfigQueryVo">
+    <select id="count" resultType="Integer" parameterType="com.hsr.game.sysconfig.common.SystemConfigQueryVo">
         select count(1) from system_config
         <where>
             <include refid="systemConfigSql" />
         </where>
     </select>
 
-    <select id="selectById" parameterType="long" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+    <select id="selectById" parameterType="long" resultType="com.hsr.game.sysconfig.pojo.SystemConfig">
         select * from system_config where id = #{value}
     </select>
 
-    <select id="selectByConfigKey" parameterType="String" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+    <select id="selectByConfigKey" parameterType="String" resultType="com.hsr.game.sysconfig.pojo.SystemConfig">
         select * from system_config where configKey = #{value}
     </select>
 
-    <select id="selectByClassify" parameterType="String" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+    <select id="selectByClassify" parameterType="String" resultType="com.hsr.game.sysconfig.pojo.SystemConfig">
         select * from system_config where classify = #{value}
     </select>
 
-    <select id="selectAll" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+    <select id="selectAll" resultType="com.hsr.game.sysconfig.pojo.SystemConfig">
         select * from system_config
     </select>
-    <select id="selectByVo" parameterType="com.hsr.yxw.sysconfig.common.SystemConfigQueryVo" resultType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+    <select id="selectByVo" parameterType="com.hsr.game.sysconfig.common.SystemConfigQueryVo" resultType="com.hsr.game.sysconfig.pojo.SystemConfig">
         select * from system_config
         <where>
             <include refid="systemConfigSql" />
@@ -81,7 +81,7 @@
         </if>
     </select>
 
-    <insert id="insert" parameterType="com.hsr.yxw.sysconfig.pojo.SystemConfig" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.hsr.game.sysconfig.pojo.SystemConfig" useGeneratedKeys="true" keyProperty="id">
         insert into system_config(configKey, classify, configValue, valueType)
         values(#{configKey},#{classify},#{configValue},#{valueType})
     </insert>
@@ -96,13 +96,13 @@
         delete from system_config where id = #{value}
     </delete>
 
-    <update id="update" parameterType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+    <update id="update" parameterType="com.hsr.game.sysconfig.pojo.SystemConfig">
         update system_config
         set configKey = #{configKey}, classify = #{classify}, configValue = #{configValue}, valueType = #{valueType}, lastUpdateTime = #{lastUpdateTime}
         where id = #{id}
     </update>
 
-    <update id="updateForNotNull" parameterType="com.hsr.yxw.sysconfig.pojo.SystemConfig">
+    <update id="updateForNotNull" parameterType="com.hsr.game.sysconfig.pojo.SystemConfig">
         update system_config
         <set>
             <if test="configKey!=null"> configKey = #{configKey}, </if>

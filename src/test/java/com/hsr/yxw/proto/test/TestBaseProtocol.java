@@ -1,8 +1,8 @@
 package com.hsr.yxw.proto.test;
 
 import com.alibaba.fastjson.JSONArray;
-import com.hsr.yxw.ws.common.BaseProtocol;
-import com.hsr.yxw.ws.heartbeat.HeartBeatResponseProtocol;
+import com.hsr.game.ws.common.BaseProtocol;
+import com.hsr.game.ws.heartbeat.HeartBeatResponseProtocol;
 import org.junit.jupiter.api.Test;
 
 public class TestBaseProtocol {
@@ -28,4 +28,4 @@ public class TestBaseProtocol {
             System.out.println("null");
         }
     }
-}
+}

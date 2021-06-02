@@ -106,9 +106,15 @@ function Map() {
         return this.keys.length;
     };
     /**
+     * 类型
+     */
+    this.type = function () {
+      return "Map";
+    };
+    /**
      * 重写toString
      */
-    this.toString = function () {
+    this.toString = function() {
         let s = "{";
         for (let i = 0; i < this.keys.length; i++, s += ',') {
             let k = this.keys[i];
@@ -130,6 +136,8 @@ function Map() {
                result += getString(item);
             });
             result += "]";
+        } else if (isMap(obj)) {
+            result = obj.toString();
         } else if (isJson(obj)) {
             // 是json
             result = JSON.stringify(obj);
@@ -150,4 +158,7 @@ function Map() {
  */
 function isJson(obj) {
     return typeof (obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() === "[object object]" && !obj.length;
+}
+function isMap(obj) {
+    return obj.hasOwnProperty("type") && obj.type() === "Map";
 }

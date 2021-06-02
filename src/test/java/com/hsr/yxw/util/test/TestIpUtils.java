@@ -1,7 +1,7 @@
 package com.hsr.yxw.util.test;
 
-import com.hsr.yxw.common.WebConstants;
-import com.hsr.yxw.util.IpUtils;
+import com.hsr.game.common.WebConstants;
+import com.hsr.game.util.IpUtils;
 import org.junit.jupiter.api.Test;
 
 public class TestIpUtils {
@@ -51,4 +51,4 @@ public class TestIpUtils {
         System.out.println("字符串：" + str9 + " 是否符合：" + str9.matches(regex));
         System.out.println("字符串：" + str10 + " 是否符合：" + str10.matches(regex));
     }
-}
+}

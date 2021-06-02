@@ -1,7 +1,7 @@
 package com.hsr.yxw.util.test;
 
 import com.alibaba.fastjson.JSONArray;
-import com.hsr.yxw.ws.chat.common.ChatMessageType;
+import com.hsr.game.ws.chat.common.ChatMessageType;
 import org.junit.Test;
 
 public class TestPublicChatMessageType {
