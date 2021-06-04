@@ -42,6 +42,7 @@ public class YxwGameFigureService {
         // 校验
         List<YxwGameFigureInfo> firstFigureList = yxwGameInfoManager.getFirstFigureList();
         boolean contains = false;
+        // 因为可选人物较少，不用太在意效率，直接遍历
         for (YxwGameFigureInfo figureInfo : firstFigureList) {
             if (customFigureId == figureInfo.getId()) {
                 contains = true;

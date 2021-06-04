@@ -1,8 +1,5 @@
 package com.hsr.game.ws.yxw.figure.pojo;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.hsr.game.yxw.info.YxwGameFigureInfo;
-
 /**
  * 对应一个人物的所有数据
  */

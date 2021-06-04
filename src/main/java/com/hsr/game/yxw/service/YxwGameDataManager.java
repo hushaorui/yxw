@@ -1,6 +1,7 @@
 package com.hsr.game.yxw.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.hsr.game.ws.yxw.base.pojo.YxwGameMainData;
 import com.hsr.game.yxw.data.YxwGameDataItem;
 import com.hsr.game.yxw.data.YxwGameDataType;
 import com.hsr.game.ws.yxw.figure.pojo.YxwGameFigureData;
@@ -157,6 +158,12 @@ public class YxwGameDataManager {
         dataCollectionValue.add(figureData);
         boolean result = update(dataContainer, dataType, dataCollectionValue);
         if (result) {
+            if (figureMap.isEmpty()) {
+                // 如果这是添加的第一个，则默认选中
+                YxwGameMainData mainData = dataContainer.getMainData();
+                mainData.setCurrentFigure(figureData.getCfgId());
+                update(dataContainer, mainData);
+            }
             figureMap.put(figureData.getCfgId(), figureData);
             // 更新成功
             return null;
@@ -164,4 +171,5 @@ public class YxwGameDataManager {
             return yxwGameInfoManager.getLanguageString(1L);
         }
     }
+
 }

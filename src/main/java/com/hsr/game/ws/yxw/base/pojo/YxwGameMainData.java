@@ -7,6 +7,7 @@ public class YxwGameMainData {
     private long jewel_R; // R宝珠数量
     private long jewel_SR; // SR宝珠数量
     private long jewel_UR; // UR宝珠数量
+    private Long currentFigure; // 当前选择的人物
 
     public long getDiamond() {
         return diamond;
@@ -46,5 +47,13 @@ public class YxwGameMainData {
 
     public void setJewel_UR(long jewel_UR) {
         this.jewel_UR = jewel_UR;
+    }
+
+    public Long getCurrentFigure() {
+        return currentFigure;
+    }
+
+    public void setCurrentFigure(Long currentFigure) {
+        this.currentFigure = currentFigure;
     }
 }

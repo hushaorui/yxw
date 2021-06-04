@@ -30,7 +30,8 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		try {
-			adminService.initDB(true);
+			//adminService.initDB(true);
+			adminService.initDB(false);
 			log.info("初始化数据库完成");
 			yxwGameInfoManager.initYxwCard();
 			log.info("初始化yxw卡牌完成");
