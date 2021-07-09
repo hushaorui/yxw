@@ -53,26 +53,35 @@ public class AdminServiceImpl implements AdminService {
                     yxwGameDataItemMapper.dropTable();
                 } catch (Exception ignore) {}
             }
+            String keyWord = "already exists";
             // 创建表格
             try {
                 systemConfigMapper.createTable();
             } catch (Exception e) {
-                e.printStackTrace();
+                if (! e.getMessage().contains(keyWord)) {
+                    e.printStackTrace();
+                }
             }
             try {
                 accountMapper.createTable();
             } catch (Exception e) {
-                e.printStackTrace();
+                if (! e.getMessage().contains(keyWord)) {
+                    e.printStackTrace();
+                }
             }
             try {
                 chatMessageMapper.createTable();
             } catch (Exception e) {
-                e.printStackTrace();
+                if (! e.getMessage().contains(keyWord)) {
+                    e.printStackTrace();
+                }
             }
             try {
                 yxwGameDataItemMapper.createTable();
             } catch (Exception e) {
-                e.printStackTrace();
+                if (! e.getMessage().contains(keyWord)) {
+                    e.printStackTrace();
+                }
             }
 
             initSystemConfigTable();

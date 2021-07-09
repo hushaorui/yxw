@@ -61,7 +61,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="chooseFirstFigure()" >确认</button>
+                    <!--<button type="button" class="btn btn-primary" onclick="confirmChooseFirstFigure()" >确认</button>-->
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -82,13 +82,17 @@
             $.each(msg, function (index, item) {
                 divHtml += "<div><img width='300' height='200' src='"+item['appearanceImgUrl']+"'  alt='NULL'/> <input type='hidden' value='"+item['id']+"' />" +
                     "<span>"+item['name']+"</span><br/> <span>"+item['description']+"</span>" +
-                    "<button onclick='chooseFirstFigure("+item['id']+")'>选择</button></div>";
+                    "<button onclick='confirmChooseFirstFigure("+item['id']+")'>选择</button></div>";
             });
             div.html(divHtml);
             // 显示模态框
             $("#chooseFirstFigureModal").modal("show");
         });
 
+        // 错误返回结果
+        registerWSHandler("YXW_GAME_FIGURE", "error", function (subProtoData) {
+            alert(subProtoData['tips']);
+        });
         // 显示选择初始人物的返回结果
         registerWSHandler("YXW_GAME_FIGURE", "choose_first_figure", function (subProtoData) {
 
@@ -104,8 +108,9 @@
         let messageJson = {reqType: protoType};
         sendRequest(ws, baseProtoType, protoType, messageJson);
     }
-    // 选择初始人物
-    function chooseFirstFigure(figureId) {
+
+    // 确定选择初始人物
+    function confirmChooseFirstFigure(figureId) {
         //alert("选择人物id为：" + figureId);
         // 基础协议类型
         let baseProtoType = "YXW_GAME_FIGURE";
